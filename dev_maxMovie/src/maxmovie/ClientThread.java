@@ -2,6 +2,7 @@ package maxmovie;
 
 public class ClientThread extends Thread{
 	
+	//진아수정
 	MaxMovieView iv = null;
 	
 	boolean stop = false;

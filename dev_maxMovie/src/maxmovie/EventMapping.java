@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 public class EventMapping implements ActionListener{
 	
+	//진아수정
 	/* 뷰 패널들의 변수이름
 	//로그인뷰
 	JPanel 					jp_lv 			= new LoginView(this);
