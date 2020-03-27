@@ -53,15 +53,15 @@ public class MaxMovieView extends JFrame{
 		}
 	};
 	//로그인뷰
-	JPanel 					jp_lv 			= new LoginView(em);
+	LoginView 					jp_lv 			= new LoginView(em);
 	//마이페이지뷰
-	JPanel 					jp_mv 			= new MyPageView(em);
+	MyPageView 					jp_mv 			= new MyPageView(em);
 	//무비초이스뷰
-	JPanel 					jp_mcv 			= new MovieChoiceView(em);
+	MovieChoiceView 			jp_mcv 			= new MovieChoiceView(em);
 	//시트초이스뷰
-	JPanel 					jp_sc 			= new SeatChoiceView(em);
+	SeatChoiceView 				jp_sc 			= new SeatChoiceView(em);
 	//리절트뷰
-	JPanel 					jp_rv 			= new ResultView(em);
+	ResultView 					jp_rv 			= new ResultView(em);
 
 	public MaxMovieView() {
 		initDisplay();
@@ -123,7 +123,7 @@ public class MaxMovieView extends JFrame{
 	}
 	
 	public void eventMapping() {
-		//.addActionlistener(event);
+		//.addActionlistener(em);
 	}
 	
 	public static void main(String[] args) {
