@@ -26,7 +26,7 @@ public class MaxMovieView extends JFrame{
 	Dimension 				res 			= Toolkit.getDefaultToolkit().getScreenSize();
 	
 	//모든패널의 이벤트를 맞는 클래스선언
-	EventMapping 			event 			= new EventMapping(this);
+	EventMapping 			em 			= new EventMapping(this);
 	
 	//클라이언트 스레드를 생성하기 위한 전변
 	Socket socket = null;
@@ -53,15 +53,15 @@ public class MaxMovieView extends JFrame{
 		}
 	};
 	//로그인뷰
-	JPanel 					jp_lv 			= new LoginView(this);
+	JPanel 					jp_lv 			= new LoginView(em);
 	//마이페이지뷰
-	JPanel 					jp_mv 			= new MyPageView(this);
+	JPanel 					jp_mv 			= new MyPageView(em);
 	//무비초이스뷰
-	JPanel 					jp_mcv 			= new MovieChoiceView(this);
+	JPanel 					jp_mcv 			= new MovieChoiceView(em);
 	//시트초이스뷰
-	JPanel 					jp_sc 			= new SeatChoiceView(this);
+	JPanel 					jp_sc 			= new SeatChoiceView(em);
 	//리절트뷰
-	JPanel 					jp_rv 			= new ResultView(this);
+	JPanel 					jp_rv 			= new ResultView(em);
 
 	public MaxMovieView() {
 		initDisplay();
@@ -87,11 +87,11 @@ public class MaxMovieView extends JFrame{
 		jl_logo_small.setBounds(790, 30, 200, 94);
 		
 		
-		jtp_south_south.setText("회사소개 (930307)경기도 고양시 덕양구 토당동 양우아파트 102동 502호 대표이사 : 이진아 박미경 이정훈 사업자등록번호 : 501-39-76677-7 호스팅사업자 : CJ올리브네트웍스개인정보보호  \n"
-							  + "책임자 : 이진아 대표이메일 : ljina0218@naver.com 고객센터 : 1588-1588 (04377)서울특별시 용산구 한강대로 23길 55, 아이파크몰 6층(한강로동)\n"
-							  + "호스팅사업자 : CJ 올리브 네트웍스 개인정보 보호 책임자 : 정종민 대표이메일 : cjcgvmaster@cj.netCGV고객센터 : 1544-1122 \n"
-							  + "대표이사 : 곽두팔 사업자 등록번호 : 157-81-452390통신판매업신고번호 : 2019-독도 울릉도-0662 사업자정보확인 \n"
-							  + "통신판매업신고번호 : 2019-독도-05 사업자정보확인 ©2020 MAXMOVIE Corp. All right Reserved \n");
+		jtp_south_south.setText("회사소개 (930307)경기도 고양시 덕양구 토당동 양우아파트 102동 502호 대표이사 : 이진아 박미경 이정훈 사업자등록번호 : 501-39-76677-7 호스팅사업자 : CJ올리브네트웍스개인정보보호  \n" +
+							   "책임자 : 이진아 대표이메일 : ljina0218@naver.com 고객센터 : 1588-1588 (04377)서울특별시 용산구 한강대로 23길 55, 아이파크몰 6층(한강로동)\n" +
+							   "호스팅사업자 : CJ 올리브 네트웍스 개인정보 보호 책임자 : 정종민 대표이메일 : cjcgvmaster@cj.netCGV고객센터 : 1544-1122 \n" +
+							   "대표이사 : 곽두팔 사업자 등록번호 : 157-81-452390통신판매업신고번호 : 2019-독도 울릉도-0662 사업자정보확인 \n" +
+							   "통신판매업신고번호 : 2019-독도-05 사업자정보확인 ©2020 MAXMOVIE Corp. All right Reserved \n");
 		
 		jp_north.add(jl_logo_small);
 		jp_south.add(jtp_south_south);

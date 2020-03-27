@@ -4,9 +4,10 @@ import javax.swing.JPanel;
 
 public class ResultView extends JPanel{
 
-	MaxMovieView mv = null;
-	public ResultView(MaxMovieView mv) {
-		this.mv = mv;
-	}
 
+	EventMapping em = null;
+	
+	public ResultView(EventMapping em) {
+		this.em = em;
+	}
 }

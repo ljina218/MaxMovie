@@ -3,8 +3,9 @@ package maxmovie;
 import javax.swing.JPanel;
 
 public class PayView extends JPanel{
-	MaxMovieView mv = null;
-	public PayView(MaxMovieView mv) {
-		this.mv = mv;
+	
+	EventMapping em = null;
+	public PayView(EventMapping em) {
+		this.em = em;
 	}
 }
