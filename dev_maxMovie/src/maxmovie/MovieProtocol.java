@@ -5,6 +5,7 @@ public class MovieProtocol {
 	public final static int LOGIN 	= 100;
 	//회원가입
 	public final static int JOIN 	= 200;
+	public final static int CHECK_ID 	= 210;
 	//회원 예매내역조회
 	public final static int MY_MOVIE = 300;
 	//회원정보조회

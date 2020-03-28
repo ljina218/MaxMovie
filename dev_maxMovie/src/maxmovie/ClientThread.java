@@ -4,13 +4,12 @@ import java.util.StringTokenizer;
 
 public class ClientThread extends Thread{
 	
-	//진아수정
-	MaxMovieView iv = null;
+	MaxMovieView mmv = null;
 	
 	boolean stop = false;
 
-	public ClientThread(MaxMovieView iv) {
-		this.iv = iv;
+	public ClientThread(MaxMovieView mmv) {
+		this.mmv = mmv;
 	}
 	
 	//서버로부터 메세지를 듣고 뷰에 변화를 주는 메소드
@@ -20,7 +19,7 @@ public class ClientThread extends Thread{
 		int protocol = 0;
 		try {
 			while(!stop) {
-				//msg = (String)iv.ois.readObject();
+				//msg = (String)mmv.ois.readObject();
 				StringTokenizer st = null;
 				if(msg!=null) {
 					st = new StringTokenizer("","#");
