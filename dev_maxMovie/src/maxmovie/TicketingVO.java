@@ -4,7 +4,7 @@ package maxmovie;
  * 
  * @author kosmo_06
  *
- */
+ ********************************************************************************/
 public class TicketingVO {
 	String command      = null;
 	String protocol     = null;
