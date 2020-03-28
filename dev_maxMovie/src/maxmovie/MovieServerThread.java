@@ -17,6 +17,10 @@ import java.util.Vector;
 
 public class MovieServerThread extends Thread{
 	
+	//id와 nickname 저장
+	String id = null;
+	String nickname = null;
+	
 	//컨트롤러 생성
 	MovieController ctrl = new MovieController();
 	
@@ -30,7 +34,6 @@ public class MovieServerThread extends Thread{
 	String logpath = "src\\thread\\chat\\";
 	String fileName = null;
 
-	
 	//생성자
 	public MovieServerThread(MovieServer ms) {
 		this.ms = ms;
