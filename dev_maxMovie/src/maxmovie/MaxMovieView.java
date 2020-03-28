@@ -53,40 +53,28 @@ public class MaxMovieView extends JFrame{
 		}
 	};
 	//로그인뷰
-	JPanel 					jp_lv 			= new LoginView(em);
-	//마이페이지뷰
-	JPanel 					jp_mv 			= new MyPageView(em);
+	LoginView 					jp_lv 			= new LoginView(em);
 	//무비초이스뷰
-	JPanel 					jp_mcv 			= new MovieChoiceView(em);
+	MovieChoiceView 			jp_mcv 			= new MovieChoiceView(em);
+	//마이페이지뷰
+	MyPageView 					jp_mv 			= new MyPageView(em);
 	//시트초이스뷰
-	JPanel 					jp_sc 			= new SeatChoiceView(em);
+	SeatChoiceView 				jp_sc 			= new SeatChoiceView(em);
 	//리절트뷰
-	JPanel 					jp_rv 			= new ResultView(em);
+	ResultView 					jp_rv 			= new ResultView(em);
 
 	public MaxMovieView() {
 		initDisplay();
 		eventMapping();//이벤트 맵핑 메소드
-		connect();//클라이언트 스레드를 생성하기 위한 메소드
+//		connect();//클라이언트 스레드를 생성하기 위한 메소드
 	}
 	
-	private void initDisplay(){
-		this.add("Center", jp_mv);
-		this.add("Center", jp_mcv);
-		this.add("Center", jp_sc);
-		this.add("Center", jp_rv);
-		this.add("North", jp_north);
-		this.add("South", jp_south);
-		this.add("Center", jp_lv);
-		this.add("West", jp_west);
-		this.add("East", jp_east);
+	public void initDisplay(){
 		
 		jp_north.setLayout(null);
 		//예매화면으로 이동시 jl_logo_small.setVisible(true); 로 변환
+		jl_logo_small.setBounds(840, 30, 200, 94);
 		jl_logo_small.setVisible(false);
-		
-		jl_logo_small.setBounds(790, 30, 200, 94);
-		
-		
 		jtp_south_south.setText("회사소개 (930307)경기도 고양시 덕양구 토당동 양우아파트 102동 502호 대표이사 : 이진아 박미경 이정훈 사업자등록번호 : 501-39-76677-7 호스팅사업자 : CJ올리브네트웍스개인정보보호  \n" +
 							   "책임자 : 이진아 대표이메일 : ljina0218@naver.com 고객센터 : 1588-1588 (04377)서울특별시 용산구 한강대로 23길 55, 아이파크몰 6층(한강로동)\n" +
 							   "호스팅사업자 : CJ 올리브 네트웍스 개인정보 보호 책임자 : 정종민 대표이메일 : cjcgvmaster@cj.netCGV고객센터 : 1544-1122 \n" +
@@ -102,21 +90,48 @@ public class MaxMovieView extends JFrame{
 		jp_west.setPreferredSize(new Dimension(190, 1080));
 		jp_east.setPreferredSize(new Dimension(190, 1080));
 		
-//		jp_north.setBackground(Color.white);
-//		jp_south.setBackground(Color.white);
-//		jp_west.setBackground(Color.white);
-//		jp_east.setBackground(Color.white);
+		jp_north.setBackground(Color.white);
+		jp_south.setBackground(Color.white);
+		jp_west.setBackground(Color.white);
+		jp_east.setBackground(Color.white);
 		
-		jp_lv.setVisible(true);
+		jp_lv.setVisible(false);
 		jp_mv.setVisible(false);
-		jp_mcv.setVisible(false);
+		jp_mcv.setVisible(true);
 		jp_sc.setVisible(false);
 		jp_rv.setVisible(false);
-
+		
+		
+		
+		
+		jl_logo_small.setVisible(true);
+		/**********************************************
+		 * jp_lv 일때  false
+		 * jl_logo_small.setVisible(false);
+		 * jp_mv 일 시 true
+		 * jl_logo_small.setVisible(true);
+		 * jp_mcv
+		 * jl_logo_small.setVisible(true);
+		 * jp_sc
+		 * jl_logo_small.setVisible(true);
+		 * jp_rv
+		 * jl_logo_small.setVisible(true);
+		 **********************************************/
+		
 		/***********************************************
 		 * 기본 메인 규격 res.width = 모니터해상도 가로길이,  res.height = 모니터해상도 세로길이  
 		 * border여서 전체길이를 매개변수로 넘겼음
 		 ***********************************************/
+
+		this.add("Center", jp_mv);
+		this.add("Center", jp_sc);
+		this.add("Center", jp_rv);
+		this.add("North", jp_north);
+		this.add("South", jp_south);
+		this.add("Center", jp_lv);
+		this.add("Center", jp_mcv);
+		this.add("West", jp_west);
+		this.add("East", jp_east);
 		this.setSize(res.width, res.height);
 		this.setResizable(false);
 		this.setVisible(true);
@@ -130,20 +145,20 @@ public class MaxMovieView extends JFrame{
 		new MaxMovieView();
 	}
 	
-	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
-		try {
-			socket = new Socket("192.168.0.244",5000);
-			oos = new ObjectOutputStream(socket.getOutputStream());
-			ois = new ObjectInputStream(socket.getInputStream());
-			ClientThread ct = new ClientThread(this);
-			ct.start();
-		} catch (UnknownHostException e) {
-			System.out.println(e.toString());
-			//e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println(e.toString());
-			//e.printStackTrace();
-		}
-	}
+//	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
+//		try {
+//			socket = new Socket("192.168.0.244",5000);
+//			oos = new ObjectOutputStream(socket.getOutputStream());
+//			ois = new ObjectInputStream(socket.getInputStream());
+//			ClientThread ct = new ClientThread(this);
+//			ct.start();
+//		} catch (UnknownHostException e) {
+//			System.out.println(e.toString());
+//			//e.printStackTrace();
+//		} catch (IOException e) {
+//			System.out.println(e.toString());
+//			//e.printStackTrace();
+//		}
+//	}
 
 }
