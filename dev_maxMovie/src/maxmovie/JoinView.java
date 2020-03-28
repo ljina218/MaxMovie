@@ -22,7 +22,19 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-public class JoinView extends JDialog implements ItemListener {
+public class JoinView extends JDialog {
+	
+	Calendar 			today 					= Calendar.getInstance();
+	int 				year 					= today.get(Calendar.YEAR);
+	int 				month 					= today.get(Calendar.MONTH)+1;
+	int	 				day 					= today.get(Calendar.DAY_OF_MONTH);
+	String 				choiceYear 				= "년도";
+	String 				choiceMonth			 	= "월";
+	String 				choiceDay 				= "일";
+	
+	String []			genders					= {"선택","남","여"};
+	String				jcb_genderChoice		= null;
+	
 	JLabel 				jl_logo_m 		= new JLabel() {
 		public void paint(Graphics g) {
 			Image img = null;
@@ -46,13 +58,10 @@ public class JoinView extends JDialog implements ItemListener {
 	JPasswordField		jpf_pw 					= new JPasswordField();
 	JTextField 			jtf_name 				= new JTextField();
 	JTextField 			jtf_nick 				= new JTextField();
-	String[]			s_year					= new String[141];
-	String[]			s_month					= new String[12];
-	String[]			s_day					= new String[0];
 	JComboBox<String>	jcb_year				= null;
 	JComboBox<String>	jcb_month				= null;
 	JComboBox<String>	jcb_day					= null;
-	JTextField 			jtf_gender 				= new JTextField();
+	JComboBox<String>	jcb_gender				= new JComboBox<String>(genders);
 	JTextField 			jtf_email 				= new JTextField();
 	JTextField 			jtf_email_r 			= new JTextField();
 	JButton				jbt_id_check			= new JButton("ID 중복 체크");
@@ -61,6 +70,8 @@ public class JoinView extends JDialog implements ItemListener {
 	JButton				jbt_back				= new JButton("뒤로가기");
 	JButton				jbt_joingo				= new JButton("회원가입");
 	JLabel              jl_id_warning			= new JLabel();
+	JLabel              jl_id_warning2			= new JLabel();
+	JLabel              jl_id_success			= new JLabel();
 	JLabel              jl_pw_warning  	   		= new JLabel();
 	JLabel              jl_name_warning	    	= new JLabel();
 	JLabel              jl_nick_warning	    	= new JLabel();
@@ -69,60 +80,36 @@ public class JoinView extends JDialog implements ItemListener {
 	JLabel              jl_day_warning	    	= new JLabel();
 	JLabel              jl_gender_warning 		= new JLabel();
 	JLabel              jl_email_warning   		= new JLabel();
+	JLabel              jl_email_warning2  		= new JLabel();
+	JLabel              jl_email_r_success  	= new JLabel();
 	JLabel              jl_email_r_warning  	= new JLabel();
+	JLabel              jl_email_r_warning2  	= new JLabel();
 	String				jcb_yearChoice			= null;
 	String				jcb_monthChoice			= null;
 	String				jcb_dayChoice			= null;
-	Calendar			thisDate 				= Calendar.getInstance();
-	Calendar 			choiceDate 				= Calendar.getInstance();
 	EventMapping 		em 						= null;
 	
-	public JoinView() {
-		setCalendar();
-		initDisplay();
-		eventMapping();
-	}
-	
-	private JoinView(EventMapping em) {
+	public JoinView(EventMapping em) {
 		this.em = em;
-		setCalendar();
+		//생년월일 - 년도 콤보박스 생성
+		String []years = new String[this.year-1918];
+		years[0] = "년도";
+		int year2 = this.year;
+		for(int i=1; i<years.length; i++) {
+			years[i]= Integer.toString(year2);
+			year2--;
+		}
+		jcb_year = new JComboBox<String>(years);
+		jcb_month = new JComboBox<String>();
+		jcb_month.addItem("월");
+		jcb_day = new JComboBox<String>();
+		jcb_day.addItem("일");
+		//화면호출
 		initDisplay();
 		eventMapping();
 	}
-
-	private void setCalendar() {
-		for(int i=0; i<s_year.length; i++) {
-			s_year[i] = Integer.toString(thisDate.get(Calendar.YEAR)-i); 
-			System.out.println(s_year[i]);
-		}
-		jcb_year	= new JComboBox<>(s_year);
-		jcb_year.setSelectedIndex(0);
-		jcb_yearChoice = s_year[0];
-		for(int i=0; i<s_month.length; i++) {
-			s_month[i] = Integer.toString(12-i);
-		}
-		jcb_month	= new JComboBox<>(s_month);
-		jcb_year.setSelectedIndex(0);
-		jcb_monthChoice = s_month[0];
-		s_day = new String[thisDate.get(Calendar.DAY_OF_MONTH)];
-		for(int i=0; i<s_day.length; i++) {
-			s_day[i] = Integer.toString(thisDate.get(Calendar.DAY_OF_MONTH)-i);
-		}
-		jcb_day	= new JComboBox<>(s_day);
-		jcb_day.setSelectedIndex(0);
-		jcb_dayChoice = s_day[0];
-		
-		System.out.println("---------------최초---------------");
-		System.out.println("jcb_yearChoice : " + jcb_yearChoice);
-		System.out.println("jcb_monthChoice : " + jcb_monthChoice);
-		System.out.println("jcb_dayChoice : " + jcb_dayChoice);
-		System.out.println("---------------최초---------------");
-		choiceDate.set(Integer.parseInt(jcb_yearChoice), Integer.parseInt(jcb_monthChoice), Integer.parseInt(jcb_dayChoice));
-		System.out.println("현재년도 : " + thisDate.get(Calendar.YEAR) + " 현재 월 : " + thisDate.get(Calendar.MONTH) + " 현재 일 : " + thisDate.get(Calendar.DAY_OF_MONTH));
-		System.out.println("고른년도 : " + choiceDate.get(Calendar.YEAR) + " 고른 월 : " + choiceDate.get(Calendar.MONTH) + " 고른 일 : " + choiceDate.get(Calendar.DAY_OF_MONTH));
-	}
 	
-	private void initDisplay(){
+	public void initDisplay(){
 		this.setLayout(null);
 		this.getContentPane().setBackground(Color.white);
 		jtf_id.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
@@ -132,7 +119,7 @@ public class JoinView extends JDialog implements ItemListener {
 		jcb_year.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
 		jcb_month.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
 		jcb_day.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-		jtf_gender.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
+		jcb_gender.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
 		jtf_email.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
 		jtf_email_r.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
 		
@@ -161,7 +148,7 @@ public class JoinView extends JDialog implements ItemListener {
 		jcb_year.setBounds(150, 428 ,135 ,32);
 		jcb_month.setBounds(288, 428 ,80 ,32);
 		jcb_day.setBounds(370, 428 ,80 ,32);
-		jtf_gender.setBounds(150, 486 ,300 ,32);
+		jcb_gender.setBounds(150, 486 ,300 ,32);
 		jtf_email.setBounds(150, 544 ,182 ,32);
 		jtf_email_r.setBounds(150, 602 ,182 ,32);
 		jbt_back.setBounds(150, 660, 148, 32);
@@ -170,6 +157,8 @@ public class JoinView extends JDialog implements ItemListener {
 		jbt_email.setBounds(334, 544 ,115,32);
 		jbt_email_r.setBounds(334, 602 ,115 ,32);
 		jl_id_warning.setBounds(154, 230 ,300 ,18);
+		jl_id_warning2.setBounds(154, 230 ,300 ,18);
+		jl_id_success.setBounds(154, 230 ,300 ,18);
 		jl_pw_warning.setBounds(154, 288 ,300 ,18);
 		jl_name_warning.setBounds(154, 346 ,300 ,18);
 		jl_nick_warning.setBounds(154, 404 ,300 ,18);
@@ -178,10 +167,17 @@ public class JoinView extends JDialog implements ItemListener {
 		jl_day_warning.setBounds(374, 460 ,300 ,18);
 		jl_gender_warning.setBounds(154, 518 ,300 ,18);
 		jl_email_warning.setBounds(154, 576 ,300 ,18);
+		jl_email_warning2.setBounds(154, 576 ,300 ,18);
+		jl_email_r_success.setBounds(154, 634 ,300 ,18);
 		jl_email_r_warning.setBounds(154, 634 ,300 ,18);
+		jl_email_r_warning2.setBounds(154, 634 ,300 ,18);
 		
 		jl_id_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
 		jl_id_warning.setForeground(Color.red);
+		jl_id_warning2.setFont(new Font("굴림체", Font.PLAIN, 11));	
+		jl_id_warning2.setForeground(Color.red);
+		jl_id_success.setFont(new Font("굴림체", Font.PLAIN, 11));	
+		jl_id_success.setForeground(Color.green);
 		jl_pw_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
 		jl_pw_warning.setForeground(Color.red);    
 		jl_name_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
@@ -198,8 +194,14 @@ public class JoinView extends JDialog implements ItemListener {
 		jl_gender_warning.setForeground(Color.red);
 		jl_email_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
 		jl_email_warning.setForeground(Color.red);
+		jl_email_warning2.setFont(new Font("굴림체", Font.PLAIN, 11));	
+		jl_email_warning2.setForeground(Color.red);
 		jl_email_r_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
 		jl_email_r_warning.setForeground(Color.red);
+		jl_email_r_warning2.setFont(new Font("굴림체", Font.PLAIN, 11));	
+		jl_email_r_warning2.setForeground(Color.red);
+		jl_email_r_success.setFont(new Font("굴림체", Font.PLAIN, 11));	
+		jl_email_r_success.setForeground(Color.green);
 		jbt_id_check.setBackground(new Color(52, 152, 219));
 		jbt_id_check.setForeground(Color.white);
 		jbt_email.setBackground(new Color(52, 152, 219));
@@ -228,7 +230,7 @@ public class JoinView extends JDialog implements ItemListener {
 		this.add(jcb_year);
 		this.add(jcb_month);
 		this.add(jcb_day);
-		this.add(jtf_gender);
+		this.add(jcb_gender);
 		this.add(jtf_email);
 		this.add(jbt_email);
 		this.add(jtf_email_r);
@@ -236,6 +238,8 @@ public class JoinView extends JDialog implements ItemListener {
 		this.add(jbt_back);
 		this.add(jbt_joingo);
 		this.add(jl_id_warning);
+		this.add(jl_id_warning2);
+		this.add(jl_id_success);
 		this.add(jl_pw_warning);
 		this.add(jl_name_warning);
 		this.add(jl_nick_warning);
@@ -244,12 +248,17 @@ public class JoinView extends JDialog implements ItemListener {
 		this.add(jl_day_warning);
 		this.add(jl_gender_warning);
 		this.add(jl_email_warning);
+		this.add(jl_email_warning2);
+		this.add(jl_email_r_success);
 		this.add(jl_email_r_warning);
+		this.add(jl_email_r_warning2);
 		this.setSize(600, 800);
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
 		
 		jl_id_warning.setVisible(false);
+		jl_id_warning2.setVisible(false);
+		jl_id_success.setVisible(false);
 		jl_pw_warning.setVisible(false);
 		jl_name_warning.setVisible(false);
 		jl_nick_warning.setVisible(false);
@@ -258,11 +267,15 @@ public class JoinView extends JDialog implements ItemListener {
 		jl_day_warning.setVisible(false);
 		jl_gender_warning.setVisible(false);
 		jl_email_warning.setVisible(false);
+		jl_email_warning2.setVisible(false);
+		jl_email_r_success.setVisible(false);
 		jl_email_r_warning.setVisible(false);
+		jl_email_r_warning2.setVisible(false);
 		
-		jl_id_warning.setText(" 멋진 아이디!.");
-		jl_id_warning.setText(" 7~12자이어야하고 특수문자는 입력할 수 없습니다.");
-		jl_pw_warning.setText(" 7~12자이어야합니다");
+		jl_id_warning.setText(" 동일한 아이디가 존재합니다.");
+		jl_id_success.setText(" 사용 가능한 아이디입니다.");
+		jl_id_warning2.setText(" 7~12자이어야 하고 영문 및 숫자만 입력할 수 있습니다.");
+		jl_pw_warning.setText(" 7~12자이어야 하고 공백은 불가합니다.");
 		jl_name_warning.setText(" 3~15자이어야 하고 특수문자는 사용할 수 없습니다");
 		jl_nick_warning.setText(" 2~8자이이어야 하고 특수문자는 사용할 수 없습니다.");
 		jl_year_warning.setText(" 생년을 선택하여주세요");
@@ -270,7 +283,10 @@ public class JoinView extends JDialog implements ItemListener {
 		jl_day_warning.setText(" 생일을 선택하여주세요");
 		jl_gender_warning.setText(" 성별을 선택해주세요.");
 		jl_email_warning.setText(" 이메일주소 형식에 맞지 않습니다.");
+		jl_email_warning2.setText(" 인증번호 입력시간은 2분입니다.");
+		jl_email_r_success.setText(" 인증성공");
 		jl_email_r_warning.setText(" 인증번호가 일치하지 않습니다.");
+		jl_email_r_warning2.setText(" 입력시간이 초과했습니다.");
 /*********************************************************************
  * 		● #join10		jl_id_warning.setVisible(false);
  * 		● #join11		jl_id_warning.setVisible(true);
@@ -305,16 +321,15 @@ public class JoinView extends JDialog implements ItemListener {
  *  	○ #join36		jl_email_r_warning.setVisible(true);
  *********************************************************************/
 	}
-	private void eventMapping() {
+	
+	public void eventMapping() {
 		jbt_id_check.addActionListener(em);
 		jtf_id.addActionListener(em);
-		jpf_pw.addActionListener(em);
-		jtf_nick.addActionListener(em);
-		jtf_name.addActionListener(em);
-		jcb_year.addItemListener(this);
-		jcb_month.addItemListener(this);
-		jcb_day.addItemListener(this);
-		jtf_gender.addActionListener(em);
+		jpf_pw.addKeyListener(em);
+		jtf_nick.addKeyListener(em);
+		jtf_name.addKeyListener(em);
+		jcb_year.addItemListener(em);
+		jcb_gender.addItemListener(em);
 		jtf_email.addActionListener(em);
 		jbt_email.addActionListener(em);
 		jtf_email_r.addActionListener(em);
@@ -323,140 +338,4 @@ public class JoinView extends JDialog implements ItemListener {
 		jbt_joingo.addActionListener(em);
 	}
 	
-	@Override
-	public void itemStateChanged(ItemEvent ie) {
-		Object obj = ie.getSource();
-		if(obj==jcb_year) {
-			if(ie.getStateChange()==ItemEvent.SELECTED) {
-				jcb_yearChoice = jcb_year.getSelectedItem().toString();
-				
-				int thisYear = thisDate.get(Calendar.YEAR);
-				int thisMonth = thisDate.get(Calendar.MONTH);
-				int thisDay = thisDate.get(Calendar.DAY_OF_MONTH);
-				
-				System.out.println(thisYear);
-				System.out.println(thisMonth);
-				System.out.println(thisDay);
-				
-				
-				
-				System.out.println(jcb_yearChoice);
-				cal.set(Integer.parseInt(jcb_yearChoice), Integer.parseInt(jcb_monthChoice)-1, 1);
-				jcb_monthChoice = Integer.toString(cal.getActualMaximum(Calendar.MONTH)+1);
-				jcb_dayChoice =  Integer.toString(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-			
-				if(jcb_yearChoice==cal.get) {
-				s_month = new String[Integer.parseInt(jcb_monthChoice)];
-				for(int i=0; i<s_month.length; i++) {
-					s_month[i] = Integer.toString(s_month.length-i);
-				}
-				remove(jcb_month);
-				jcb_month = new JComboBox<>(s_month);
-				add(jcb_month);
-				jcb_month.setBounds(288, 428 ,80 ,32);
-				jcb_month.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-				revalidate();
-				jcb_month.addItemListener(this);				
-				s_day = new String[Integer.parseInt(jcb_dayChoice)];
-				System.out.println("s_day.length : " + s_day.length);
-				for(int i=0; i<s_day.length; i++) {
-					s_day[i] = Integer.toString(s_day.length-i);
-					System.out.println(s_day[i]);
-				}
-				remove(jcb_day);
-				jcb_day = new JComboBox<>(s_day);
-				add(jcb_day);
-				jcb_day.setBounds(370, 428 ,80 ,32);
-				jcb_day.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-				revalidate();
-				jcb_day.addItemListener(this);
-			}
-				s_month = new String[Integer.parseInt(jcb_monthChoice)];
-				for(int i=0; i<s_month.length; i++) {
-					s_month[i] = Integer.toString(s_month.length-i);
-				}
-				remove(jcb_month);
-				jcb_month = new JComboBox<>(s_month);
-				add(jcb_month);
-				jcb_month.setBounds(288, 428 ,80 ,32);
-				jcb_month.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-				revalidate();
-				jcb_month.addItemListener(this);				
-				s_day = new String[Integer.parseInt(jcb_dayChoice)];
-				System.out.println("s_day.length : " + s_day.length);
-				for(int i=0; i<s_day.length; i++) {
-					s_day[i] = Integer.toString(s_day.length-i);
-					System.out.println(s_day[i]);
-				}
-				remove(jcb_day);
-				jcb_day = new JComboBox<>(s_day);
-				add(jcb_day);
-				jcb_day.setBounds(370, 428 ,80 ,32);
-				jcb_day.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-				revalidate();
-				jcb_day.addItemListener(this);
-			}
-		}
-		if(obj==jcb_month) {
-			if(ie.getStateChange()==ItemEvent.SELECTED) {
-				jcb_monthChoice = jcb_month.getSelectedItem().toString();
-				cal.set(Integer.parseInt(jcb_yearChoice), Integer.parseInt(jcb_monthChoice)-1, 1);
-				jcb_dayChoice = Integer.toString(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-				System.out.println("jcb_monthChoice : " + jcb_monthChoice);
-				System.out.println("jcb_dayChoice : " + jcb_dayChoice);
-				s_day = new String[Integer.parseInt(jcb_dayChoice)];
-				System.out.println("s_day.length : " + s_day.length);
-				for(int i=0; i<s_day.length; i++) {
-					s_day[i] = Integer.toString(s_day.length-i);
-				}
-				remove(jcb_day);
-				jcb_day = new JComboBox<>(s_day);
-				add(jcb_day);
-				jcb_day.setBounds(370, 428 ,80 ,32);
-				jcb_day.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-				revalidate();
-				jcb_day.addItemListener(this);
-			}
-		}
-//		if(obj==jcb_day) {
-//			if(ie.getStateChange()==ItemEvent.SELECTED) {
-//				jcb_dayChoice = jcb_day.getSelectedItem().toString();
-//				System.out.println(jcb_dayChoice);
-//			}
-//		}
-		
-//		for(int i=0; i<s_year.length; i++) {
-//			s_year[i] = Integer.toString(cal.get(Calendar.YEAR)-i); 
-//			System.out.println(s_year[i]);
-//		}
-//		jcb_year	= new JComboBox<>(s_year);
-//		jcb_year.setSelectedIndex(0);
-//		jcb_yearChoice = s_year[0];
-//		for(int i=0; i<s_month.length; i++) {
-//			s_month[i] = Integer.toString(12-i);
-//			System.out.println(s_month[i]);
-//		}
-//		jcb_month	= new JComboBox<>(s_month);
-//		jcb_year.setSelectedIndex(0);
-//		jcb_monthChoice = s_month[0];
-//		s_day = new String[cal.get(Calendar.DAY_OF_MONTH)];
-//		for(int i=0; i<s_day.length; i++) {
-//			s_day[i] = Integer.toString(cal.get(Calendar.DAY_OF_MONTH)-i);
-//			System.out.println(s_day[i]);
-//		}
-//		jcb_day	= new JComboBox<>(s_day);
-//		jcb_day.setSelectedIndex(0);
-//		jcb_dayChoice = s_day[0];
-//		System.out.println("jcb_yearChoice : " + jcb_yearChoice);
-//		System.out.println("jcb_monthChoice : " + jcb_monthChoice);
-//		System.out.println("jcb_dayChoice : " + jcb_dayChoice);
-//		cal.set(s_year.length, s_month.length-1, s_day.length);	
-	}
-	
-		
-	public static void main(String[] args) {
-		new JoinView();
-//		MaxMovieView mmv = new MaxMovieView();
-//		new JoinView(mmv.em);
-	}
 }
