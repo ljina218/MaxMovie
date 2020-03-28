@@ -21,13 +21,13 @@ public class MovieDao {
 	public void proc_login(String p_id, String p_pw) {
 		con = dbMgr.getConnection();
 		try {
-			cstmt = con.prepareCall("{call proc_login(?,?,?)}");
+			cstmt = con.prepareCall("{call proc_logintest(?,?,?)}");
 			cstmt.setString(1, p_id);
 			cstmt.setString(2, p_pw);
 			cstmt.registerOutParameter(3, java.sql.Types.VARCHAR);
 			rs = cstmt.executeQuery();
 			while(rs.next()) {
-				System.out.println(cstmt.getString(0));/////////////
+				System.out.println(cstmt.getString(3));/////////////
 			}
 		} catch (SQLException e) {
 			System.out.println("proc_login() Exception : " + e.toString());

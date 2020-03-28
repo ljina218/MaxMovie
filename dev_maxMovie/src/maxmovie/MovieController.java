@@ -19,7 +19,7 @@ public class MovieController {
 	final String MOVIE_REFRESH = "새로고침";
 	
 
-	public Map<String, Object> send(TheaterVO pVO) {
+	public Map<String, Object> send(MemberVO pVO) {
 		Map<String, Object> rMap = new HashMap<String, Object>();
 		
 		return rMap;

@@ -30,7 +30,7 @@ public class DBConnectionMgr {
 	//선언부 
 	public static final String _DRIVER = "oracle.jdbc.driver.OracleDriver";
 	public static final String _URL = "jdbc:oracle:thin:@192.168.0.37:1521:orcl11";
-	public static String _USER = "scott";
+	public static String _USER = "MAXMOVIE";
 	public static String _PW = "tiger";
 	
 	Connection con = null;
