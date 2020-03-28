@@ -2,10 +2,12 @@ package maxmovie;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JPanel;
 
-public class EventMapping implements ActionListener{
+public class EventMapping implements ActionListener, ItemListener{
 	
 	/* 뷰 패널들의 변수이름
 	//로그인뷰
@@ -38,6 +40,12 @@ public class EventMapping implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+	
+		
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
