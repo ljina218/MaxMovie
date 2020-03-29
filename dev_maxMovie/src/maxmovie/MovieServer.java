@@ -43,8 +43,8 @@ public class MovieServer extends JFrame implements Runnable{
 	JTableHeader jth_server = new JTableHeader();
 	
 	//생성자
-	public MovieServer () {
-		this.movieList = md.refreshMovieAll(setTimer(null,"날짜"));//오늘날짜 보내서 영화3일치 가져오기
+	public MovieServer () {//오늘날짜 보내서 영화3일치 가져오기
+		//this.movieList = md.refreshMovieAll(setTimer(null,"날짜"));
 	}
 	
 	//메인메소드

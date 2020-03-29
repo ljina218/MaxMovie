@@ -50,7 +50,6 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 	String 				col_movie[] 			= {"이용등급", "영화"};
 	Object 				data_movie[][] 			= {{grade15, "이보다 더 좋을 순 없다."}, {grade12, "대디스홈2"}, {grade12, "정직한 후보"}, {grade15, "그녀"}, {grade15, "그랜드부다페스트호텔"}, {grade0, "작은아씨들"}};
 	DefaultTableModel 	dtm_movie  				= new DefaultTableModel(data_movie, col_movie) {
-
         @Override
         public Class<?> getColumnClass(int column) {
             switch (column) {
@@ -62,7 +61,7 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
                     return String.class;
             }
         }
-    };;
+    };
 	JTable 				jt_movie 				= new JTable(dtm_movie);
 	JScrollPane 		jsp_movie 				= new JScrollPane(jt_movie);
 	

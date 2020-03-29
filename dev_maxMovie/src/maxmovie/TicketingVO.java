@@ -1,103 +1,86 @@
 package maxmovie;
-
-
+/********************************************************************************
+ * TicketingVO : 클라이언트에서 결제할 때 Datebase에 정보를 주기 위한 VO
+ * 
+ * @author kosmo_06
+ *
+ ********************************************************************************/
 public class TicketingVO {
-	 String COMMAND      = null;
-	 String PROTOCOL     = null;
-	 String RESULT       = null;
-	 String MEM_NAME     = null;
-	 String MEM_ID       = null;
-	 String MEM_PW       = null;
-	 String MEM_EMAIL    = null;
-	 String MEM_NICKNAME = null;
-	 String MEM_BIRTH    = null;
-	 String MEM_GENDER   = null;
-	 String MEM_MOVIE    = null;
-	 String MEM_SCR      = null;
-	 String MEM_SEAT     = null;
-	 String MEM_PRICE    = null;
-	public String getCOMMAND() {
-		return COMMAND;
+	String command      = null;
+	String protocol     = null;
+	String mem_id         = null; 
+	int    scr_code       = 0; 
+	int    theater_code   = 0; 
+	int    movie_code     = 0; 
+	String show_date      = null; 
+	String show_time      = null; 
+	int    ticketing_code = 0; 
+	String pay_status     = null; 
+	String seat_code      = null;
+	public String getCommand() {
+		return command;
 	}
-	public void setCOMMAND(String cOMMAND) {
-		COMMAND = cOMMAND;
+	public void setCommand(String command) {
+		this.command = command;
 	}
-	public String getPROTOCOL() {
-		return PROTOCOL;
+	public String getProtocol() {
+		return protocol;
 	}
-	public void setPROTOCOL(String pROTOCOL) {
-		PROTOCOL = pROTOCOL;
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
 	}
-	public String getRESULT() {
-		return RESULT;
+	public String getMem_id() {
+		return mem_id;
 	}
-	public void setRESULT(String rESULT) {
-		RESULT = rESULT;
+	public void setMem_id(String mem_id) {
+		this.mem_id = mem_id;
 	}
-	public String getMEM_NAME() {
-		return MEM_NAME;
+	public int getScr_code() {
+		return scr_code;
 	}
-	public void setMEM_NAME(String mEM_NAME) {
-		MEM_NAME = mEM_NAME;
+	public void setScr_code(int scr_code) {
+		this.scr_code = scr_code;
 	}
-	public String getMEM_ID() {
-		return MEM_ID;
+	public int getTheater_code() {
+		return theater_code;
 	}
-	public void setMEM_ID(String mEM_ID) {
-		MEM_ID = mEM_ID;
+	public void setTheater_code(int theater_code) {
+		this.theater_code = theater_code;
 	}
-	public String getMEM_PW() {
-		return MEM_PW;
+	public int getMovie_code() {
+		return movie_code;
 	}
-	public void setMEM_PW(String mEM_PW) {
-		MEM_PW = mEM_PW;
+	public void setMovie_code(int movie_code) {
+		this.movie_code = movie_code;
 	}
-	public String getMEM_EMAIL() {
-		return MEM_EMAIL;
+	public String getShow_date() {
+		return show_date;
 	}
-	public void setMEM_EMAIL(String mEM_EMAIL) {
-		MEM_EMAIL = mEM_EMAIL;
+	public void setShow_date(String show_date) {
+		this.show_date = show_date;
 	}
-	public String getMEM_NICKNAME() {
-		return MEM_NICKNAME;
+	public String getShow_time() {
+		return show_time;
 	}
-	public void setMEM_NICKNAME(String mEM_NICKNAME) {
-		MEM_NICKNAME = mEM_NICKNAME;
+	public void setShow_time(String show_time) {
+		this.show_time = show_time;
 	}
-	public String getMEM_BIRTH() {
-		return MEM_BIRTH;
+	public int getTicketing_code() {
+		return ticketing_code;
 	}
-	public void setMEM_BIRTH(String mEM_BIRTH) {
-		MEM_BIRTH = mEM_BIRTH;
+	public void setTicketing_code(int ticketing_code) {
+		this.ticketing_code = ticketing_code;
 	}
-	public String getMEM_GENDER() {
-		return MEM_GENDER;
+	public String getPay_status() {
+		return pay_status;
 	}
-	public void setMEM_GENDER(String mEM_GENDER) {
-		MEM_GENDER = mEM_GENDER;
+	public void setPay_status(String pay_status) {
+		this.pay_status = pay_status;
 	}
-	public String getMEM_MOVIE() {
-		return MEM_MOVIE;
+	public String getSeat_code() {
+		return seat_code;
 	}
-	public void setMEM_MOVIE(String mEM_MOVIE) {
-		MEM_MOVIE = mEM_MOVIE;
-	}
-	public String getMEM_SCR() {
-		return MEM_SCR;
-	}
-	public void setMEM_SCR(String mEM_SCR) {
-		MEM_SCR = mEM_SCR;
-	}
-	public String getMEM_SEAT() {
-		return MEM_SEAT;
-	}
-	public void setMEM_SEAT(String mEM_SEAT) {
-		MEM_SEAT = mEM_SEAT;
-	}
-	public String getMEM_PRICE() {
-		return MEM_PRICE;
-	}
-	public void setMEM_PRICE(String mEM_PRICE) {
-		MEM_PRICE = mEM_PRICE;
+	public void setSeat_code(String seat_code) {
+		this.seat_code = seat_code;
 	}
 }

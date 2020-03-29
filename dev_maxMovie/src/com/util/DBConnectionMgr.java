@@ -1,4 +1,4 @@
-package com.util;
+package src.com.util;
 /*
  * DBConnectionMgr은 여러 업무에서 공통으로 사용하는 클래스입니다
  * 사용한 자원(Connection, PreparedStatement, ResultSet)은 반드시 반납을 하도록 합니다
@@ -30,7 +30,8 @@ public class DBConnectionMgr {
 	//선언부 
 	public static final String _DRIVER = "oracle.jdbc.driver.OracleDriver";
 	public static final String _URL = "jdbc:oracle:thin:@192.168.0.37:1521:orcl11";
-	public static String _USER = "scott";
+
+	public static String _USER = "MAXMOVIE";
 	public static String _PW = "tiger";
 	
 	Connection con = null;
