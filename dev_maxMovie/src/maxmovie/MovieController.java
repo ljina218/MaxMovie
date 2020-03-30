@@ -19,22 +19,17 @@ public class MovieController {
 	final String MOVIE_REFRESH = "새로고침";
 	
 
-	public Map<String, Object> send(TheaterVO pVO) {
+	public Map<String, Object> send(TicketingVO pVO) {
 		Map<String, Object> rMap = new HashMap<String, Object>();
 		
 		return rMap;
 	}
 	
-	public List<Map<String, Object>> sendAll(String date) {//서버 켰을 때
+	public List<Map<String, Object>> sendAll(List<Map<String, Object>> p_movieList) {
 		List<Map<String, Object>> rList = null;
-		rList = dao.refreshMovieAll(date);
+		rList = dao.refreshMovieAll(p_movieList);
 		return rList;
 	}
 	
-	public List<Map<String, Object>> sendDate(String date) {//오늘이 지났을 때
-		List<Map<String, Object>> rList = null;
-		rList = dao.refreshMovieDate(date);
-		return rList;
-	}
 	
 }
