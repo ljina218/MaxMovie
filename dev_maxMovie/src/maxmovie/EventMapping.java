@@ -34,7 +34,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	//무비초이스뷰
 	JPanel 					jp_mcv 			= new MovieChoiceView(this);
 	//시트초이스뷰
-	JPanel 					jp_sc 			= new SeatChoiceView(this);
+	JPanel 					jp_scv 			= new SeatChoiceView(this);
 	//리절트뷰
 	JPanel 					jp_rv 			= new ResultView(this);
 	*/
@@ -80,7 +80,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 		mmv.jp_lv.setVisible(lv);
 		mmv.jp_mv.setVisible(mv);
 		mmv.jp_mcv.setVisible(mcv);
-		mmv.jp_sc.setVisible(sc);
+		mmv.jp_scv.setVisible(sc);
 		mmv.jp_rv.setVisible(rv);
 	}
 	

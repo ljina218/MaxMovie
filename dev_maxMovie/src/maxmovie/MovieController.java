@@ -35,7 +35,6 @@ public class MovieController {
 			result = dao.proc_login(pmVO.getMem_id(), pmVO.getMem_pw());
 		}
 		
-		
 		else if(CHECK_ID.equals(command)) { //중복검사
 			result = dao.proc_checkID(pmVO.mem_id);
 		}

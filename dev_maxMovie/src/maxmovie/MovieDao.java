@@ -5,16 +5,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import src.com.util.DBConnectionMgr;
+import com.util.DBConnectionMgr;
 
 public class MovieDao {
-	src.com.util.DBConnectionMgr dbMgr = src.com.util.DBConnectionMgr.getInstance();
+	DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;

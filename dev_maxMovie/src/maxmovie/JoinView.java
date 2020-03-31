@@ -70,29 +70,27 @@ public class JoinView extends JDialog {
 	JButton				jbt_email_r				= new JButton("인증번호 확인");	
 	JButton				jbt_back				= new JButton("뒤로가기");
 	JButton				jbt_joingo				= new JButton("회원가입");
-	JLabel              jl_id_warning			= new JLabel();
-	JLabel              jl_id_warning2			= new JLabel();
-	JLabel              jl_id_success			= new JLabel();
-	JLabel              jl_pw_warning  	   		= new JLabel();
-	JLabel              jl_name_warning	    	= new JLabel();
-	JLabel              jl_nick_warning	    	= new JLabel();
-	JLabel              jl_year_warning	    	= new JLabel();
-	JLabel              jl_month_warning	    = new JLabel();
-	JLabel              jl_day_warning	    	= new JLabel();
-	JLabel              jl_gender_warning 		= new JLabel();
-	JLabel              jl_email_warning   		= new JLabel();
-	JLabel              jl_email_warning2  		= new JLabel();
-	JLabel              jl_email_r_success  	= new JLabel();
-	JLabel              jl_email_r_warning  	= new JLabel();
-	JLabel              jl_email_r_warning2  	= new JLabel();
+	JLabel              jl_id_warning			= new JLabel(" 동일한 아이디가 존재합니다.");
+	JLabel              jl_id_warning2			= new JLabel(" 7~12자이어야 하고 영문 및 숫자만 입력할 수 있습니다.");
+	JLabel              jl_id_success			= new JLabel(" 사용 가능한 아이디입니다.");
+	JLabel              jl_pw_warning  	   		= new JLabel(" 7~12자이어야 하고 공백은 불가합니다.");
+	JLabel              jl_name_warning	    	= new JLabel(" 3~15자이어야 하고 특수문자는 사용할 수 없습니다");
+	JLabel              jl_nick_warning	    	= new JLabel(" 2~8자이이어야 하고 특수문자는 사용할 수 없습니다.");
+	JLabel              jl_year_warning	    	= new JLabel(" 생년을 선택하여주세요");
+	JLabel              jl_month_warning	    = new JLabel(" 생월을 선택하여주세요");
+	JLabel              jl_day_warning	    	= new JLabel(" 생일을 선택하여주세요");
+	JLabel              jl_gender_warning 		= new JLabel(" 성별을 선택해주세요.");
+	JLabel              jl_email_warning   		= new JLabel(" 이메일주소 형식에 맞지 않습니다.");
+	JLabel              jl_email_warning2  		= new JLabel(" 인증번호 입력시간은 2분입니다.");
+	JLabel              jl_email_r_success  	= new JLabel(" 인증성공");
+	JLabel              jl_email_r_warning  	= new JLabel(" 인증번호가 일치하지 않습니다.");
+	JLabel              jl_email_r_warning2  	= new JLabel(" 입력시간이 초과했습니다.");
 	String				jcb_yearChoice			= null;
 	String				jcb_monthChoice			= null;
 	String				jcb_dayChoice			= null;
 	EventMapping 		em 						= null;
 
 	
-
-
 	public JoinView(EventMapping em) {
 		this.em = em;
 		//생년월일 - 년도 콤보박스 생성
@@ -285,26 +283,8 @@ public class JoinView extends JDialog {
 		jl_email_warning2.setVisible(false);
 		jl_email_r_success.setVisible(false);
 		jl_email_r_warning.setVisible(false);
-
 		jl_email_r_warning2.setVisible(false);
 		
-		jl_id_warning.setText(" 동일한 아이디가 존재합니다.");
-		jl_id_success.setText(" 사용 가능한 아이디입니다.");
-		jl_id_warning2.setText(" 7~12자이어야 하고 영문 및 숫자만 입력할 수 있습니다.");
-		jl_pw_warning.setText(" 7~12자이어야 하고 공백은 불가합니다.");
-
-		jl_name_warning.setText(" 3~15자이어야 하고 특수문자는 사용할 수 없습니다");
-		jl_nick_warning.setText(" 2~8자이이어야 하고 특수문자는 사용할 수 없습니다.");
-		jl_year_warning.setText(" 생년을 선택하여주세요");
-		jl_month_warning.setText(" 생월을 선택하여주세요");
-		jl_day_warning.setText(" 생일을 선택하여주세요");
-		jl_gender_warning.setText(" 성별을 선택해주세요.");
-		jl_email_warning.setText(" 이메일주소 형식에 맞지 않습니다.");
-		jl_email_warning2.setText(" 인증번호 입력시간은 2분입니다.");
-		jl_email_r_success.setText(" 인증성공");
-		jl_email_r_warning.setText(" 인증번호가 일치하지 않습니다.");
-
-		jl_email_r_warning2.setText(" 입력시간이 초과했습니다.");
 /*********************************************************************
  * 		● #join10		jl_id_warning.setVisible(false);
  * 		● #join11		jl_id_warning.setVisible(true);
@@ -338,18 +318,15 @@ public class JoinView extends JDialog {
  *  	○ #join34		jl_email_r_warning.setVisible(false);
  *  	○ #join36		jl_email_r_warning.setVisible(true);
  *********************************************************************/
-
 	}
 
 	
 	public void eventMapping() {
 		jbt_id_check.addActionListener(em);
 		jtf_id.addActionListener(em);
-
 		jpf_pw.addKeyListener(em);
 		jtf_nick.addKeyListener(em);
 		jtf_name.addKeyListener(em);
-
 		jcb_year.addItemListener(em);
 		jcb_gender.addItemListener(em);
 		jtf_email.addActionListener(em);
@@ -360,6 +337,4 @@ public class JoinView extends JDialog {
 		jbt_joingo.addActionListener(em);
 	}
 
-
-	
 }

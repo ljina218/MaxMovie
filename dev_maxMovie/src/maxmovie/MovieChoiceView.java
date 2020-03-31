@@ -24,14 +24,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class MovieChoiceView extends JPanel implements ActionListener, MouseListener{
-	
 	JLabel				jl_movie				= new JLabel("영화");
 	JLabel				jl_locThe				= new JLabel("극장");
 	JLabel				jl_date					= new JLabel("날짜");
 	JLabel				jl_time					= new JLabel("시간");
-	
 	JLabel				jl_timeLock				= new JLabel("영화 극장 날짜를 선택해 주세요.");
-	
 	JLabel				jl_south				= new JLabel("　　　　　　　　　　　　　　　 　　　 　　  　　　　　>　　　    　   　          　　　　　 　　　>　 　　          　   　　　　　　　　　　>");
 	JLabel				jl_south_movie			= new JLabel("영화선택");
 	JLabel				jl_south_ctf			= new JLabel("");
@@ -41,7 +38,6 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 	JLabel				jl_south_screen			= new JLabel("시간선택");
 	JLabel				jl_south_time			= new JLabel("");
 	JButton				jbt_goSeatChoice 		= new JButton("좌석선택→");
-	
 	ImageIcon			grade19					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade19.png");
 	ImageIcon			grade15					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade15.png");
 	ImageIcon			grade12					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade12.png");
@@ -115,11 +111,7 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 		this.setLayout(null);
 		this.setBackground(Color.white);
 		
-		
-		
-		
-		
-		
+
 		jl_movie.setBounds(200, 25, 295, 32);
 		jl_locThe.setBounds(500, 25, 346, 32);
 		jl_date.setBounds(850, 25, 146, 32);
@@ -374,10 +366,6 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 		 **********************************************************************************/
 		}
 	}
-	public static void main(String[] args) {
-		MaxMovieView mmv = new MaxMovieView();
-		mmv.jl_logo_small.setVisible(true);
-	}
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -467,4 +455,18 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 	public void mousePressed(MouseEvent e) {}
 	@Override
 	public void mouseReleased(MouseEvent e) {}
+
+	
+	public static void main(String[] args) {
+		MaxMovieView mmv = new MaxMovieView();
+		mmv.jl_logo_small.setVisible(true);
+		mmv.jp_lv.setVisible(false);
+		mmv.jp_mv.setVisible(false);
+		mmv.jp_scv.setVisible(false);
+		mmv.jp_rv.setVisible(false);
+		mmv.jp_mcv.setVisible(true);
+		mmv.getContentPane().revalidate();
+		mmv.getContentPane().repaint();
+		new MovieChoiceView(mmv.em);
+	}
 }
