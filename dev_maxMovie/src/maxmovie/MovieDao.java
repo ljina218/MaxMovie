@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -232,7 +231,7 @@ public class MovieDao {
 		
 		StringBuilder sql = new StringBuilder();
 		
-		sql.append(" SELECT M_TITLE, T_LOC, T_NAME, S_DATE, S_TIME, SC_NAME ");
+		sql.append(" SELECT M_TITLE, M_CERTIF, T_LOC, T_NAME, S_DATE, S_TIME, SC_NAME ");
 		sql.append("   FROM v_maxmovie                                      ");
 		sql.append("  WHERE 1=1                                             ");
 		//서버에 있는 상영시간표(p_movieList)가 없으면 오라클에서 3일치의 상영시간표를 가져다줘
@@ -259,6 +258,7 @@ public class MovieDao {
 			while(rs.next()) {
 				Map<String, Object> showMap = new HashMap<>();
 				showMap.put("M_TITLE", rs.getString("M_TITLE"));
+				showMap.put("M_CERTIF", rs.getString("M_CERTIF"));
 				showMap.put("T_LOC", rs.getString("T_LOC"));
 				showMap.put("T_NAME", rs.getString("T_NAME"));
 				showMap.put("S_DATE", rs.getString("S_DATE"));
@@ -292,6 +292,7 @@ public class MovieDao {
 		List<Map<String, Object>> movieList = md.refreshMovieAll(new Vector<>());
 		for(Map<String, Object> showtime : movieList) {
 			System.out.print(showtime.get("M_TITLE").toString()
+							+" "+showtime.get("M_CERTIF").toString()
 							+" "+showtime.get("T_LOC").toString()
 							+" "+showtime.get("T_NAME").toString()
 							+" "+showtime.get("S_DATE").toString()

@@ -10,6 +10,8 @@ public class MemberVO {
 	String mem_nickname = null;
 	String mem_birth    = null;
 	String mem_gender   = null;
+	String result		= null;
+	
 	public String getMem_name() {
 		return mem_name;
 	}
@@ -57,6 +59,12 @@ public class MemberVO {
 	}
 	public void setCommand(String command) {
 		this.command = command;
+	}
+	public String getResult() {
+		return result;
+	}
+	public void setResult(String result) {
+		this.result = result;
 	}
 	
 }

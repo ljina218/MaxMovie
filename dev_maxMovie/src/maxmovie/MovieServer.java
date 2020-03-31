@@ -26,6 +26,14 @@ public class MovieServer extends JFrame implements Runnable{
 	Socket socket = null;
 	
 	//오늘의 영화정보 list 선언부
+	/*
+	 * showMap.put("M_TITLE", rs.getString("M_TITLE"));
+		showMap.put("T_LOC", rs.getString("T_LOC"));
+		showMap.put("T_NAME", rs.getString("T_NAME"));
+		showMap.put("S_DATE", rs.getString("S_DATE"));
+		showMap.put("S_TIME", rs.getString("S_TIME"));
+		showMap.put("SC_NAME", rs.getString("SC_NAME"));
+	 */
 	List<Map<String, Object>> movieList = null;
 	
 	//MovieDao 생성부
@@ -80,20 +88,20 @@ public class MovieServer extends JFrame implements Runnable{
 	}
 	
 	//셋 타이머 메소드
-	public String setTimer(Calendar cal, String time) {
+	public String setTimer(Calendar cal, String format) {
 		if(cal==null) {
 			cal = Calendar.getInstance();
 		}
 		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.WEEK_OF_MONTH)-1;
+		int month = cal.get(Calendar.MONTH)+1;
 		int day = cal.get(Calendar.DAY_OF_MONTH);
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
 		int min = cal.get(Calendar.MINUTE);
 		int sec = cal.get(Calendar.SECOND);
-		if("시간".equals(time)) {//00:00:00
+		if("시간".equals(format)) {//00:00:00
 			return (hour<10? "0"+hour: ""+hour)+":"+(min<10? "0"+min: ""+min)+":"+(sec<10? "0"+sec: ""+sec);
 		}
-		else if("날짜".equals(time)) {//20200324
+		else if("날짜".equals(format)) {//20200324
 			return year+""+(month<10? "0"+month: ""+month)+""+(day<10? "0"+day: ""+day);
 		}else {//20200324 00:00:00
 			return year+""+(month<10? "0"+month: ""+month)+""+(day<10? "0"+day: ""+day)+"  "+

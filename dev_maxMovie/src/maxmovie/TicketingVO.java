@@ -4,34 +4,25 @@ package maxmovie;
  * @author kosmo_06
  ********************************************************************************/
 public class TicketingVO {
-	private String command      = null;
-	private String protocol     = null;
-	private int    ticketing_code = 0; 
-	private String mem_id         = null; 
-	private String movie_title  = null;
-	private String theater_name = null;
-	private String theater_loc  = null;
-	private String scr_name     = null;
-	private String show_date      = null; 
-	private String show_time      = null; 
-	private String pay_status     = null;
+	private String command      	= null;
+	private String mem_id 			= null;//아이디
+	private String movie_name		= null;//영화 이름
+	private String movie_age		= null;//영화 연령
+	private String loc 				= null;//지역
+	private String theater			= null;//지점
+	private String movie_screen		= null;//상영관
+	private String movie_date		= null;//날짜
+	private String movie_time 		= null;//시간
+	private String screen_seat		= null;//좌석
+	private String pay_status    	= null;//결제 상태 
+	private String result 		 	= null;
+	private int    ticketing_code = 0; //예매코드
+
 	public String getCommand() {
 		return command;
 	}
 	public void setCommand(String command) {
 		this.command = command;
-	}
-	public String getProtocol() {
-		return protocol;
-	}
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
-	}
-	public int getTicketing_code() {
-		return ticketing_code;
-	}
-	public void setTicketing_code(int ticketing_code) {
-		this.ticketing_code = ticketing_code;
 	}
 	public String getMem_id() {
 		return mem_id;
@@ -39,49 +30,75 @@ public class TicketingVO {
 	public void setMem_id(String mem_id) {
 		this.mem_id = mem_id;
 	}
-	public String getMovie_title() {
-		return movie_title;
+
+	public String getMovie_name() {
+		return movie_name;
+
 	}
-	public void setMovie_title(String movie_title) {
-		this.movie_title = movie_title;
+	public void setMovie_name(String movie_name) {
+		this.movie_name = movie_name;
 	}
-	public String getTheater_name() {
-		return theater_name;
+
+	public String getMovie_age() {
+		return movie_age;
 	}
-	public void setTheater_name(String theater_name) {
-		this.theater_name = theater_name;
+	public void setMovie_age(String movie_age) {
+		this.movie_age = movie_age;
 	}
-	public String getTheater_loc() {
-		return theater_loc;
+	public String getLoc() {
+		return loc;
 	}
-	public void setTheater_loc(String theater_loc) {
-		this.theater_loc = theater_loc;
+	public void setLoc(String loc) {
+		this.loc = loc;
 	}
-	public String getScr_name() {
-		return scr_name;
+	public String getTheater() {
+		return theater;
 	}
-	public void setScr_name(String scr_name) {
-		this.scr_name = scr_name;
+	public void setTheater(String theater) {
+		this.theater = theater;
 	}
-	public String getShow_date() {
-		return show_date;
+	public String getMovie_screen() {
+		return movie_screen;
 	}
-	public void setShow_date(String show_date) {
-		this.show_date = show_date;
+	public void setMovie_screen(String movie_screen) {
+		this.movie_screen = movie_screen;
 	}
-	public String getShow_time() {
-		return show_time;
+	public String getMovie_date() {
+		return movie_date;
 	}
-	public void setShow_time(String show_time) {
-		this.show_time = show_time;
+	public void setMovie_date(String movie_date) {
+		this.movie_date = movie_date;
+	}
+	public String getMovie_time() {
+		return movie_time;
+	}
+	public void setMovie_time(String movie_time) {
+		this.movie_time = movie_time;
+	}
+	public String getScreen_seat() {
+		return screen_seat;
+	}
+	public void setScreen_seat(String screen_seat) {
+		this.screen_seat = screen_seat;
 	}
 	public String getPay_status() {
 		return pay_status;
 	}
 	public void setPay_status(String pay_status) {
 		this.pay_status = pay_status;
-	} 
-	
+	}
+	public int getTicketing_code() {
+		return ticketing_code;
+	}
+	public void setTicketing_code(int ticketing_code) {
+		this.ticketing_code = ticketing_code;
+	}
+	public String getResult() {
+		return result;
+	}
+	public void setResult(String result) {
+		this.result = result;
+	}
 	
 	
 }

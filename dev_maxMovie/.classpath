@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+<<<<<<< HEAD
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/app/kosmo_06/product/11.1.0/db_1/jdbc/lib/ojdbc6.jar"/>
+=======
+	<classpathentry kind="lib" path="lib/javax.mail-1.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/ojdbc6.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+>>>>>>> refs/heads/master
 	<classpathentry kind="output" path="bin"/>
 </classpath>

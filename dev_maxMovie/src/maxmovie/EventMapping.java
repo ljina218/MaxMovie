@@ -5,11 +5,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.StringTokenizer;
+
 
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -17,11 +19,12 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+
 import com.sun.mail.iap.Protocol;
 
 public class EventMapping implements ActionListener, ItemListener, KeyListener{
+
 	
-	//진아수정
 	/* 뷰 패널들의 변수이름
 	//로그인뷰
 	JPanel 					jp_lv 			= new LoginView(this);
@@ -30,10 +33,20 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	//무비초이스뷰
 	JPanel 					jp_mcv 			= new MovieChoiceView(this);
 	//시트초이스뷰
-	JPanel 					jp_sc 			= new SeatChoiceView(this);
+	JPanel 					jp_scv 			= new SeatChoiceView(this);
 	//리절트뷰
 	JPanel 					jp_rv 			= new ResultView(this);
-	*/
+	 */
+	
+	/* 마이페이지 뷰의 변수 이름
+	 * MemInfoView miv = new MemInfoView();
+		MemUpdateView muv = new MemUpdateView();
+		TicketHistoryView thv = new TicketHistoryView();
+	 */
+	
+	//회원 아이디 및 닉네임
+	String myid = null;
+	String mynickname = null;
 	
 	//필요한 주소값 선언부
 	MaxMovieView mmv = null;
@@ -57,6 +70,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	String beforeEmail = null;
 	String afterEmail = null;
 	
+	//생성자
 	public EventMapping(MaxMovieView mmv) {
 		this.mmv = mmv;
 	}
@@ -72,12 +86,17 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	}
 	
 	//화면전환 할 때 사용하는 제어 메소드
-	public void display(boolean lv, boolean mv, boolean mcv, boolean sc, boolean rv) {
-		mmv.jp_lv.setVisible(lv);
-		mmv.jp_mv.setVisible(mv);
-		mmv.jp_mcv.setVisible(mcv);
-		mmv.jp_sc.setVisible(sc);
-		mmv.jp_rv.setVisible(rv);
+	public void display(boolean lv, boolean mv, 
+							boolean miv,boolean muv, boolean thv, 
+									boolean mcv, boolean sc, boolean rv) {
+		mmv.jp_lv.setVisible(lv);//로그인
+		mmv.jp_mv.setVisible(mv);//마이페이지-틀뷰
+		mmv.jp_mv.jp_miv.setVisible(miv);//마이페이지-비밀번호입력뷰
+		mmv.jp_mv.jp_muv.setVisible(muv);//마이페이지-회원정보수정뷰
+		mmv.jp_mv.jp_thv.setVisible(thv);//마이페이지-영화내역뷰
+		mmv.jp_mcv.setVisible(mcv);//영화선택뷰
+		mmv.jp_scv.setVisible(sc);//좌석선택뷰
+		mmv.jp_rv.setVisible(rv);//결제뷰
 	}
 	
 	/**************************************************************************************************
@@ -150,7 +169,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	}
 	
 	//비번 기준체크 메소드
-	public int checkPw(String inputpw, int s, int e) {
+	public int checkPw(String inputpw, int s, int e) {//비밀번호는 알아서 영문으로 입력됩니다
 		int sum =0;
 		if(s<=inputpw.length()&&inputpw.length()<=e) {//문자길이 맞니?
 			char[] names = inputpw.toCharArray();//스트링을 쪼개서
@@ -206,11 +225,102 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 		}
 	}
 	
+	//이메일 기준 체크 메소드
+	/*
+	 * 로컬부분:대문자A~Z,소문자a~z,숫자0~9,특수문자!#$%&'*+-/=?^_{|}~,(.은사용가능하나첫번째, 마지막아니어야됨) 
+	 도메인부분 : 대문자 A~Z, 소문자 a~z, 숫자 0~9, 하이픈-(첫번째 또는 마지막 아니어야됨)
+	 정의) 로컬부분 + @ + 도메인부분 (상세하게 하면 매우다르지만 일반적으로 이정도) 
+	 */
+	public static int checkEmail(String inputemail) {
+		String local = null;
+		String domain = null;
+		StringTokenizer st = null;
+		int sum = 0;
+		int sum2 = 0;
+		if(inputemail.length()==0) {//이메일을 적지 않았다면,
+			sum = 1;
+			sum2 = 1;
+		}else {//이메일을 적었다면,
+			//먼저 @ 갯수를 확인할게
+			char[] emails = inputemail.toCharArray();
+			int [] check = new int[inputemail.length()];
+			int checking = 0;
+			for(int i =0; i<inputemail.length(); i++) {
+				int email = emails[i];
+				if(email==64) {
+					checking+= 1;
+				}
+			}
+			if(checking>1) {//@가 여러개니?
+				sum = 1;
+				sum2 = 1;
+			}else {//@가 하나니?
+				st = new StringTokenizer(inputemail,"@");//그럼 이제 로컬과 도메인 검사 할게
+				local = st.nextToken();
+				if(st.hasMoreTokens()) {//@가 있다면,
+					domain = st.nextToken();
+					if(domain!=null) {
+						//로컬 검사
+						char[] locals = local.toCharArray();
+						int [] result = new int[local.length()];
+						if(locals[0]==46||locals[local.length()-1]==46) {//.이 첫번째 혹은 마지막이니?
+							sum = local.length();
+						}else {//아니라면 다음 기준 간다
+							for(int i=0; i<local.length(); i++) {
+								int loc = (int)locals[i];
+								if(33<=loc&&loc<=126){//영문, 숫자, 특수문자 니?
+									if(loc==34||loc==40||loc==41||
+											loc==44||loc==46||loc==58||loc==59||
+											loc==60||loc==62||loc==64||(91<=loc&&loc<=96)) {
+										result[i] = 1;//문제군
+									}else {//특수문자 !#$%&'*+-/=?^_{|}~. 니?
+										result[i] = 0;//좋아
+									}
+								}else {//아니니?
+									result[i] = 1;//문제군
+								}
+							}
+							for(int a:result) {
+								sum+= a;
+							}
+						}
+						//도메인 검사
+						char[] domains = domain.toCharArray();
+						int [] result2 = new int[domain.length()];
+						if(domains[0]==45||domains[domain.length()-1]==45) {//-이 첫번째 혹은 마지막이니?
+							sum2 = domain.length();
+						}else {//아니라면 다음 기준 간다
+							for(int i=0; i<domain.length(); i++) {
+								int dom = (int)domains[i];
+								if((48<=dom&&dom<=57)||(65<=dom&&dom<=90)||(97<=dom&&dom<=122)||dom==45||dom==46) {//영문, 숫자, -니?
+									result2[i] = 0;//좋아
+								}else {//아니니?
+									result2[i] = 1;//문제군
+								}
+							}
+							for(int a:result2) {
+								sum2+= a;
+							}
+						}
+					}else {//domain==null 이라면,
+						sum = local.length();
+						sum2 = 1;
+					}
+				}else {//@이 하나도 없니?
+					sum = local.length();
+					sum2 = 1;
+				}
+			}
+		}
+		return sum+sum2;
+	}
+	
 	/**************************************************************************************************
 	 * ActionListener(로그인,회원가입,회원가입-이메일)
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+
 		Object obj = e.getSource();
 		//로그인 -----------------------------------------------------------------------------------------
 		if(obj==mmv.jp_lv.jbt_login) {//로그인이 하고 싶어요
@@ -249,8 +359,9 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				//서버스레드로 메세지 전송
 				String msg = MovieProtocol.JOIN+"#"+name+"#"+id+"#"+pw+"#"+email+"#"+nickName+"#"+birth+"#"+gender;
 				send(msg);//db에 넣어주세요
+				System.out.println(msg);
 				jv.dispose();//가입화면 닫고
-				display(false, true, false, false, false);//영화 예매화면으로 가자~
+				display(false, false, false, false, false, true, false, false);//영화 예매화면으로 가자~
 			}else {
 				JOptionPane.showMessageDialog(jv, "입력한 정보가 부적합합니다. 다시 확인해주세요.");
 			}
@@ -307,7 +418,9 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				jv.jl_email_r_warning.setVisible(false);
 				jv.jl_email_r_warning2.setVisible(false);
 				jv.jl_email_r_success.setVisible(false);
-				if(inputemail.length()==0) {//이메일형식이 안맞다면========================================
+				//기준 검사를 먼저 할게
+				int result = checkEmail(inputemail);
+				if(result>0) {//이메일 형식에 안맞다면
 					jv.jl_email_warning.setVisible(true);
 					email = 0;
 				}else {//이메일형식이 맞다면
@@ -525,6 +638,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 
 	@Override
 	public void keyTyped(KeyEvent e) {
+
 		// TODO Auto-generated method stub
 		
 	}
