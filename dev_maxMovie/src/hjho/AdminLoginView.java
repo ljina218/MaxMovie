@@ -35,6 +35,7 @@ public class AdminLoginView extends JFrame implements ActionListener{
 		}
 	};	
 	String nickName = null; //닉네임 등록
+	String id = null;
 	Admin_Dao aDao = new Admin_Dao();
 	Dimension 		res 			= Toolkit.getDefaultToolkit().getScreenSize();
 	JPanel			jp 					= new JPanel();
@@ -153,6 +154,7 @@ public class AdminLoginView extends JFrame implements ActionListener{
 				}
 				else {
 					nickName = admin_name;
+					id = admin_id;
 					this.setVisible(false); //로그인 화면은 비 활성화
 					jtf_id.setText(""); 	//입력한 아이디 초기화
 					jpf_pw.setText("");		//입력한 비번도 초기화
