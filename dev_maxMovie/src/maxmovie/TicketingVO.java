@@ -6,28 +6,24 @@ package maxmovie;
  *
  */
 public class TicketingVO {
-	String command      = null;
-	String protocol     = null;
-	String mem_id         = null; 
-	int    scr_code       = 0; 
-	int    theater_code   = 0; 
-	int    movie_code     = 0; 
-	String show_date      = null; 
-	String show_time      = null; 
-	int    ticketing_code = 0; 
-	String pay_status     = null; 
-	String seat_code      = null;
+	String command      	= null;
+	String mem_id 			= null;//아이디
+	String movie_name		= null;//영화 이름
+	String movie_age		= null;//영화 연령
+	String loc 				= null;//지역
+	String theater			= null;//지점
+	String movie_screen		= null;//상영관
+	String movie_date		= null;//날짜
+	String movie_time 		= null;//시간
+	String screen_seat		= null;//좌석
+	String pay_status    	= null;//결제 상태 
+	String ticketting_code	= null;//예매코드
+	String result 		 	= null;
 	public String getCommand() {
 		return command;
 	}
 	public void setCommand(String command) {
 		this.command = command;
-	}
-	public String getProtocol() {
-		return protocol;
-	}
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
 	}
 	public String getMem_id() {
 		return mem_id;
@@ -35,41 +31,53 @@ public class TicketingVO {
 	public void setMem_id(String mem_id) {
 		this.mem_id = mem_id;
 	}
-	public int getScr_code() {
-		return scr_code;
+	public String getMovie_name() {
+		return movie_name;
 	}
-	public void setScr_code(int scr_code) {
-		this.scr_code = scr_code;
+	public void setMovie_name(String movie_name) {
+		this.movie_name = movie_name;
 	}
-	public int getTheater_code() {
-		return theater_code;
+	public String getMovie_age() {
+		return movie_age;
 	}
-	public void setTheater_code(int theater_code) {
-		this.theater_code = theater_code;
+	public void setMovie_age(String movie_age) {
+		this.movie_age = movie_age;
 	}
-	public int getMovie_code() {
-		return movie_code;
+	public String getLoc() {
+		return loc;
 	}
-	public void setMovie_code(int movie_code) {
-		this.movie_code = movie_code;
+	public void setLoc(String loc) {
+		this.loc = loc;
 	}
-	public String getShow_date() {
-		return show_date;
+	public String getTheater() {
+		return theater;
 	}
-	public void setShow_date(String show_date) {
-		this.show_date = show_date;
+	public void setTheater(String theater) {
+		this.theater = theater;
 	}
-	public String getShow_time() {
-		return show_time;
+	public String getMovie_screen() {
+		return movie_screen;
 	}
-	public void setShow_time(String show_time) {
-		this.show_time = show_time;
+	public void setMovie_screen(String movie_screen) {
+		this.movie_screen = movie_screen;
 	}
-	public int getTicketing_code() {
-		return ticketing_code;
+	public String getMovie_date() {
+		return movie_date;
 	}
-	public void setTicketing_code(int ticketing_code) {
-		this.ticketing_code = ticketing_code;
+	public void setMovie_date(String movie_date) {
+		this.movie_date = movie_date;
+	}
+	public String getMovie_time() {
+		return movie_time;
+	}
+	public void setMovie_time(String movie_time) {
+		this.movie_time = movie_time;
+	}
+	public String getScreen_seat() {
+		return screen_seat;
+	}
+	public void setScreen_seat(String screen_seat) {
+		this.screen_seat = screen_seat;
 	}
 	public String getPay_status() {
 		return pay_status;
@@ -77,10 +85,18 @@ public class TicketingVO {
 	public void setPay_status(String pay_status) {
 		this.pay_status = pay_status;
 	}
-	public String getSeat_code() {
-		return seat_code;
+	public String getTicketting_code() {
+		return ticketting_code;
 	}
-	public void setSeat_code(String seat_code) {
-		this.seat_code = seat_code;
+	public void setTicketting_code(String ticketting_code) {
+		this.ticketting_code = ticketting_code;
 	}
+	public String getResult() {
+		return result;
+	}
+	public void setResult(String result) {
+		this.result = result;
+	}
+	
+	
 }

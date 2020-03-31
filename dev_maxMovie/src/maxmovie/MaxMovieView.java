@@ -18,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 
-//진아수정
 public class MaxMovieView extends JFrame{
 	//로고들에 사용한 폰트    : Futura XBlk BT
 	//텍스트들에 사용한 폰트 : 굴림체
@@ -59,7 +58,7 @@ public class MaxMovieView extends JFrame{
 	//무비초이스뷰
 	MovieChoiceView 			jp_mcv 			= new MovieChoiceView(em);
 	//시트초이스뷰
-	SeatChoiceView 				jp_sc 			= new SeatChoiceView(em);
+	SeatChoiceView 				jp_scv 			= new SeatChoiceView(em);
 	//리절트뷰
 	ResultView 					jp_rv 			= new ResultView(em);
 
@@ -72,7 +71,7 @@ public class MaxMovieView extends JFrame{
 	private void initDisplay(){
 		this.add("Center", jp_mv);
 		this.add("Center", jp_mcv);
-		this.add("Center", jp_sc);
+		this.add("Center", jp_scv);
 		this.add("Center", jp_rv);
 		this.add("North", jp_north);
 		this.add("South", jp_south);
@@ -110,7 +109,7 @@ public class MaxMovieView extends JFrame{
 		jp_lv.setVisible(true);
 		jp_mv.setVisible(false);
 		jp_mcv.setVisible(false);
-		jp_sc.setVisible(false);
+		jp_scv.setVisible(false);
 		jp_rv.setVisible(false);
 
 		/***********************************************

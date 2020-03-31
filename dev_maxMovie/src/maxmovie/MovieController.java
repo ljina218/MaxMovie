@@ -7,9 +7,10 @@ import java.util.Map;
 public class MovieController {
 	MovieDao dao = new MovieDao();
 	final String SELECT_LOGIN = "로그인";
+	final String CHECK_ID = "아이디증복";
 	final String INSERT_JOIN = "회원가입";
-	final String UPDATE = "회원정보";
-	final String SELECT_MY = "회원정보수정";
+	final String UPDATE = "회원정보수정";
+	final String SELECT_MY = "회원정보";
 	final String SELECT_TICKET = "예매내역";
 	final String SELECT_MOVIE = "영화선택";
 	final String SELECT_SCR = "극장선택";
@@ -25,9 +26,9 @@ public class MovieController {
 		return rMap;
 	}
 	
-	public List<Map<String, Object>> sendAll(String date) {//서버 켰을 때
+	public List<Map<String, Object>> sendAll(List<Map<String, Object>> p_movieList) {//서버 켰을 때
 		List<Map<String, Object>> rList = null;
-		rList = dao.refreshMovieAll(date);
+		rList = dao.refreshMovieAll(p_movieList);
 		return rList;
 	}
 	
