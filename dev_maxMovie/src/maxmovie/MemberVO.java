@@ -10,7 +10,6 @@ public class MemberVO {
 	String mem_nickname = null;
 	String mem_birth    = null;
 	String mem_gender   = null;
-	String result		= null;
 	
 	public String getMem_name() {
 		return mem_name;

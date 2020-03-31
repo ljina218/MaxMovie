@@ -30,15 +30,12 @@ public class TicketingVO {
 	public void setMem_id(String mem_id) {
 		this.mem_id = mem_id;
 	}
-
 	public String getMovie_name() {
 		return movie_name;
-
 	}
 	public void setMovie_name(String movie_name) {
 		this.movie_name = movie_name;
 	}
-
 	public String getMovie_age() {
 		return movie_age;
 	}
