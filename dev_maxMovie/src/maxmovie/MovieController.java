@@ -39,7 +39,9 @@ public class MovieController {
 		else if(INSERT_JOIN.equals(command)) { //회원가입
 			rmVO.result = dao.insertUser(pmVO);
 		}
-		else if(UPDATE.equals(command)) { //회원정보수정
+		else if(UPDATE.equals(command)) {
+			
+			//회원정보수정
 			rmVO.result = dao.insertUser(pmVO);
 		}
 		else if(UPDATE.equals(command)) { //회원정보(조회)
