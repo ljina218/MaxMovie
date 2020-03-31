@@ -20,7 +20,7 @@ public class MovieController {
 	final String MOVIE_REFRESH = "새로고침";
 	
 
-	public Map<String, Object> send(TheaterVO pVO) {
+	public Map<String, Object> send(TicketingVO pVO) {
 		Map<String, Object> rMap = new HashMap<String, Object>();
 		
 		return rMap;
@@ -32,10 +32,5 @@ public class MovieController {
 		return rList;
 	}
 	
-	public List<Map<String, Object>> sendDate(String date) {//오늘이 지났을 때
-		List<Map<String, Object>> rList = null;
-		rList = dao.refreshMovieDate(date);
-		return rList;
-	}
 	
 }
