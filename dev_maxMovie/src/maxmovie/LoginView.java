@@ -114,6 +114,13 @@ public class LoginView extends JPanel{
 	}
 	
 	public static void main(String[] args) {
-		new LoginView();
+		MaxMovieView mmv = new MaxMovieView();
+		mmv.jl_logo_small.setVisible(true);
+		mmv.jp_lv.setVisible(true);
+		mmv.jp_mv.setVisible(false);
+		mmv.jp_mcv.setVisible(false);
+		mmv.jp_scv.setVisible(false);
+		mmv.jp_rv.setVisible(false);
+		new LoginView(mmv.em);
 	}
 }

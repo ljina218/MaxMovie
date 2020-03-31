@@ -23,6 +23,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 public class JoinView extends JDialog {
+
 	
 	Calendar 			today 					= Calendar.getInstance();
 	int 				year 					= today.get(Calendar.YEAR);
@@ -69,25 +70,26 @@ public class JoinView extends JDialog {
 	JButton				jbt_email_r				= new JButton("인증번호 확인");	
 	JButton				jbt_back				= new JButton("뒤로가기");
 	JButton				jbt_joingo				= new JButton("회원가입");
-	JLabel              jl_id_warning			= new JLabel();
-	JLabel              jl_id_warning2			= new JLabel();
-	JLabel              jl_id_success			= new JLabel();
-	JLabel              jl_pw_warning  	   		= new JLabel();
-	JLabel              jl_name_warning	    	= new JLabel();
-	JLabel              jl_nick_warning	    	= new JLabel();
-	JLabel              jl_year_warning	    	= new JLabel();
-	JLabel              jl_month_warning	    = new JLabel();
-	JLabel              jl_day_warning	    	= new JLabel();
-	JLabel              jl_gender_warning 		= new JLabel();
-	JLabel              jl_email_warning   		= new JLabel();
-	JLabel              jl_email_warning2  		= new JLabel();
-	JLabel              jl_email_r_success  	= new JLabel();
-	JLabel              jl_email_r_warning  	= new JLabel();
-	JLabel              jl_email_r_warning2  	= new JLabel();
+	JLabel              jl_id_warning			= new JLabel(" 동일한 아이디가 존재합니다.");
+	JLabel              jl_id_warning2			= new JLabel(" 7~12자이어야 하고 영문 및 숫자만 입력할 수 있습니다.");
+	JLabel              jl_id_success			= new JLabel(" 사용 가능한 아이디입니다.");
+	JLabel              jl_pw_warning  	   		= new JLabel(" 7~12자이어야 하고 공백은 불가합니다.");
+	JLabel              jl_name_warning	    	= new JLabel(" 3~15자이어야 하고 특수문자는 사용할 수 없습니다");
+	JLabel              jl_nick_warning	    	= new JLabel(" 2~8자이이어야 하고 특수문자는 사용할 수 없습니다.");
+	JLabel              jl_year_warning	    	= new JLabel(" 생년을 선택하여주세요");
+	JLabel              jl_month_warning	    = new JLabel(" 생월을 선택하여주세요");
+	JLabel              jl_day_warning	    	= new JLabel(" 생일을 선택하여주세요");
+	JLabel              jl_gender_warning 		= new JLabel(" 성별을 선택해주세요.");
+	JLabel              jl_email_warning   		= new JLabel(" 이메일주소 형식에 맞지 않습니다.");
+	JLabel              jl_email_warning2  		= new JLabel(" 인증번호 입력시간은 2분입니다.");
+	JLabel              jl_email_r_success  	= new JLabel(" 인증성공");
+	JLabel              jl_email_r_warning  	= new JLabel(" 인증번호가 일치하지 않습니다.");
+	JLabel              jl_email_r_warning2  	= new JLabel(" 입력시간이 초과했습니다.");
 	String				jcb_yearChoice			= null;
 	String				jcb_monthChoice			= null;
 	String				jcb_dayChoice			= null;
 	EventMapping 		em 						= null;
+
 	
 	public JoinView(EventMapping em) {
 		this.em = em;
@@ -110,8 +112,10 @@ public class JoinView extends JDialog {
 	}
 	
 	public void initDisplay(){
+
 		this.setLayout(null);
 		this.getContentPane().setBackground(Color.white);
+
 		jtf_id.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
 		jpf_pw.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
 		jtf_name.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
@@ -123,16 +127,17 @@ public class JoinView extends JDialog {
 		jtf_email.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
 		jtf_email_r.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
 		
+
 		jl_id.setHorizontalAlignment(JLabel.RIGHT);
-		jl_pw.setHorizontalAlignment(JLabel.RIGHT); 		
+		jl_pw.setHorizontalAlignment(JLabel.RIGHT);
 		jl_name.setHorizontalAlignment(JLabel.RIGHT);
 		jl_nick.setHorizontalAlignment(JLabel.RIGHT);
 		jl_year.setHorizontalAlignment(JLabel.RIGHT);
 		jl_gender.setHorizontalAlignment(JLabel.RIGHT);
 		jl_email.setHorizontalAlignment(JLabel.RIGHT);
 		jl_email_r.setHorizontalAlignment(JLabel.RIGHT);
-		
-		jl_logo_m.setBounds(150,50,300,140);
+
+		jl_logo_m.setBounds(150, 50, 300, 140);
 		jl_id.setBounds(80, 196, 70, 32);
 		jl_pw.setBounds(80, 254, 70, 32);
 		jl_name.setBounds(80, 312, 70, 32);
@@ -141,6 +146,7 @@ public class JoinView extends JDialog {
 		jl_gender.setBounds(80, 486, 70, 32);
 		jl_email.setBounds(80, 544, 70, 32);
 		jl_email_r.setBounds(80, 602, 70, 32);
+
 		jtf_id.setBounds(150, 196 ,182 ,32);
 		jpf_pw.setBounds(150, 254 ,300 ,32);
 		jtf_name.setBounds(150, 312 ,300 ,32);
@@ -151,8 +157,10 @@ public class JoinView extends JDialog {
 		jcb_gender.setBounds(150, 486 ,300 ,32);
 		jtf_email.setBounds(150, 544 ,182 ,32);
 		jtf_email_r.setBounds(150, 602 ,182 ,32);
+
 		jbt_back.setBounds(150, 660, 148, 32);
 		jbt_joingo.setBounds(300, 660, 148, 32);
+
 		jbt_id_check.setBounds(334, 196 ,115 ,32);
 		jbt_email.setBounds(334, 544 ,115,32);
 		jbt_email_r.setBounds(334, 602 ,115 ,32);
@@ -173,7 +181,9 @@ public class JoinView extends JDialog {
 		jl_email_r_warning2.setBounds(154, 634 ,300 ,18);
 		
 		jl_id_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
+
 		jl_id_warning.setForeground(Color.red);
+
 		jl_id_warning2.setFont(new Font("굴림체", Font.PLAIN, 11));	
 		jl_id_warning2.setForeground(Color.red);
 		jl_id_success.setFont(new Font("굴림체", Font.PLAIN, 11));	
@@ -181,22 +191,25 @@ public class JoinView extends JDialog {
 		jl_pw_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
 		jl_pw_warning.setForeground(Color.red);    
 		jl_name_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
+
 		jl_name_warning.setForeground(Color.red);
-		jl_nick_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
+		jl_nick_warning.setFont(new Font("굴림체", Font.PLAIN, 11));
 		jl_nick_warning.setForeground(Color.red);
-		jl_year_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
+		jl_year_warning.setFont(new Font("굴림체", Font.PLAIN, 11));
 		jl_year_warning.setForeground(Color.red);
-		jl_month_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
+		jl_month_warning.setFont(new Font("굴림체", Font.PLAIN, 11));
 		jl_month_warning.setForeground(Color.red);
-		jl_day_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
+		jl_day_warning.setFont(new Font("굴림체", Font.PLAIN, 11));
 		jl_day_warning.setForeground(Color.red);
-		jl_gender_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
+		jl_gender_warning.setFont(new Font("굴림체", Font.PLAIN, 11));
 		jl_gender_warning.setForeground(Color.red);
-		jl_email_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
+		jl_email_warning.setFont(new Font("굴림체", Font.PLAIN, 11));
 		jl_email_warning.setForeground(Color.red);
+
 		jl_email_warning2.setFont(new Font("굴림체", Font.PLAIN, 11));	
 		jl_email_warning2.setForeground(Color.red);
 		jl_email_r_warning.setFont(new Font("굴림체", Font.PLAIN, 11));	
+
 		jl_email_r_warning.setForeground(Color.red);
 		jl_email_r_warning2.setFont(new Font("굴림체", Font.PLAIN, 11));	
 		jl_email_r_warning2.setForeground(Color.red);
@@ -209,13 +222,13 @@ public class JoinView extends JDialog {
 		jbt_email_r.setBackground(new Color(52, 152, 219));
 		jbt_email_r.setForeground(Color.white);
 		jbt_back.setBackground(new Color(52, 152, 219));
-		jbt_back.setForeground(Color.white);		
+		jbt_back.setForeground(Color.white);
 		jbt_joingo.setBackground(new Color(52, 152, 219));
 		jbt_joingo.setForeground(Color.white);
-		
+
 		this.add(jl_logo_m);
 		this.add(jl_id);
-		this.add(jbt_id_check);	
+		this.add(jbt_id_check);
 		this.add(jl_pw);
 		this.add(jl_nick);
 		this.add(jl_name);
@@ -255,7 +268,7 @@ public class JoinView extends JDialog {
 		this.setSize(600, 800);
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
-		
+
 		jl_id_warning.setVisible(false);
 		jl_id_warning2.setVisible(false);
 		jl_id_success.setVisible(false);
@@ -272,21 +285,6 @@ public class JoinView extends JDialog {
 		jl_email_r_warning.setVisible(false);
 		jl_email_r_warning2.setVisible(false);
 		
-		jl_id_warning.setText(" 동일한 아이디가 존재합니다.");
-		jl_id_success.setText(" 사용 가능한 아이디입니다.");
-		jl_id_warning2.setText(" 7~12자이어야 하고 영문 및 숫자만 입력할 수 있습니다.");
-		jl_pw_warning.setText(" 7~12자이어야 하고 공백은 불가합니다.");
-		jl_name_warning.setText(" 3~15자이어야 하고 특수문자는 사용할 수 없습니다");
-		jl_nick_warning.setText(" 2~8자이이어야 하고 특수문자는 사용할 수 없습니다.");
-		jl_year_warning.setText(" 생년을 선택하여주세요");
-		jl_month_warning.setText(" 생월을 선택하여주세요");
-		jl_day_warning.setText(" 생일을 선택하여주세요");
-		jl_gender_warning.setText(" 성별을 선택해주세요.");
-		jl_email_warning.setText(" 이메일주소 형식에 맞지 않습니다.");
-		jl_email_warning2.setText(" 인증번호 입력시간은 2분입니다.");
-		jl_email_r_success.setText(" 인증성공");
-		jl_email_r_warning.setText(" 인증번호가 일치하지 않습니다.");
-		jl_email_r_warning2.setText(" 입력시간이 초과했습니다.");
 /*********************************************************************
  * 		● #join10		jl_id_warning.setVisible(false);
  * 		● #join11		jl_id_warning.setVisible(true);
@@ -321,6 +319,7 @@ public class JoinView extends JDialog {
  *  	○ #join36		jl_email_r_warning.setVisible(true);
  *********************************************************************/
 	}
+
 	
 	public void eventMapping() {
 		jbt_id_check.addActionListener(em);
@@ -337,5 +336,5 @@ public class JoinView extends JDialog {
 		jbt_back.addActionListener(em);
 		jbt_joingo.addActionListener(em);
 	}
-	
+
 }

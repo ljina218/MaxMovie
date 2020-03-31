@@ -5,11 +5,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.StringTokenizer;
+
 
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -17,9 +19,11 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+
 import com.sun.mail.iap.Protocol;
 
 public class EventMapping implements ActionListener, ItemListener, KeyListener{
+
 	
 	/* 뷰 패널들의 변수이름
 	//로그인뷰
@@ -29,7 +33,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	//무비초이스뷰
 	JPanel 					jp_mcv 			= new MovieChoiceView(this);
 	//시트초이스뷰
-	JPanel 					jp_sc 			= new SeatChoiceView(this);
+	JPanel 					jp_scv 			= new SeatChoiceView(this);
 	//리절트뷰
 	JPanel 					jp_rv 			= new ResultView(this);
 	 */
@@ -87,9 +91,9 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 									boolean mcv, boolean sc, boolean rv) {
 		mmv.jp_lv.setVisible(lv);//로그인
 		mmv.jp_mv.setVisible(mv);//마이페이지-틀뷰
-		mmv.jp_mv.miv.setVisible(miv);//마이페이지-비밀번호입력뷰
-		mmv.jp_mv.muv.setVisible(muv);//마이페이지-회원정보수정뷰
-		mmv.jp_mv.thv.setVisible(thv);//마이페이지-영화내역뷰
+		mmv.jp_mv.jp_miv.setVisible(miv);//마이페이지-비밀번호입력뷰
+		mmv.jp_mv.jp_muv.setVisible(muv);//마이페이지-회원정보수정뷰
+		mmv.jp_mv.jp_thv.setVisible(thv);//마이페이지-영화내역뷰
 		mmv.jp_mcv.setVisible(mcv);//영화선택뷰
 		mmv.jp_scv.setVisible(sc);//좌석선택뷰
 		mmv.jp_rv.setVisible(rv);//결제뷰
@@ -316,6 +320,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+
 		Object obj = e.getSource();
 		//로그인 -----------------------------------------------------------------------------------------
 		if(obj==mmv.jp_lv.jbt_login) {//로그인이 하고 싶어요
@@ -633,6 +638,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 
 	@Override
 	public void keyTyped(KeyEvent e) {
+
 		// TODO Auto-generated method stub
 		
 	}

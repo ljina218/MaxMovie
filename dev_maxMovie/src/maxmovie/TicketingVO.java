@@ -4,7 +4,7 @@ package maxmovie;
  * 
  * @author kosmo_06
  *
- */
+ ********************************************************************************/
 public class TicketingVO {
 	String command      	= null;
 	String mem_id 			= null;//아이디
