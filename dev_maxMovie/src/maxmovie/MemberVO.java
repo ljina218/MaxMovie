@@ -2,6 +2,7 @@ package maxmovie;
 
 public class MemberVO {
 	String command	    = null;
+	String result		= null;
 	String mem_name     = null;
 	String mem_id       = null;
 	String mem_pw       = null;
