@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Calendar;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -44,6 +45,8 @@ public class AdminClient extends JFrame implements ActionListener{
 	DefaultTableModel dtm_movie = new DefaultTableModel(data, cols);
 	JTable jtb_movie = new JTable(dtm_movie); 
 	JScrollPane jsp_movie  = new JScrollPane(jtb_movie);
+
+	AdminDialog ad = new AdminDialog(this);
 /******************************************************************************************************
  * 생성자 : 로그인하고 받은 이름 지역 지점 초기화, 화면 initDisplay()호출 및 서버접속을 위한 함수 init()호출
  * @param alv
@@ -54,6 +57,7 @@ public class AdminClient extends JFrame implements ActionListener{
 		this.id = alv.id;
 		this.theatername = alv.aDao.admin_t_name;
 		this.theaterloc = alv.aDao.admin_t_loc;
+		
 		//JOptionPane.showMessageDialog(this, name);
 		initDisplay();
 		jbtn_sel.addActionListener(this);
@@ -139,8 +143,7 @@ public class AdminClient extends JFrame implements ActionListener{
 		else if(obj == jbtn_ins) {
 			JOptionPane.showMessageDialog(this, "INS호출");
 			try {
-				oos.writeObject(400);
-				
+				ad.initDisplay();
 				
 			} catch (Exception ec) {
 				ec.printStackTrace();
@@ -171,4 +174,23 @@ public class AdminClient extends JFrame implements ActionListener{
 		}
 		
 	}
+	public String setYMD() {
+		Calendar cal = Calendar.getInstance();
+		int yyyy = cal.get(Calendar.YEAR);
+		int mm = cal.get(Calendar.MONTH)+1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		
+		return yyyy+"년"+
+				(mm < 10 ? "0"+mm:""+mm)+"월"+
+				(day < 10 ? "0"+day:""+day)+"일";
+	}//end of setTimer
+	
+	public String setHMS() {
+		Calendar cal = Calendar.getInstance();
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int min = cal.get(Calendar.MINUTE);
+		
+		return (hour < 10 ? "0"+hour:""+hour)+"시"+
+			   (min < 10 ? "0"+min:""+min)+"분";
+	}//end of setTimer
 }
