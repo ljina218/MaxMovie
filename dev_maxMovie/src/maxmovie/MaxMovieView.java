@@ -49,9 +49,7 @@ public class MaxMovieView extends JFrame{
 	String						mem_id				= "";
 	String						mem_nick			= "";
 	String						mem_name			= "";
-	String 						mem_year 			= "";	
-	String 						mem_month 			= "";
-	String 						mem_day				= "";
+	String 						mem_birth			= "";
 	String 						mem_gender 			= "";
 	
 	JLabel						jl_nickInfo			=	new JLabel();
@@ -110,9 +108,7 @@ public class MaxMovieView extends JFrame{
 		mem_id = "cloudsky7";	
 		mem_nick = "kong";
 		mem_name = "박미경";
-		mem_year = "2019";	
-		mem_month = "12";
-		mem_day	= "31";	
+		mem_birth ="19960218";
 		mem_gender = "남자";	
 				
 		jl_nickInfo.setText(mem_nick);
@@ -220,10 +216,10 @@ public class MaxMovieView extends JFrame{
 		this.add("North", jp_north);
 		this.add("South", jp_south);
 		this.add("Center", jp_rv);
-		this.add("Center", jp_lv);
 		this.add("Center", jp_mv);
 		this.add("Center", jp_mcv);
 		this.add("Center", jp_scv);
+		this.add("Center", jp_lv);
 		this.add("West", jp_west);
 		this.add("East", jp_east);
 		this.setSize(res.width, res.height);
@@ -232,14 +228,16 @@ public class MaxMovieView extends JFrame{
 
 		
 		
-		jp_lv.setVisible(false);
+		jp_lv.setVisible(true);
 		jp_mv.setVisible(false);
-		jp_mcv.setVisible(true);
+		jp_mcv.setVisible(false);
 		jp_scv.setVisible(false);
 		jp_rv.setVisible(false);
 	}
 	public void eventMapping() {
-		//.addActionlistener(em);
+		jbt_logout.addActionListener(em);			
+		jbt_myPage.addActionListener(em);				
+		jbt_ticketing.addActionListener(em);	
 	}
 	public static void main(String[] args) {
 		new MaxMovieView();

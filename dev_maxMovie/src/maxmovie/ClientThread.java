@@ -4,13 +4,6 @@ import java.util.StringTokenizer;
 
 public class ClientThread extends Thread{
 	
-	/*to 미경언니
-		언니, 
-		로그인 성공시 넘어오는 아이디와 닉네임을 
-		mmv.em으로 접근해서 EventMapping 클래스 전변에 있는 
-		myid, mynickname에 저장해주세여~~
-	* dear 진아
-	*/
 	MaxMovieView mmv = null;
 	
 	boolean stop = false;
@@ -18,6 +11,21 @@ public class ClientThread extends Thread{
 	public ClientThread(MaxMovieView mmv) {
 		this.mmv = mmv;
 	}
+	
+	//화면전환 할 때 사용하는 제어 메소드
+	public void display(boolean lv, boolean mv, 
+							boolean miv,boolean muv, boolean thv, 
+									boolean mcv, boolean sc, boolean rv) {
+		mmv.jp_lv.setVisible(lv);//로그인
+		mmv.jp_mv.setVisible(mv);//마이페이지-틀뷰
+		mmv.jp_mv.jp_miv.setVisible(miv);//마이페이지-비밀번호입력뷰
+		mmv.jp_mv.jp_muv.setVisible(muv);//마이페이지-회원정보수정뷰
+		mmv.jp_mv.jp_thv.setVisible(thv);//마이페이지-영화내역뷰
+		mmv.jp_mcv.setVisible(mcv);//영화선택뷰
+		mmv.jp_scv.setVisible(sc);//좌석선택뷰
+		mmv.jp_rv.setVisible(rv);//결제뷰
+	}
+		
 	
 	//서버로부터 메세지를 듣고 뷰에 변화를 주는 메소드
 	@Override
@@ -40,7 +48,15 @@ public class ClientThread extends Thread{
 					
 				}
 				case MovieProtocol.CHECK_ID:{//회원가입-아이디 중복확인
-					
+					/*서버가 트이면~~~~~
+					if() {//사용가능한 아이디라면
+						mmv.jv.jl_id_success.setVisible(true);
+						mmv.em.id =1;
+					}else if(){//중복되었다면
+						mmv.jv.jl_id_warning.setVisible(true);
+						mmv.em.id=0;
+					}
+					*/
 				}
 				case MovieProtocol.MY_MOVIE:{//회원 예매내역 조회
 					//영화이름, 지역, 지점, 상영날짜 시간, 상영관, 좌석, 예매번호

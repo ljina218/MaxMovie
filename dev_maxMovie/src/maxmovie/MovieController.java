@@ -10,8 +10,8 @@ public class MovieController {
 	final String CHECK_ID = "중복검사";
 	final String INSERT_JOIN = "회원가입";
 	final String UPDATE = "회원정보수정";
-	final String SELECT_MY = "회원정보"; //회원정보조회
-	final String SELECT_TICKET = "예매내역"; //예매내역조회
+	final String SELECT_MY = "회원정보";//회원정보조회
+	final String SELECT_TICKET = "예매내역";//예매내역조회
 	final String SELECT_MOVIE = "영화선택";
 	final String SELECT_SCR = "극장선택";
 	final String SELECT_DATE = "날짜선택";
@@ -25,6 +25,7 @@ public class MovieController {
 	 * @return SELECT_LOGIN => 사용자 닉네임 OR "-1" OR "2" 반환
 	 * 			CHECK_ID 	=> 메세지 반환
 	 ***********************************************************************/
+	
 	public MemberVO control(MemberVO pmVO) {
 		MemberVO rmVO = new MemberVO();
 		//반환할 VO : 파라미터VO와 구분짓기 위해 인스턴스화
@@ -53,13 +54,13 @@ public class MovieController {
 	 * @return 
 	 ***********************************************************************/
 	public void control(List<TicketingVO> tVOList) {
-		dao.proc_payTicket(tVOList);
+		//dao.proc_payTicket(tVOList);
 	}
 	
 	
 	public List<Map<String, Object>> sendAll(String date) {//서버 켰을 때
 		List<Map<String, Object>> rList = null;
-		rList = dao.refreshMovieAll(date);
+		//rList = dao.refreshMovieAll(date);
 		return rList;
 	}
 	

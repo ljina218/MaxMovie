@@ -3,6 +3,7 @@ package maxmovie;
 public class MovieProtocol {
 	//로그인
 	public final static int LOGIN 	= 100;
+	public final static int LOGOUT 	= 110;
 	//회원가입
 	public final static int JOIN 	= 200;
 	public final static int CHECK_ID 	= 210;

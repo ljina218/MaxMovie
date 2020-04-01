@@ -17,13 +17,16 @@ public class MyPageView extends JPanel{
 	JButton						jbt_miv				= new JButton("회원정보");
 	
 	EventMapping				em					= null;
-	TicketHistoryView			jp_thv				= new TicketHistoryView(em);
-	MemInfoView					jp_miv				= new MemInfoView(em);
-	MemUpdateView				jp_muv				= new MemUpdateView(em);
-	
+	TicketHistoryView			jp_thv				= null;
+	MemInfoView					jp_miv				= null;
+	MemUpdateView				jp_muv				= null;
+	 
 	JPanel						jp_center			= new JPanel();
 	public MyPageView(EventMapping em) {
 		this.em = em;
+		jp_thv				= new TicketHistoryView(em);
+		jp_miv				= new MemInfoView(em);
+		jp_muv				= new MemUpdateView(em);
 		initDisplay();
 	}
 	public void initDisplay() {

@@ -41,7 +41,7 @@ public class MovieServerThread extends Thread{
 	public MovieServerThread(MovieServer ms) {
 		this.ms = ms;
 		ms.globalist.add(this);
-		ms.movieList = ctrl.sendAll(ms.movieList);//서버에 3일치 영화정보 저장
+		//ms.movieList = ctrl.sendAll(ms.movieList);//서버에 3일치 영화정보 저장
 		try {
 			oos = new ObjectOutputStream(ms.socket.getOutputStream());
 			ois = new ObjectInputStream(ms.socket.getInputStream());
@@ -212,7 +212,7 @@ public class MovieServerThread extends Thread{
 					}
 					*/
 				}
-				case MovieProtocol.MY_INFO:{//회원 정보조회]
+				case MovieProtocol.MY_INFO:{//회원 정보조회
 					//아이디, 비번, 이름, 닉네임, 생일, 성별, 이메일
 					MemberVO pVO = new MemberVO();
 					pVO.setMem_id(this.id);
@@ -263,7 +263,7 @@ public class MovieServerThread extends Thread{
 					tVO = null;
 					tVO = new TicketingVO();
 					for(int i=0; i<ms.movieList.size(); i++) {
-						String age = ms.movieList.get(i).get("M_AGE").toString();//
+						String age = ms.movieList.get(i).get("M_AGE").toString();
 						String title = ms.movieList.get(i).get("M_TITLE").toString();
 						String loc = ms.movieList.get(i).get("T_LOC").toString();
 						String theater = ms.movieList.get(i).get("T_NAME").toString();

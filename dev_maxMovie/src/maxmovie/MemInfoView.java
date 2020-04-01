@@ -32,9 +32,10 @@ public class MemInfoView extends JPanel {
 		this.setLayout(null);
 		this.setBackground(new Color(215, 215, 215));
 //		현접속유저아이디
-//		jl_pageInfoLeft.setText(em.mmv.mem_nick);
-		jl_pageInfoLeft.setText("kong");
-		jl_mem_id.setText("cloudsky7");
+		//jl_pageInfoLeft.setText(em.mmv.mem_nick);
+		//jl_mem_id.setText(em.mmv.mem_id);
+		jl_pageInfoLeft.setText("닉네임");
+		jl_mem_id.setText("아이디");
 		
 		/*************************************************
 		 * 아이디랑 비번 불일치시
@@ -79,7 +80,7 @@ public class MemInfoView extends JPanel {
 		this.add(jpf_pw);
 		this.add(jl_pw_warning);
 		this.add(jbt_modified);
-		jpf_pw.addActionListener(em);
+		
 		jbt_modified.addActionListener(em);
 	}
 
