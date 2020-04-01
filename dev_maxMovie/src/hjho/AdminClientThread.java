@@ -4,6 +4,7 @@ import java.net.SocketException;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
 public class AdminClientThread extends Thread {
@@ -11,6 +12,7 @@ public class AdminClientThread extends Thread {
 	
 	public AdminClientThread(AdminClient ac) {
 		this.ac = ac;
+		
 	}
 
 	public void run() {
@@ -37,17 +39,18 @@ public class AdminClientThread extends Thread {
 						v.add(st.nextToken()); //시간
 						ac.dtm_movie.addRow(v);
 				 	} break;
-				 	
-				 	
-				 	
 				 	//상영시간표 가져오기 
-				 	case 300: {
+				 	case Admin_Protocol._REFRESH: {
 				 		Vector<String> v = new Vector<String>();
 						v.add(st.nextToken()); //상영관 명
 						v.add(st.nextToken()); //영화제목
 						v.add(st.nextToken()); //날짜 
 						v.add(st.nextToken()); //시간
 						ac.dtm_movie.addRow(v);
+				 	} break;
+				 	case Admin_Protocol._INS: {
+				 		ac.first.add(st.nextToken()); //영화제목
+				 		ac.second.add(st.nextToken()); //상영관
 				 	} break;
 				}
 			} catch (SocketException se) {

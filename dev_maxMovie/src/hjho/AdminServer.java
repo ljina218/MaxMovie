@@ -86,7 +86,7 @@ public class AdminServer extends JFrame implements Runnable{
 			}
 		});
 		//Center 화면 구성
-		jta_log.setBackground(Color.ORANGE);
+		jta_log.setBackground(Color.LIGHT_GRAY);
 		Font font = new Font("맑은 고딕", Font.BOLD, 15);
 		jta_log.setFont(font);
 		//North 화면 구성

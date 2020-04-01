@@ -8,7 +8,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -46,7 +50,9 @@ public class AdminClient extends JFrame implements ActionListener{
 	JTable jtb_movie = new JTable(dtm_movie); 
 	JScrollPane jsp_movie  = new JScrollPane(jtb_movie);
 
-	AdminDialog ad = new AdminDialog(this);
+	AdminDialog ad = null;
+	List<String> first = new Vector<String>(); 
+	List<String> second = new Vector<String>(); 
 /******************************************************************************************************
  * 생성자 : 로그인하고 받은 이름 지역 지점 초기화, 화면 initDisplay()호출 및 서버접속을 위한 함수 init()호출
  * @param alv
@@ -100,7 +106,8 @@ public class AdminClient extends JFrame implements ActionListener{
 			ois = new ObjectInputStream(socket.getInputStream());
 			//initDisplay에서 닉네임이 결정된 후 init메소드가 호출되므로
 			//내가 입장한 사실을 알린다.(말하기)
-			oos.writeObject(100+"#"+id);
+			oos.writeObject(Admin_Protocol._LOGIN+"#"+id);
+			oos.writeObject(Admin_Protocol._INS+"#"+id);
 			//서버에 말을 한 후 들을 준비를 해야하니까
 			AdminClientThread act = new AdminClientThread(this);
 			act.start();//SocketException
@@ -116,13 +123,13 @@ public class AdminClient extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if(obj == jbtn_all) {
-			JOptionPane.showMessageDialog(this, "ALL호출");
+			JOptionPane.showMessageDialog(this, "새로고침 호출");
 			try {
-				oos.writeObject(Admin_Protocol._DATA
-						       +"#"+name
-						       +"#");
-				//리프레쉬 데이타
-				
+				while(dtm_movie.getRowCount()>0) {
+					dtm_movie.removeRow(0);
+				}
+				oos.writeObject(Admin_Protocol._REFRESH
+						      +"#"+id);
 			} catch (Exception ec) {
 				ec.printStackTrace();
 			}
@@ -131,10 +138,7 @@ public class AdminClient extends JFrame implements ActionListener{
 		else if(obj == jbtn_sel) {
 			JOptionPane.showMessageDialog(this, "SEL호출");
 			try {
-				while(dtm_movie.getRowCount()>0) {
-					dtm_movie.removeRow(0);
-				}
-				oos.writeObject(300+"#"+id);
+				
 			} catch (Exception ec) {
 				ec.printStackTrace();
 			}
@@ -143,8 +147,10 @@ public class AdminClient extends JFrame implements ActionListener{
 		else if(obj == jbtn_ins) {
 			JOptionPane.showMessageDialog(this, "INS호출");
 			try {
+				if(ad==null) {
+					ad = new AdminDialog(this);
+				}
 				ad.initDisplay();
-				
 			} catch (Exception ec) {
 				ec.printStackTrace();
 			}
@@ -164,7 +170,8 @@ public class AdminClient extends JFrame implements ActionListener{
 		else if(obj == jbtn_exit) {
 			JOptionPane.showMessageDialog(this, "EXIT호출");
 			try {
-				oos.writeObject(600+"#"+id);
+				oos.writeObject(Admin_Protocol._EXIT
+						       +"#"+id);
 						//+"#"+loginForm.nickName+"님이 퇴장하였습니다.");
 			//자바가상머신과 연결 고리를 끊는다.
 			System.exit(0);

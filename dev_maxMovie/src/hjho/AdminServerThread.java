@@ -4,6 +4,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class AdminServerThread  extends Thread {
@@ -81,24 +82,30 @@ public class AdminServerThread  extends Thread {
 					protocol = Integer.parseInt(st.nextToken());
 				}
 				switch(protocol) {
-					case 300: {
+					case Admin_Protocol._REFRESH: {
 						adminID = st.nextToken();
 						movieList = aDao.refreshData(adminID);
 						for(AdminMovieVO mVO: movieList) {
-							this.send(300 
+							this.send(Admin_Protocol._REFRESH
 									 +"#"+mVO.getScr_name()
 									 +"#"+mVO.getMovie_title()
 									 +"#"+mVO.getShow_date()
 									 +"#"+mVO.getShow_time());
 						}
 					} break;
-					
-				
-				
-				
-				
+					//클라이언트에서 상영시간표 추가하기를 눌렀니?
+					case Admin_Protocol._INS: {
+						adminID = st.nextToken();
+						List<Map<String, Object>> rList = null;
+						rList = aDao.ins(adminID);
+						for(Map<String, Object> map: rList) {
+							this.send(Admin_Protocol._INS 
+									 +"#"+map.get("First")
+									 +"#"+map.get("Second"));
+						}
+					} break;
 					//종료
-					case 600: {
+					case Admin_Protocol._EXIT: {
 						String nickName = st.nextToken();
 						//String message = st.nextToken();
 						as.jta_log.append("   -INFO : "+as.socket+"\n");
