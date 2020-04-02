@@ -48,10 +48,7 @@ public class MaxMovieView extends JFrame{
 	};
 	String						mem_id				= "";
 	String						mem_nick			= "";
-	String						mem_name			= "";
-	String 						mem_birth			= "";
-	String 						mem_gender 			= "";
-	
+
 	JLabel						jl_nickInfo			=	new JLabel();
 	JLabel						jl_nickInfoEnd		=	new JLabel("님");
 	JButton						jbt_logout			=	new JButton("로그아웃");
@@ -106,11 +103,13 @@ public class MaxMovieView extends JFrame{
  		 * jbt_ticketing.setVisible(true);
 		 *****************************************************************/
 		///
+		/*
 		mem_id = "cloudsky7";	
 		mem_nick = "kong";
 		mem_name = "박미경";
 		mem_birth ="19960218";
 		mem_gender = "남자";	
+		*/
 				
 		jl_nickInfo.setText(mem_nick);
 		jl_nickInfo.setFont(new Font("굴림체", Font.BOLD, 20));
@@ -128,12 +127,12 @@ public class MaxMovieView extends JFrame{
 		jbt_logout.setBorder(new TitledBorder(new LineBorder(Color.white)));
 		jbt_myPage.setBorder(new TitledBorder(new LineBorder(Color.white)));
 		jbt_ticketing.setBorder(new TitledBorder(new LineBorder(Color.white)));
-		jl_logo_small.setVisible(false);
+		jl_logo_small.setVisible(false);//
 		jl_nickInfo.setVisible(false);
 		jl_nickInfoEnd.setVisible(false);
 		jbt_logout.setVisible(false);
 		jbt_myPage.setVisible(false);
-		jbt_ticketing.setVisible(false);
+		jbt_ticketing.setVisible(false);//
 		jtp_south_south.setText("회사소개 (930307)경기도 고양시 덕양구 토당동 양우아파트 102동 502호 대표이사 : 이진아 박미경 이정훈 사업자등록번호 : 501-39-76677-7 호스팅사업자 : CJ올리브네트웍스개인정보보호  \n" +
 							   "책임자 : 이진아 대표이메일 : ljina0218@naver.com 고객센터 : 1588-1588 (04377)서울특별시 용산구 한강대로 23길 55, 아이파크몰 6층(한강로동)\n" +
 							   "호스팅사업자 : CJ 올리브 네트웍스 개인정보 보호 책임자 : 정종민 대표이메일 : cjcgvmaster@cj.netCGV고객센터 : 1544-1122 \n" +
@@ -230,7 +229,8 @@ public class MaxMovieView extends JFrame{
 		
 		
 		jp_lv.setVisible(true);
-		jp_mv.setVisible(false);
+		jp_mv.setVisible(false
+				);
 		jp_mcv.setVisible(false);
 		jp_scv.setVisible(false);
 		jp_rv.setVisible(false);
@@ -249,7 +249,7 @@ public class MaxMovieView extends JFrame{
 //			socket = new Socket("192.168.0.244",5000);
 //			oos = new ObjectOutputStream(socket.getOutputStream());
 //			ois = new ObjectInputStream(socket.getInputStream());
-//			ClientThread ct = new ClientThread(this);
+//			ClientThread ct = new ClientThread(this);//로그인 성공시
 //			ct.start();
 //		} catch (UnknownHostException e) {
 //			System.out.println(e.toString());

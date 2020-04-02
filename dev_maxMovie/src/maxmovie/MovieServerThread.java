@@ -61,19 +61,18 @@ public class MovieServerThread extends Thread{
 	}
 	
 	//영화 시간 조건 메소드
-	public int checkTime (String time) {
+	public int checkTime (String time) {//스케줄에 있는 영화 시간 받아서
 		int result = 0;
-		//[1]스케줄에 있는 영화 시간
 		StringTokenizer token = new StringTokenizer(time, ":");//시와 분으로 쪼개기
 		char[] scheduledhour = token.nextToken().toCharArray();
 		char[] scheduledmin = token.nextToken().toCharArray();
 		String sethour = null;
+		String setmin = null;
 		if(scheduledhour[0]==0){//시 앞에 붙은 0 떼어내기
 			sethour = scheduledhour[1]+"";
 		}else {
 			sethour = scheduledhour[0]+""+scheduledhour[1]; 
 		}
-		String setmin = null;
 		if(scheduledmin[0]==0){//분 앞에 붙은 0 떼어내기
 			setmin = scheduledmin[1]+"";
 		}else {
@@ -81,12 +80,10 @@ public class MovieServerThread extends Thread{
 		}
 		int hour = Integer.parseInt(sethour);//시와 분을 string에서 int 형으로 바꾸기
 		int min = Integer.parseInt(setmin);
-		//[2]현재 시간에서 30분 빼기
-		Calendar now = Calendar.getInstance();
-		now.add(Calendar.MINUTE, -30);//30분 전까지만 예매가능
+		Calendar now = Calendar.getInstance();//현재 시간에서 
+		now.add(Calendar.MINUTE, -30);//30분 빼기 => 30분 전까지만 예매가능
 		int nowhour = now.get(Calendar.HOUR_OF_DAY);
 		int nowmin = now.get(Calendar.MINUTE);
-		//[3]비교
 		if(hour>=nowhour) {//시가 아직 안지났고
 			if(min>=nowmin) {//분이 아직 안지났다면,
 				result=1;

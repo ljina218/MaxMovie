@@ -364,6 +364,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				send(join_msg);//db에 넣어주세요
 				//refreshCheck();//기준모두초기화@@@@@@@
 				//jv.dispose();//가입화면 닫기
+							
 			}else {
 				JOptionPane.showMessageDialog(jv, "입력한 정보가 부적합합니다. 다시 확인해주세요.");
 			}
@@ -377,7 +378,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 		jl_id_success.setText(" 사용 가능한 아이디입니다.");
 		jl_id_warning2.setText(" 7~12자이어야하고 특수문자는 입력할 수 없습니다.");
 		 */
-		if(obj==jv.jbt_id_check) {//아이디 중복 체크하고 싶니?
+		else if(obj==jv.jbt_id_check) {//아이디 중복 체크하고 싶니?
 			jv.jl_id_warning.setVisible(false);
 			jv.jl_id_warning2.setVisible(false);
 			jv.jl_id_success.setVisible(false);
@@ -389,11 +390,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				id = 0;
 			}else {//기준통과했다면, 이제 중복 체크 해줄게
 				String chektid_msg = MovieProtocol.CHECK_ID+"#"+inputId;
-				/*@@@@@@@@@
 				send(chektid_msg);//중복체크해주세요
-				*/
-				id=1;
-				jv.jl_id_success.setVisible(true);
 			}
 		}
 		
@@ -542,15 +539,12 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 			}
 			int sum = pw + nickName + email + email_r;
 			if(sum==4) {//모든 기준 통과시, 모든 값들 가져와서
-				String name = mmv.mem_name;
 				String id = mmv.mem_id;
 				String pw = pwToString(mmv.jp_mv.jp_muv.jpf_pw.getPassword());
 				String email = mmv.jp_mv.jp_muv.jtf_email.getText();
 				String nickName = mmv.jp_mv.jp_muv.jtf_nick.getText();
-				String birth = mmv.mem_birth;
-				String gender = mmv.mem_gender;
 				//서버스레드로 메세지 전송
-				String update_msg = MovieProtocol.JOIN+"#"+name+"#"+id+"#"+pw+"#"+email+"#"+nickName+"#"+birth+"#"+gender;
+				String update_msg = MovieProtocol.JOIN+"#"+id+"#"+pw+"#"+email+"#"+nickName;
 				send(update_msg);//db에 넣어주세요
 				//refreshCheck();//기준모두초기화@@@@@@@
 				//jv.dispose();//가입화면 닫기

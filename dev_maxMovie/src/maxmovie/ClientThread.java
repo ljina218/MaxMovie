@@ -1,16 +1,31 @@
 package maxmovie;
 
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class ClientThread extends Thread{
 	
 	MaxMovieView mmv = null;
 	
+	//오늘의 영화정보 list 선언부
+		/*
+		 * showMap.put("M_TITLE", rs.getString("M_TITLE"));
+			showMap.put("T_LOC", rs.getString("T_LOC"));
+			showMap.put("T_NAME", rs.getString("T_NAME"));
+			showMap.put("S_DATE", rs.getString("S_DATE"));
+			showMap.put("S_TIME", rs.getString("S_TIME"));
+			showMap.put("SC_NAME", rs.getString("SC_NAME"));
+		 */
+	List<Map<String, Object>> movieList = null;
+	
 	boolean stop = false;
 
 	public ClientThread(MaxMovieView mmv) {
 		this.mmv = mmv;
 	}
+	
+	
 	
 	//화면전환 할 때 사용하는 제어 메소드
 	public void display(boolean lv, boolean mv, 
@@ -21,7 +36,7 @@ public class ClientThread extends Thread{
 		mmv.jp_mv.jp_miv.setVisible(miv);//마이페이지-비밀번호입력뷰
 		mmv.jp_mv.jp_muv.setVisible(muv);//마이페이지-회원정보수정뷰
 		mmv.jp_mv.jp_thv.setVisible(thv);//마이페이지-영화내역뷰
-		mmv.jp_mcv.setVisible(mcv);//영화선택뷰
+		mmv.jp_mcv.setVisible(mcv);//영화선택-틀뷰
 		mmv.jp_scv.setVisible(sc);//좌석선택뷰
 		mmv.jp_rv.setVisible(rv);//결제뷰
 	}
@@ -44,6 +59,9 @@ public class ClientThread extends Thread{
 				case MovieProtocol.LOGIN:{//로그인
 					
 				}
+				case MovieProtocol.LOGOUT:{//로그아웃
+					movieList = null;
+				}
 				case MovieProtocol.JOIN:{//회원가입
 					
 				}
@@ -62,12 +80,34 @@ public class ClientThread extends Thread{
 					//영화이름, 지역, 지점, 상영날짜 시간, 상영관, 좌석, 예매번호
 				}
 				case MovieProtocol.MY_INFO:{//회원 정보조회
-					
+					movieList = null;
 				}
 				case MovieProtocol.INFO_UPDATE:{//회원 정보수정
 					
 				}
 				case MovieProtocol.SELECT:{//MovieChoiceView 호출하는 프로토콜
+					movieList = null;
+					//오늘의 영화정보 list 선언부
+					/*
+					 * showMap.put("M_TITLE", rs.getString("M_TITLE"));
+						showMap.put("T_LOC", rs.getString("T_LOC"));
+						showMap.put("T_NAME", rs.getString("T_NAME"));
+						showMap.put("S_DATE", rs.getString("S_DATE"));
+						showMap.put("S_TIME", rs.getString("S_TIME"));
+						showMap.put("SC_NAME", rs.getString("SC_NAME"));
+						
+						List<Map<String, Object>> movieList = null;
+						
+						String movielist_msg = MovieProtocol.SELECT+"#"+age+"#"+title+"#"+
+							loc+"#"+theater+"#"+date+"#"+time+"#"+screen;
+					 */
+					//String age = st.nextToken();
+					//String title = ms.movieList.get(i).get("M_TITLE").toString();
+					//String loc = ms.movieList.get(i).get("T_LOC").toString();
+					//String theater = ms.movieList.get(i).get("T_NAME").toString();
+					//String date = ms.movieList.get(i).get("S_DATE").toString();
+					//String time = ms.movieList.get(i).get("S_TIME").toString();
+					//String screen = ms.movieList.get(i).get("SC_NAME").toString();
 					
 				}
 				case MovieProtocol.SELECT_MOVIE:{//영화선택

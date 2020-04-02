@@ -41,8 +41,8 @@ public class MyPageView extends JPanel{
 		jp_miv.setBounds(310, 150, 920, 440);
 		jp_muv.setBounds(310, 150, 920, 440);
 		jp_center.setBackground(new Color(215, 215, 215));
-		jp_thv.setVisible(true);
-		jp_miv.setVisible(false);
+		jp_thv.setVisible(false);
+		jp_miv.setVisible(true);
 		jp_muv.setVisible(false);
 		jbt_thv.setFont(new Font("굴림체", Font.BOLD, 12));
 		jbt_thv.setBackground(new Color(52, 152, 219));

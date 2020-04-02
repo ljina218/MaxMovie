@@ -246,8 +246,18 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	public void actionPerformed(ActionEvent e) {
 
 		Object obj = e.getSource();
+		if(obj==mmv.jp_lv.jbt_login) {
+			mmv.jp_lv.setVisible(false);//로그인
+			mmv.jp_mv.setVisible(true);//마이페이지-틀뷰
+			//mmv.jp_mv.jp_miv.setVisible(true);//마이페이지-비밀번호입력뷰
+			//mmv.jp_mv.jp_muv.setVisible(false);//마이페이지-회원정보수정뷰
+			//mmv.jp_mv.jp_thv.setVisible(false);//마이페이지-영화내역뷰
+			//mmv.jp_mcv.setVisible(mcv);//영화선택-틀뷰
+			//mmv.jp_scv.setVisible(sc);//좌석선택뷰
+			//mmv.jp_rv.setVisible(rv);//결제뷰
+		}
 		//마이페이지 --------------------------------------------------------------------------------------
-		if(obj==mmv.jp_mv.jp_miv.jbt_modified) {//회원정보 조회하고 싶어요
+		else if(obj==mmv.jp_mv.jp_miv.jbt_modified) {//회원정보 조회하고 싶어요
 			//null 처리
 			String pw = pwToString(mmv.jp_mv.jp_miv.jpf_pw.getPassword());//비번을 입력했어요
 			if(pw.length()>0) {

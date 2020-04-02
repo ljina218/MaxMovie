@@ -23,7 +23,7 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class MovieChoiceView extends JPanel implements ActionListener, MouseListener{
+public class MovieChoiceView extends JPanel {
 	JLabel				jl_movie				= new JLabel("영화");
 	JLabel				jl_locThe				= new JLabel("극장");
 	JLabel				jl_date					= new JLabel("날짜");
@@ -277,12 +277,12 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 		jl_south_screen.setHorizontalAlignment(JLabel.CENTER);
 		jl_south_time.setHorizontalAlignment(JLabel.CENTER);
 		
-		jt_movie.addMouseListener(this);
-		jt_local.addMouseListener(this);
-		jt_theater.addMouseListener(this);
-		jt_date.addMouseListener(this);
-		jt_time.addMouseListener(this);
-		jbt_goSeatChoice.addActionListener(this);
+		//jt_movie.addMouseListener(this);
+		//jt_local.addMouseListener(this);
+		//jt_theater.addMouseListener(this);
+		//jt_date.addMouseListener(this);
+		//jt_time.addMouseListener(this);
+		//jbt_goSeatChoice.addActionListener(this);
 		
 		this.add(jl_movie);
 		this.add(jl_locThe);
@@ -305,6 +305,7 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 		this.add(jl_south);
 	}
 	
+	/*
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
@@ -364,9 +365,10 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 		 *	jbt_goSeatChoice.setForeground(Color.gray);
 		 *	jbt_goSeatChoice.setEnabled(false);
 		 **********************************************************************************/
-		}
-	}
+		//}
+	//}*/
 	
+	/*
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Object obj = e.getSource();
@@ -380,10 +382,6 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 			jl_south_movie.setText("이보다 더 좋을 순 없다.");
 			jl_south_ctf.setVisible(true);
 			jl_south_ctf.setText("전체이용가");
-			
-			
-			
-			
 			
 		}
 		if(obj==jt_local) {
@@ -447,6 +445,8 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 			
 		}
 	}
+	*/
+	/*
 	@Override
 	public void mouseEntered(MouseEvent e) {}
 	@Override
@@ -469,4 +469,5 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 		mmv.getContentPane().repaint();
 		new MovieChoiceView(mmv.em);
 	}
+	*/
 }
