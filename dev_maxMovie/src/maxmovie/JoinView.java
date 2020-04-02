@@ -323,7 +323,7 @@ public class JoinView extends JDialog {
 	
 	public void eventMapping() {
 		jbt_id_check.addActionListener(em);
-		jtf_id.addActionListener(em);
+		jtf_id.addKeyListener(em);
 		jpf_pw.addKeyListener(em);
 		jtf_nick.addKeyListener(em);
 		jtf_name.addKeyListener(em);
@@ -337,4 +337,18 @@ public class JoinView extends JDialog {
 		jbt_joingo.addActionListener(em);
 	}
 
+	public static void main(String[] args) {
+		MaxMovieView mmv = new MaxMovieView();
+		mmv.jp_lv.setVisible(true);
+		mmv.jp_mrv.setVisible(false);
+		mmv.jp_mrv.jp_mcv.setVisible(false);
+		mmv.jp_mrv.jp_scv.setVisible(false);
+		mmv.jp_mrv.jp_pv.setVisible(false);
+		mmv.jp_mv.setVisible(false);
+		mmv.jp_mv.jp_thv.setVisible(false);
+		mmv.jp_mv.jp_miv.setVisible(false);
+		mmv.jp_mv.jp_muv.setVisible(false);
+		mmv.jp_rv.setVisible(false);
+		new JoinView(mmv.em);
+	}
 }

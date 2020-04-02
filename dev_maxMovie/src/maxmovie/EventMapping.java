@@ -8,6 +8,8 @@ import java.awt.event.ItemListener;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.StringTokenizer;
@@ -23,7 +25,7 @@ import javax.swing.border.TitledBorder;
 
 import com.sun.mail.iap.Protocol;
 
-public class EventMapping implements ActionListener, ItemListener, KeyListener{
+public class EventMapping implements ActionListener, ItemListener, KeyListener, MouseListener{
 
 	
 	/* 뷰 패널들의 변수이름
@@ -63,6 +65,9 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	int birth = 0;
 	int email = 0;
 	int email_r = 0;
+	
+	
+	
 	
 	//인증메일을 위한 선언부
 	SendMail sm = null;
@@ -331,6 +336,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 			String login_pw = pwToString(mmv.jp_lv.jpf_pw.getPassword());
 			String login_msg = MovieProtocol.LOGIN+"#"+login_id+"#"+login_pw;
 			send(login_msg);//아이디,비번 검사해주세요
+			
 		}
 		//회원가입 ----------------------------------------------------------------------------------------
 		else if(obj==mmv.jp_lv.jbt_join) {//회원가입하고 싶니?
@@ -364,6 +370,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				send(join_msg);//db에 넣어주세요
 				//refreshCheck();//기준모두초기화@@@@@@@
 				//jv.dispose();//가입화면 닫기
+
 			}else {
 				JOptionPane.showMessageDialog(jv, "입력한 정보가 부적합합니다. 다시 확인해주세요.");
 			}
@@ -377,7 +384,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 		jl_id_success.setText(" 사용 가능한 아이디입니다.");
 		jl_id_warning2.setText(" 7~12자이어야하고 특수문자는 입력할 수 없습니다.");
 		 */
-		if(obj==jv.jbt_id_check) {//아이디 중복 체크하고 싶니?
+		else if(obj==jv.jbt_id_check) {//아이디 중복 체크하고 싶니?
 			jv.jl_id_warning.setVisible(false);
 			jv.jl_id_warning2.setVisible(false);
 			jv.jl_id_success.setVisible(false);
@@ -388,8 +395,8 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				jv.jl_id_warning2.setVisible(true);
 				id = 0;
 			}else {//기준통과했다면, 이제 중복 체크 해줄게
-				String msg = MovieProtocol.CHECK_ID+"#"+inputId;
-				send(msg);//중복체크해주세요
+				String chektid_msg = MovieProtocol.CHECK_ID+"#"+inputId;
+				send(chektid_msg);//중복체크해주세요
 			}
 		}
 		
@@ -538,15 +545,12 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 			}
 			int sum = pw + nickName + email + email_r;
 			if(sum==4) {//모든 기준 통과시, 모든 값들 가져와서
-				String name = mmv.mem_name;
 				String id = mmv.mem_id;
 				String pw = pwToString(mmv.jp_mv.jp_muv.jpf_pw.getPassword());
 				String email = mmv.jp_mv.jp_muv.jtf_email.getText();
 				String nickName = mmv.jp_mv.jp_muv.jtf_nick.getText();
-				String birth = mmv.mem_birth;
-				String gender = mmv.mem_gender;
 				//서버스레드로 메세지 전송
-				String update_msg = MovieProtocol.JOIN+"#"+name+"#"+id+"#"+pw+"#"+email+"#"+nickName+"#"+birth+"#"+gender;
+				String update_msg = MovieProtocol.JOIN+"#"+id+"#"+pw+"#"+email+"#"+nickName;
 				send(update_msg);//db에 넣어주세요
 				//refreshCheck();//기준모두초기화@@@@@@@
 				//jv.dispose();//가입화면 닫기
@@ -573,9 +577,10 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 			mmv.jp_mv.jp_miv.setVisible(true);//마이페이지-비밀번호입력뷰
 			mmv.jp_mv.jp_muv.setVisible(false);
 			mmv.jp_mv.jp_thv.setVisible(false);
-			mmv.jp_mcv.setVisible(false);
-			mmv.jp_scv.setVisible(false);
-			mmv.jp_rv.setVisible(false);
+			mmv.jp_mrv.setVisible(false);
+			mmv.jp_mrv.jp_mcv.setVisible(false);
+			mmv.jp_mrv.jp_pv.setVisible(false);
+			mmv.jp_mrv.jp_scv.setVisible(false);
 		}
 	}
 	
@@ -775,6 +780,36 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	@Override
 	public void keyTyped(KeyEvent e) {
 
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}

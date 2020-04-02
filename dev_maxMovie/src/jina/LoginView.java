@@ -1,4 +1,4 @@
-package maxmovie;
+package jina;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -44,7 +44,6 @@ public class LoginView extends JPanel{
 	public LoginView(EventMapping em) {
 		this.em = em;
 		initDisplay();
-		eventMapping();
 	}
 	private void initDisplay() {
 		this.setLayout(null);
@@ -57,29 +56,39 @@ public class LoginView extends JPanel{
 		jl_pw.setHorizontalAlignment(JLabel.RIGHT);
 		jl_id_warning.setVisible(false);
 		jl_pw_warning.setVisible(false);
+		
 		jl_logo_m.setBounds(612, 170, 300, 140);
 		jl_id.setBounds(560, 310, 50, 40);
 		jl_pw.setBounds(560, 352, 50, 40);
 		jtf_id.setBounds(612, 310, 296, 40);
 		jpf_pw.setBounds(612, 352, 296, 40);
+
 		jbt_join.setBounds(612, 394, 146, 40);
 		jbt_login.setBounds(762, 394, 146, 40);
 		jl_id_warning.setBounds(912, 318, 300, 28);
 		jl_pw_warning.setBounds(912, 360, 300, 28);
+		
 		jl_id.setFont(new Font("굴림체", Font.PLAIN, 12));
 		jl_id.setForeground(Color.black);
+
 		jtf_id.setFont(new Font("굴림체", Font.PLAIN, 12));
 		jtf_id.setForeground(new Color(142, 142, 142));
+				
 		jl_id_warning.setFont(new Font("굴림체", Font.PLAIN, 11));
 		jl_id_warning.setForeground(Color.red);
+
 		jl_pw.setFont(new Font("굴림체", Font.PLAIN, 12));
 		jl_pw.setForeground(Color.black);
+		
 		jpf_pw.setFont(new Font("굴림체", Font.PLAIN, 12));
 		jpf_pw.setForeground(new Color(142, 142, 142));
+
 		jl_pw_warning.setFont(new Font("굴림체", Font.PLAIN, 11));
 		jl_pw_warning.setForeground(Color.red);
+		
 		jbt_join.setBackground(new Color(52, 152, 219));
 		jbt_join.setForeground(Color.white);
+		
 		jbt_login.setBackground(new Color(52, 152, 219));
 		jbt_login.setForeground(Color.white);
 		
@@ -98,10 +107,6 @@ public class LoginView extends JPanel{
  * 		○#login 17	jl_pw_warning.setVisible(false);
  * 		○#login 18	jl_pw_warning.setVisible(true);
  *******************************************************/
-		
-	}
-	
-	public void eventMapping() {
 		jtf_id.addActionListener(em);
 		jpf_pw.addActionListener(em);
 		jbt_join.addActionListener(em);
@@ -110,17 +115,12 @@ public class LoginView extends JPanel{
 	
 	public static void main(String[] args) {
 		MaxMovieView mmv = new MaxMovieView();
+		mmv.jl_logo_small.setVisible(true);
 		mmv.jp_lv.setVisible(true);
-		mmv.jp_mrv.setVisible(false);
-		mmv.jp_mrv.jp_mcv.setVisible(false);
-		mmv.jp_mrv.jp_scv.setVisible(false);
-		mmv.jp_mrv.jp_pv.setVisible(false);
 		mmv.jp_mv.setVisible(false);
-		mmv.jp_mv.jp_thv.setVisible(false);
-		mmv.jp_mv.jp_miv.setVisible(false);
-		mmv.jp_mv.jp_muv.setVisible(false);
-		mmv.jp_rv.setVisible(false);
-
-		
+		//mmv.jp_mcv.setVisible(false);
+		//mmv.jp_scv.setVisible(false);
+		//mmv.jp_rv.setVisible(false);
+		new LoginView(mmv.em);
 	}
 }
