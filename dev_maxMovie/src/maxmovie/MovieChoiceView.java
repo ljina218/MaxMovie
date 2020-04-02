@@ -23,21 +23,13 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class MovieChoiceView extends JPanel implements ActionListener, MouseListener{
+public class MovieChoiceView extends JPanel{
 	JLabel				jl_movie				= new JLabel("영화");
 	JLabel				jl_locThe				= new JLabel("극장");
 	JLabel				jl_date					= new JLabel("날짜");
 	JLabel				jl_time					= new JLabel("시간");
 	JLabel				jl_timeLock				= new JLabel("영화 극장 날짜를 선택해 주세요.");
-	JLabel				jl_south				= new JLabel("　　　　　　　　　　　　　　　 　　　 　　  　　　　　>　　　    　   　          　　　　　 　　　>　 　　          　   　　　　　　　　　　>");
-	JLabel				jl_south_movie			= new JLabel("영화선택");
-	JLabel				jl_south_ctf			= new JLabel("");
-	JLabel				jl_south_loc			= new JLabel("극장선택");
-	JLabel				jl_south_theater		= new JLabel("");
-	JLabel				jl_south_date			= new JLabel("날짜선택");
-	JLabel				jl_south_screen			= new JLabel("시간선택");
-	JLabel				jl_south_time			= new JLabel("");
-	JButton				jbt_goSeatChoice 		= new JButton("좌석선택→");
+
 	ImageIcon			grade19					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade19.png");
 	ImageIcon			grade15					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade15.png");
 	ImageIcon			grade12					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade12.png");
@@ -99,10 +91,6 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 	int timeIndex = 0;
 	String timeChoice = "";
 	
-	public MovieChoiceView() {
-		initDisplay();
-	}
-
 	public MovieChoiceView(EventMapping em) {
 		this.em = em;
 		initDisplay();
@@ -122,77 +110,8 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 		jsp_date.setBounds(850, 60, 146, 600);
 		jsp_time.setBounds(1000, 60, 346, 600);
 		jl_timeLock.setBounds(1000, 60, 346, 600);
-		jl_south.setBounds(200, 664, 1144, 90);		
-		jl_south_movie.setBounds(350, 698, 150, 20);		
-		jl_south_ctf.setBounds(350, 710, 150, 20);	
-		jl_south_loc.setBounds(580, 698, 150, 20);	
-		jl_south_theater.setBounds(580, 710, 150, 20);	
-		jl_south_date.setBounds(810, 698, 150, 20);			
-		jl_south_screen.setBounds(1040, 698, 150, 20);	
-		jl_south_time.setBounds(1040, 710, 150, 20);	
-		jbt_goSeatChoice.setBounds(1220, 685, 100, 45);
+	
 		jl_timeLock.setVisible(true);
-		jl_south_ctf.setVisible(false);
-		jl_south_theater.setVisible(false);
-		jl_south_time.setVisible(false);
-		
-		/**********************************************************************************
-		 * //영화 선택시
-		 * jl_south_movie.setBounds(350, 690, 150, 20);
-		 * jl_south_movie.setText("이보다 더 좋을 순 없다.");
-		 * jl_south_ctf.setVisible(true);
-		 * jl_south_ctf.setText("전체이용가");
-		 * //영화 미선택시
-		 * jl_south_movie.setBounds(350, 698, 150, 20);
-		 * jl_south_movie.setText("영화선택");
-		 * jl_south_ctf.setVisible(false);
-		 * jl_south_ctf.setText("");
-		 * 
-		 * //지역&&지점 선택시
-		 * jl_south_loc.setBounds(580, 690, 150, 20);
-		 * jl_south_loc.setText("전북/전주");
-		 * jl_south_theater.setVisible(true);
-		 * jl_south_theater.setText("건대입구");
-		 * //지역&&지점 미선택시
-		 * jl_south_loc.setBounds(580, 698, 150, 20);
-		 * jl_south_loc.setText("극장선택");
-		 * jl_south_theater.setVisible(false);
-		 * jl_south_theater.setText("");
-		 * 
-		 * //날짜 선택시
-		 * jl_south_date.setText("2020년 03월 28일 (금)");
-		 * //날짜미 미선택시
-		 * jl_south_date.setText("날짜선택");
-		 * 
-		 * //시간 선택시
-		 * jl_south_screen.setBounds(1040, 690, 150, 20);
-		 * jl_south_screen.setText("1관");
-		 * jl_south_time.setVisible(true);
-		 * jl_south_time.setText("오전 09:00:00");
-		 * //시간 미선택시
-		 * jl_south_screen.setBounds(1040, 698, 150, 20);
-		 * jl_south_screen.setText("시간선택");
-		 * jl_south_time.setVisible(false);
-		 * jl_south_time.setText("");
-		 * 
-		 * //영화 + 극장 + 날짜  모두 선택시
-		 * jsp_time.setVisible(true);
-		 * jl_timeLock.setVisible(false);
-		 * //영화 + 극장 + 날짜 중 하나라도 미 선택시
-		 * jsp_time.setVisible(false);
-		 * jl_timeLock.setVisible(true);
-		 * 
-		 * //모두 선택시
-		 * jbt_goSeatChoice.setForeground(Color.white);
-		 * jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
-		 * jbt_goSeatChoice.setEnabled(true);
-		 * //하나라도 미선택시
-		 * jbt_goSeatChoice.setBackground(new Color(230, 230, 230));
-		 * jbt_goSeatChoice.setForeground(Color.gray);
-		 * jbt_goSeatChoice.setEnabled(false);
-		 **********************************************************************************/
-	
-	
 		
 		jt_movie.setBackground(Color.white);
 		DefaultTableCellRenderer dtcr_movie = new DefaultTableCellRenderer();
@@ -241,16 +160,11 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 		jt_time.setShowVerticalLines(false);
 		jt_time.setShowHorizontalLines(false);
 		
-		jbt_goSeatChoice.setBackground(new Color(230, 230, 230));
-		jbt_goSeatChoice.setForeground(Color.gray);
-		jbt_goSeatChoice.setEnabled(false);
-		
 		jl_movie.setOpaque(true);	
 		jl_locThe.setOpaque(true);
 		jl_date.setOpaque(true);
 		jl_time.setOpaque(true);
 		jl_timeLock.setOpaque(true);
-		jl_south.setOpaque(true);
 
 		jsp_time.setVisible(false);
 		
@@ -259,7 +173,6 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 		jl_date.setBackground(new Color(190, 190, 190));
 		jl_time.setBackground(new Color(190, 190, 190));
 		jl_timeLock.setBackground(new Color(80, 80, 80));
-		jl_south.setBackground(new Color(190, 190, 190));
 		jl_timeLock.setForeground(Color.black);
 		jl_timeLock.setFont(new Font("굴림체", Font.BOLD, 13));
 
@@ -268,21 +181,6 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 		jl_date.setHorizontalAlignment(JLabel.CENTER);
 		jl_time.setHorizontalAlignment(JLabel.CENTER);
 		jl_timeLock.setHorizontalAlignment(JLabel.CENTER);
-		
-		jl_south_movie.setHorizontalAlignment(JLabel.CENTER);
-		jl_south_ctf.setHorizontalAlignment(JLabel.CENTER);
-		jl_south_loc.setHorizontalAlignment(JLabel.CENTER);
-		jl_south_theater.setHorizontalAlignment(JLabel.CENTER);
-		jl_south_date.setHorizontalAlignment(JLabel.CENTER);
-		jl_south_screen.setHorizontalAlignment(JLabel.CENTER);
-		jl_south_time.setHorizontalAlignment(JLabel.CENTER);
-		
-		jt_movie.addMouseListener(this);
-		jt_local.addMouseListener(this);
-		jt_theater.addMouseListener(this);
-		jt_date.addMouseListener(this);
-		jt_time.addMouseListener(this);
-		jbt_goSeatChoice.addActionListener(this);
 		
 		this.add(jl_movie);
 		this.add(jl_locThe);
@@ -294,179 +192,76 @@ public class MovieChoiceView extends JPanel implements ActionListener, MouseList
 		this.add(jsp_date);
 		this.add(jsp_time);
 		this.add(jl_timeLock);
-		this.add(jl_south_movie);
-		this.add(jl_south_ctf);
-		this.add(jl_south_loc);
-		this.add(jl_south_theater);
-		this.add(jl_south_date);
-		this.add(jl_south_screen);
-		this.add(jl_south_time);
-		this.add(jbt_goSeatChoice);
-		this.add(jl_south);
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object obj = e.getSource();
-		if(obj==jbt_goSeatChoice) {
-		/**********************************************************************************
-		 * //영화 선택시
-		 * jl_south_movie.setBounds(350, 690, 150, 20);
-		 * jl_south_movie.setText("이보다 더 좋을 순 없다.");
-		 * jl_south_ctf.setVisible(true);
-		 * jl_south_ctf.setText("전체이용가");
-		 * //영화 미선택시
-		 * jl_south_movie.setBounds(350, 698, 150, 20);
-		 * jl_south_movie.setText("영화선택");
-		 * jl_south_ctf.setVisible(false);
-		 * jl_south_ctf.setText("");
-		 * 
-		 * //지역&&지점 선택시
-		 * jl_south_loc.setBounds(580, 690, 150, 20);
-		 * jl_south_loc.setText("전북/전주");
-		 * jl_south_theater.setVisible(true);
-		 * jl_south_theater.setText("건대입구");
-		 * //지역&&지점 미선택시
-		 * jl_south_loc.setBounds(580, 698, 150, 20);
-		 * jl_south_loc.setText("극장선택");
-		 * jl_south_theater.setVisible(false);
-		 * jl_south_theater.setText("");
-		 * 
-		 * //날짜 선택시
-		 * jl_south_date.setText("2020년 03월 28일 (금)");
-		 * //날짜미 미선택시
-		 * jl_south_date.setText("날짜선택");
-		 * 
-		 * //시간 선택시
-		 * jl_south_screen.setBounds(1040, 690, 150, 20);
-		 * jl_south_screen.setText("1관");
-		 * jl_south_time.setVisible(true);
-		 * jl_south_time.setText("오전 09:00:00");
-		 * //시간 미선택시
-		 * jl_south_screen.setBounds(1040, 698, 150, 20);
-		 * jl_south_screen.setText("시간선택");
-		 * jl_south_time.setVisible(false);
-		 * jl_south_time.setText("");
-		 * 
-		 * //영화 + 극장 + 날짜  모두 선택시
-		 * jsp_time.setVisible(true);
-		 * jl_timeLock.setVisible(false);
-		 * //영화 + 극장 + 날짜 중 하나라도 미 선택시
-		 * jsp_time.setVisible(false);
-		 * jl_timeLock.setVisible(true);
-		 * 
-		 * //모두 선택시
-		 *	jbt_goSeatChoice.setForeground(Color.white);
-		 *	jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
-		 *	jbt_goSeatChoice.setEnabled(true);
-		 * //하나라도 미선택시
-		 *	jbt_goSeatChoice.setBackground(new Color(230, 230, 230));
-		 *	jbt_goSeatChoice.setForeground(Color.gray);
-		 *	jbt_goSeatChoice.setEnabled(false);
-		 **********************************************************************************/
-		}
+	public void eventMapping() {
+		jt_movie.addMouseListener(em);
+		jt_local.addMouseListener(em);
+		jt_theater.addMouseListener(em);
+		jt_date.addMouseListener(em);
+		jt_time.addMouseListener(em);		
+		
 	}
-	
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		Object obj = e.getSource();
-		if(obj==jt_movie) {
-			movieIndex = jt_movie.getSelectedRow();
-			movieChoice = jt_movie.getValueAt(movieIndex, 0).toString();
-			jt_movie.setSelectionBackground(Color.gray);
-			jt_movie.setSelectionForeground(Color.white);
-			jl_south_movie.setBounds(350, 690, 150, 20);
-			//영화 가져오시는 걸로 바꾸어야됨 ↓
-			jl_south_movie.setText("이보다 더 좋을 순 없다.");
-			jl_south_ctf.setVisible(true);
-			jl_south_ctf.setText("전체이용가");
-			
-			
-			
-			
-			
-		}
-		if(obj==jt_local) {
-			localIndex = jt_local.getSelectedRow();
-			localChoice = jt_local.getValueAt(localIndex, 0).toString();
-			jt_local.setSelectionBackground(Color.gray);
-			jt_local.setSelectionForeground(Color.white);
-			
-			 
-			
-			
-			
-			
-		}
-		if(obj==jt_theater) {
-			theaterIndex = jt_theater.getSelectedRow();
-			theaterChoice = jt_theater.getValueAt(theaterIndex, 0).toString();
-			jt_theater.setSelectionBackground(Color.gray);
-			jt_theater.setSelectionForeground(Color.white);
-			jl_south_loc.setBounds(580, 690, 150, 20);
-			//지점과 극장 가져오시는 걸로 바꾸어야됨 ↓
-			jl_south_loc.setText(localChoice);
-			jl_south_theater.setVisible(true);
-			jl_south_theater.setText(theaterChoice);
-			
-			
-			
-			
-			
-			
-		}
-		if(obj==jt_date) {
-			dateIndex = jt_date.getSelectedRow();
-			dateChoice = jt_date.getValueAt(dateIndex, 0).toString();
-			jt_date.setSelectionBackground(Color.gray);
-			jt_date.setSelectionForeground(Color.white);
-			//데이터 가져오시는 걸로 바꾸어야됨 ↓
-			jl_south_date.setText("2020년 03월 28일 (금)");
-			jsp_time.setVisible(true);
-			jl_timeLock.setVisible(false);
-			
-			
-			
-			
-			
-		}
-		if(obj==jt_time) {
-			timeIndex = jt_time.getSelectedRow();
-			timeChoice = jt_time.getValueAt(timeIndex, 0).toString();
-			jl_south_screen.setBounds(1040, 690, 150, 20);
-			jl_south_screen.setText("1관");
-			jl_south_time.setVisible(true);
-			//데이터 가져오시는 걸로 바꾸어야됨 ↓
-			jl_south_time.setText("오전 09:00:00");
-			jt_time.setSelectionBackground(Color.gray);
-			jt_time.setSelectionForeground(Color.white);
-			
-			
-			
-			
-			
-		}
-	}
-	@Override
-	public void mouseEntered(MouseEvent e) {}
-	@Override
-	public void mouseExited(MouseEvent e) {}
-	@Override
-	public void mousePressed(MouseEvent e) {}
-	@Override
-	public void mouseReleased(MouseEvent e) {}
+	/**********************************************************************************
+	 * 참고용
+	 * @Override public void mouseClicked(MouseEvent e) { Object obj =
+	 * e.getSource(); if(obj==jt_movie) { movieIndex = jt_movie.getSelectedRow();
+	 * movieChoice = jt_movie.getValueAt(movieIndex, 0).toString();
+	 * jt_movie.setSelectionBackground(Color.gray);
+	 * jt_movie.setSelectionForeground(Color.white); //영화 가져오시는 걸로 바꾸어야됨 ↓
+	 * 
+	 * } if(obj==jt_local) { localIndex = jt_local.getSelectedRow(); localChoice =
+	 * jt_local.getValueAt(localIndex, 0).toString();
+	 * jt_local.setSelectionBackground(Color.gray);
+	 * jt_local.setSelectionForeground(Color.white);
+	 * 
+	 * } if(obj==jt_theater) { theaterIndex = jt_theater.getSelectedRow();
+	 * theaterChoice = jt_theater.getValueAt(theaterIndex, 0).toString();
+	 * jt_theater.setSelectionBackground(Color.gray);
+	 * jt_theater.setSelectionForeground(Color.white); //지점과 극장 가져오시는 걸로 바꾸어야됨 ↓
+	 * 
+	 * } if(obj==jt_date) { dateIndex = jt_date.getSelectedRow(); dateChoice =
+	 * jt_date.getValueAt(dateIndex, 0).toString();
+	 * jt_date.setSelectionBackground(Color.gray);
+	 * jt_date.setSelectionForeground(Color.white); //데이터 가져오시는 걸로 바꾸어야됨 ↓
+	 * jsp_time.setVisible(true); jl_timeLock.setVisible(false);
+	 * 
+	 * } if(obj==jt_time) { timeIndex = jt_time.getSelectedRow(); timeChoice =
+	 * jt_time.getValueAt(timeIndex, 0).toString(); //데이터 가져오시는 걸로 바꾸어야됨 ↓
+	 * jt_time.setSelectionBackground(Color.gray);
+	 * jt_time.setSelectionForeground(Color.white);
+	 * 
 
-	
+	 * } }
+	 * 
+	 * @Override public void mouseEntered(MouseEvent e) {}
+	 * 
+	 * @Override public void mouseExited(MouseEvent e) {}
+	 * 
+	 * @Override public void mousePressed(MouseEvent e) {}
+	 * 
+	 * @Override public void mouseReleased(MouseEvent e) {}
+	 */
 	public static void main(String[] args) {
 		MaxMovieView mmv = new MaxMovieView();
-		mmv.jl_logo_small.setVisible(true);
 		mmv.jp_lv.setVisible(false);
+		mmv.jp_mrv.setVisible(true);
+		mmv.jp_mrv.jp_mcv.setVisible(true);
+		mmv.jp_mrv.jp_scv.setVisible(false);
+		mmv.jp_mrv.jp_pv.setVisible(false);
 		mmv.jp_mv.setVisible(false);
-		mmv.jp_scv.setVisible(false);
+		mmv.jp_mv.jp_thv.setVisible(false);
+		mmv.jp_mv.jp_miv.setVisible(false);
+		mmv.jp_mv.jp_muv.setVisible(false);
 		mmv.jp_rv.setVisible(false);
-		mmv.jp_mcv.setVisible(true);
-		mmv.getContentPane().revalidate();
-		mmv.getContentPane().repaint();
-		new MovieChoiceView(mmv.em);
+
+		
+		mmv.jl_logo_small.setVisible(true);
+		mmv.jl_nickInfo.setVisible(true);
+		mmv.jl_nickInfoEnd.setVisible(true);
+		mmv.jbt_logout.setVisible(true);
+		mmv.jbt_myPage.setVisible(true);
+		mmv.jbt_ticketing.setVisible(true);
+		
 	}
 }
