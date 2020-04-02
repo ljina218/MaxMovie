@@ -41,7 +41,7 @@ public class MovieServerThread extends Thread{
 	public MovieServerThread(MovieServer ms) {
 		this.ms = ms;
 		ms.globalist.add(this);
-		ms.movieList = ctrl.sendAll(ms.movieList);//서버에 3일치 영화정보 저장
+		//ms.movieList = ctrl.sendAll(ms.movieList);//서버에 3일치 영화정보 저장
 		try {
 			oos = new ObjectOutputStream(ms.socket.getOutputStream());
 			ois = new ObjectInputStream(ms.socket.getInputStream());
@@ -60,25 +60,62 @@ public class MovieServerThread extends Thread{
 		}
 	}
 	
+	//영화 시간 조건 메소드
+	public int checkTime (String time) {
+		int result = 0;
+		//[1]스케줄에 있는 영화 시간
+		StringTokenizer token = new StringTokenizer(time, ":");//시와 분으로 쪼개기
+		char[] scheduledhour = token.nextToken().toCharArray();
+		char[] scheduledmin = token.nextToken().toCharArray();
+		String sethour = null;
+		if(scheduledhour[0]==0){//시 앞에 붙은 0 떼어내기
+			sethour = scheduledhour[1]+"";
+		}else {
+			sethour = scheduledhour[0]+""+scheduledhour[1]; 
+		}
+		String setmin = null;
+		if(scheduledmin[0]==0){//분 앞에 붙은 0 떼어내기
+			setmin = scheduledmin[1]+"";
+		}else {
+			setmin = scheduledmin[0]+""+scheduledmin[1]; 
+		}
+		int hour = Integer.parseInt(sethour);//시와 분을 string에서 int 형으로 바꾸기
+		int min = Integer.parseInt(setmin);
+		//[2]현재 시간에서 30분 빼기
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.MINUTE, -30);//30분 전까지만 예매가능
+		int nowhour = now.get(Calendar.HOUR_OF_DAY);
+		int nowmin = now.get(Calendar.MINUTE);
+		//[3]비교
+		if(hour>=nowhour) {//시가 아직 안지났고
+			if(min>=nowmin) {//분이 아직 안지났다면,
+				result=1;
+			}
+		}
+		return result;
+	}
+	
 	//영화 선택 리스트 전달 메소드
-	public void choiceMoive() {
+	public void choiceMoive(int MovieProtocol) {
 		for(int i=0; i<ms.movieList.size(); i++) {
-			if(tVO.getMovie_name().equals(ms.movieList.get(i).get("M_TITLE"))||
-					tVO.getLoc().equals(ms.movieList.get(i).get("T_LOC"))||
-						tVO.getTheater().equals(ms.movieList.get(i).get("T_NAME"))||
-							tVO.getMovie_date().equals(ms.movieList.get(i).get(""))||
-								tVO.getMovie_time().equals(ms.movieList.get(i).get(""))||
-									tVO.getMovie_screen().equals(ms.movieList.get(i).get(""))){
-				String age = ms.movieList.get(i).get("M_AGE").toString();//
-				String title = ms.movieList.get(i).get("M_TITLE").toString();
-				String loc = ms.movieList.get(i).get("T_LOC").toString();
-				String theater = ms.movieList.get(i).get("T_NAME").toString();
-				String date = ms.movieList.get(i).get("S_DATE").toString();
-				String time = ms.movieList.get(i).get("S_TIME").toString();
-				String screen = ms.movieList.get(i).get("SC_NAME").toString();
-				String mchoice_msg = MovieProtocol.SELECT_MOVIE+"#"+age+"#"+title+"#"+
-											loc+"#"+theater+"#"+date+"#"+time+"#"+screen;
-				this.send(mchoice_msg);
+			String title = ms.movieList.get(i).get("M_TITLE").toString();
+			String loc = ms.movieList.get(i).get("T_LOC").toString();
+			String theater = ms.movieList.get(i).get("T_NAME").toString();
+			String date = ms.movieList.get(i).get("S_DATE").toString();
+			String time = ms.movieList.get(i).get("S_TIME").toString();
+			String screen = ms.movieList.get(i).get("SC_NAME").toString();
+			int result = checkTime(time);
+			if(result==1) {//상영시간이 30분 전이고....
+				if(tVO.getMovie_name().equals(title)||
+						tVO.getLoc().equals(loc)||
+							tVO.getTheater().equals(theater)||
+								tVO.getMovie_date().equals(date)||
+									tVO.getMovie_time().equals(time)||
+										tVO.getMovie_screen().equals(screen)){
+					String msg = MovieProtocol+"#"+title+"#"+
+							loc+"#"+theater+"#"+date+"#"+time+"#"+screen;
+					this.send(msg);	
+				}
 			}
 		}
 	}
@@ -110,9 +147,6 @@ public class MovieServerThread extends Thread{
 				Calendar newDay = Calendar.getInstance();//새로운 오늘 날짜정보에서
 				//어제날짜 뽑기[형식:20200325]
 				newDay.add(Calendar.DAY_OF_MONTH, -1);
-				int year = newDay.get(Calendar.YEAR);
-				int month = newDay.get(Calendar.WEEK_OF_MONTH)-1;
-				int day = newDay.get(Calendar.DAY_OF_MONTH);
 				String yesterday = ms.setTimer(newDay, "날짜");
 				for(int i=0; i<ms.movieList.size(); i++) {
 					/*
@@ -253,16 +287,20 @@ public class MovieServerThread extends Thread{
 					tVO = null;
 					tVO = new TicketingVO();
 					for(int i=0; i<ms.movieList.size(); i++) {
-						String age = ms.movieList.get(i).get("M_AGE").toString();//
+						String age = ms.movieList.get(i).get("M_AGE").toString();
 						String title = ms.movieList.get(i).get("M_TITLE").toString();
 						String loc = ms.movieList.get(i).get("T_LOC").toString();
 						String theater = ms.movieList.get(i).get("T_NAME").toString();
 						String date = ms.movieList.get(i).get("S_DATE").toString();
 						String time = ms.movieList.get(i).get("S_TIME").toString();
 						String screen = ms.movieList.get(i).get("SC_NAME").toString();
-						String movielist_msg = MovieProtocol.SELECT+"#"+age+"#"+title+"#"+
-													loc+"#"+theater+"#"+date+"#"+time+"#"+screen;
-						this.send(movielist_msg);
+						int result = checkTime(time);//상영 시간 30분 전까지만 예약이 가능하도록 하는 조건.....
+						if(result==1) {
+							System.out.println("상영시간 멀었음, 예약 가능");
+							String movielist_msg = MovieProtocol.SELECT+"#"+age+"#"+title+"#"+
+									loc+"#"+theater+"#"+date+"#"+time+"#"+screen;
+							this.send(movielist_msg);	
+						}
 					}
 				}
 				case MovieProtocol.SELECT_MOVIE:{//영화선택
@@ -270,21 +308,21 @@ public class MovieServerThread extends Thread{
 					if(choiceMovie!=null){
 						tVO.setMovie_name(choiceMovie);
 					}
-					choiceMoive();
+					choiceMoive(MovieProtocol.SELECT_MOVIE);
 				}
 				case MovieProtocol.SELECT_LOCAL:{//지역선택
 					String choiceLoc = st.nextToken();
 					if(choiceLoc!=null){
 						tVO.setLoc(choiceLoc);
 					}
-					choiceMoive();
+					choiceMoive(MovieProtocol.SELECT_LOCAL);
 				}
 				case MovieProtocol.SELECT_SCR:{//지점명선택
 					String choiceTheater = st.nextToken();
 					if(choiceTheater!=null){
 						tVO.setTheater(choiceTheater);
 					}
-					choiceMoive();
+					choiceMoive( MovieProtocol.SELECT_SCR);
 				}
 				case MovieProtocol.SELECT_DATE:{//관, 시간선택
 					String choiceScr = st.nextToken();
@@ -293,7 +331,7 @@ public class MovieServerThread extends Thread{
 						tVO.setMovie_time(choiceTime);
 						tVO.setMovie_screen(choiceScr);
 					}
-					choiceMoive();
+					choiceMoive(MovieProtocol.SELECT_DATE);
 				}
 				case MovieProtocol.SELECT_SEAT:{//좌석선택
 					TicketingVO pVO = tVO;

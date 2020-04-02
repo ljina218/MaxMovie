@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,25 +21,47 @@ public class MovieDao {
 	CallableStatement cstmt = null;
 	
 	/*************************************************************************************************************************
-	 * 결제-예매완료 정보 DB저장 프로시저 메소드 
+	 * 결제-예매완료 정보 DB저장 및 seat테이블의 pay_status UPDATE 프로시저 처리 메소드 
 	 * @param 결제버튼 클릭시 예매정보 담은 ticketingVO (pay_status : 1)
-	 * @return 메세지 반환 : "-1" 실패. OR "1" - 성공
+	 * @return 
 	 *************************************************************************************************************************/
-	/*public String proc_payTicket(List<TicketingVO> ptVO) {
-		String msg = null;
+	public void proc_payTicket(List<TicketingVO> ptList) {
+		List<TicketingVO> tList = ptList;
 		con = dbMgr.getConnection();
-		try {
-			cstmt = con.prepareCall("{call proc_checkID(?,?)}");
-			cstmt.setString(1, p_id);
-			cstmt.registerOutParameter(2, java.sql.Types.VARCHAR);
-			rs = cstmt.executeQuery();
-			msg = cstmt.getString(2);
-		} catch (SQLException e) {
-			System.out.println("proc_checkID() Exception : " + e.toString());
-			e.printStackTrace();
+		for(TicketingVO tvo: tList) {
+			try {
+				cstmt = con.prepareCall("{call proc_payTicket(?,?,?,?,?,?,?,?,?,?)}");
+				cstmt.setString(1, tvo.getMem_id());
+				cstmt.setString(2, tvo.getMovie_name());
+				cstmt.setString(3, tvo.getTheater());
+				cstmt.setString(4, tvo.getMovie_screen());
+				cstmt.setString(5, tvo.getScreen_seat());
+				cstmt.setString(6, tvo.getMovie_date());
+				cstmt.setString(7, tvo.getMovie_time());
+				cstmt.registerOutParameter(8, java.sql.Types.VARCHAR);
+				cstmt.registerOutParameter(9, java.sql.Types.NUMERIC);
+				cstmt.registerOutParameter(10, java.sql.Types.NUMERIC);
+				cstmt.execute();
+				String seatTableName = cstmt.getString(8);
+				int theater_code = cstmt.getInt(9);
+				int scr_code = cstmt.getInt(10);
+				System.out.println("seat table 이름 : "+ seatTableName);
+				System.out.println("seat_code 이름 : "+ tvo.getScreen_seat());
+				System.out.println("theater_code 이름 : "+ theater_code);
+				System.out.println("scr_code 이름 : "+  scr_code);
+				/////////////////////////////함수 호출
+				cstmt = null;
+				cstmt = con.prepareCall("{call update_seat(?,?)}");
+				cstmt.setString(1, seatTableName);
+				cstmt.setString(2, tvo.getScreen_seat());
+				cstmt.execute();
+			} catch (SQLException e) {
+				System.out.println("proc_checkID() Exception : " + e.toString());
+				e.printStackTrace();
+			}
 		}
-		return msg;
-	}*/
+	}
+	
 	/*************************************************************************************************************************
 	 * 로그인 프로시저 메소드 
 	 * @param LoginView에서 입력된 사용자 아이디 p_id와 비밀번호 p_pw
@@ -322,34 +345,53 @@ public class MovieDao {
 		*/
 		//박미경 : proc_login() & proc_checkID() : 함수 단위 테스트 코드입니다.
 		MovieDao md = new MovieDao();
+		
+		List<TicketingVO> list = new ArrayList<>();
+		TicketingVO tvo = new TicketingVO();
+		tvo.setMem_id("test");
+		tvo.setMovie_name("작은아씨들");
+		tvo.setTheater("서면점");
+		tvo.setMovie_screen("1관");
+		tvo.setScreen_seat("f1");
+		tvo.setMovie_date("20200402");
+		tvo.setMovie_time("19:00");
+		list.add(tvo);
+		md.proc_payTicket(list);
+		
+		
+		
+		
+		
+		
+		/*
 		String nickname = null;
 		//로그인 테스트
 		nickname = md.proc_login("cloudsky7", "1234");
 		System.out.println(nickname);
-//		MemberVO mvo = md.proc_login("cloudsky7", "1234");
-//		System.out.println(mvo.getResult());
+		MemberVO mvo = md.proc_login("cloudsky7", "1234");
+		System.out.println(mvo.getResult());
 		
-//		String msg = null;
-//		msg = md.proc_checkID("clou7");
-//		System.out.println(msg);
-//		
-//		MemberVO mVO = new MemberVO();
-//		mVO.setMem_id("mimitest");
-//		mVO.setMem_email("2222@gmail.com");
-//		mVO.setMem_nickname("hhhha");
-//		int result = 0;
-////		result = md.insertUser(mVO);
-////		result = md.updateUser(mVO);
-//		System.out.println(result);
-//		
-//		TicketingVO tVO = new TicketingVO();
-//		tVO.setMem_id("cloudsky7");
-//		List<TicketingVO> tList = null;
-//		tList = md.showMyticket(tVO);
-//		for(TicketingVO rMap : tList) {
-//			System.out.println(rMap.getTicketing_code());
-//		}
+		String msg = null;
+		msg = md.proc_checkID("clou7");
+		System.out.println(msg);
 		
+		MemberVO mVO = new MemberVO();
+		mVO.setMem_id("mimitest");
+		mVO.setMem_email("2222@gmail.com");
+		mVO.setMem_nickname("hhhha");
+		int result = 0;
+			result = md.insertUser(mVO);
+			result = md.updateUser(mVO);
+		System.out.println(result);
+		
+		TicketingVO tVO = new TicketingVO();
+		tVO.setMem_id("cloudsky7");
+		List<TicketingVO> tList = null;
+		tList = md.showMyticket(tVO);
+		for(TicketingVO rMap : tList) {
+			System.out.println(rMap.getTicketing_code());
+		}
+		*/
 	}
 	
 }

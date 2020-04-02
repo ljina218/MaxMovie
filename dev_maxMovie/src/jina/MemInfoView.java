@@ -1,4 +1,4 @@
-package maxmovie;
+package jina;
 
 
 import java.awt.Color;
@@ -39,10 +39,10 @@ public class MemInfoView extends JPanel {
 		
 		/*************************************************
 		 * 아이디랑 비번 불일치시
-		 * jl_pw_warning.setVisible(false);
+		 * jl_pw_warning.setVisible(true);
 		 * 
 		 * 일치시
-		 * jl_pw_warning.setVisible(true);
+		 * jl_pw_warning.setVisible(false);
 		 *************************************************/
 		jl_pw_warning.setVisible(false);
 		jpf_pw.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));

@@ -11,8 +11,8 @@ public class MovieController {
 	final String CHECK_ID = "중복검사";
 	final String INSERT_JOIN = "회원가입";
 	final String UPDATE = "회원정보수정";
-	final String SELECT_MY = "회원정보"; //회원정보조회
-	final String SELECT_TICKET = "예매내역"; //예매내역조회
+	final String SELECT_MY = "회원정보";//회원정보조회
+	final String SELECT_TICKET = "예매내역";//예매내역조회
 	final String SELECT_MOVIE = "영화선택";
 	final String SELECT_SCR = "극장선택";
 	final String SELECT_DATE = "날짜선택";
@@ -28,6 +28,7 @@ public class MovieController {
 	 * @return SELECT_LOGIN => "사용자 nickname" OR "-1" OR "2" 반환
 	 * 			CHECK_ID 	=> 메세지 반환
 	 ***********************************************************************/
+	
 	public MemberVO control(MemberVO pmVO) {
 		MemberVO rmVO = new MemberVO();
 		//반환할 VO : 파라미터VO와 구분짓기 위해 인스턴스화
@@ -63,7 +64,6 @@ public class MovieController {
 	 ***********************************************************************/
 	public List<TicketingVO> control(TicketingVO ptVO) {
 		List<TicketingVO> ticket_list = new Vector<>();
-		TicketingVO rtVO = new TicketingVO();
 		String command = ptVO.getCommand();
 		System.out.println("control(ptVO) - command : " + command);
 		if(SELECT_TICKET.equals(command)) {
@@ -77,17 +77,17 @@ public class MovieController {
 	 * @param List<TicketingVO> =>한사람의 여러 좌석 예매정보를 저장한 List
 	 * @return 
 	 ***********************************************************************/
-	public List<TicketingVO> control(List<TicketingVO> tVOList) {
-		List<TicketingVO> ticket_list = new Vector<>();
-		TicketingVO rtVO = new TicketingVO();
-		System.out.println("control(pmVO) - command : " + tVOList.get(index).getCommand());
-		
-	}
+//	public List<TicketingVO> control(List<TicketingVO> tVOList) {
+//		List<TicketingVO> ticket_list = new Vector<>();
+//		TicketingVO rtVO = new TicketingVO();
+//		System.out.println("control(pmVO) - command : " + tVOList.get(index).getCommand());
+//		
+//	}
 	
 	
 	public List<Map<String, Object>> sendAll(String date) {//서버 켰을 때
 		List<Map<String, Object>> rList = null;
-		rList = dao.refreshMovieAll(date);
+		//rList = dao.refreshMovieAll(date);
 		return rList;
 	}
 	

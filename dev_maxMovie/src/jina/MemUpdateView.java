@@ -1,4 +1,4 @@
-package maxmovie;
+package jina;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -59,10 +59,10 @@ public class MemUpdateView extends JPanel  {
 //		현접속유저 정보(수정불가한)
 //		jl_pageInfoLeft.setText(em.mmv.mem_nick);
 //		jl_mem_id.setText(em.mmv.mem_nick);
-//		jl_mem_month.setText(em.mmv.mem_nick);
-//		jl_mem_day.setText(em.mmv.mem_nick);	
-//		jl_mem_gender.setText(em.mmv.mem_nick);
-
+//		jl_mem_name.setText(em.mmv.mem_name);
+//		String birth = em.mmv.mem_birth;
+//		char[] births = birth.toCharArray();
+		
 		jl_pageInfoLeft.setText("kong");
 		jl_mem_id.setText("cloudsky7");
 		jl_mem_name.setText("박미경");
@@ -205,5 +205,6 @@ public class MemUpdateView extends JPanel  {
 		jpf_pw.addKeyListener(em);
 		jtf_nick.addKeyListener(em);
 	}	
+	
 
 }

@@ -1,4 +1,4 @@
-package maxmovie;
+package jina;
 
 public class MovieProtocol {
 	//로그인

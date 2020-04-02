@@ -1,4 +1,4 @@
-package maxmovie;
+package jina;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -24,9 +24,9 @@ public class MyPageView extends JPanel{
 	JPanel						jp_center			= new JPanel();
 	public MyPageView(EventMapping em) {
 		this.em = em;
-		jp_thv				= new TicketHistoryView(em);
 		jp_miv				= new MemInfoView(em);
 		jp_muv				= new MemUpdateView(em);
+		jp_thv				= new TicketHistoryView(em);
 		initDisplay();
 	}
 	public void initDisplay() {
@@ -41,8 +41,8 @@ public class MyPageView extends JPanel{
 		jp_miv.setBounds(310, 150, 920, 440);
 		jp_muv.setBounds(310, 150, 920, 440);
 		jp_center.setBackground(new Color(215, 215, 215));
-		jp_thv.setVisible(true);
-		jp_miv.setVisible(false);
+		jp_thv.setVisible(false);
+		jp_miv.setVisible(true);
 		jp_muv.setVisible(false);
 		jbt_thv.setFont(new Font("굴림체", Font.BOLD, 12));
 		jbt_thv.setBackground(new Color(52, 152, 219));
@@ -81,13 +81,14 @@ public class MyPageView extends JPanel{
 		this.add(jp_center);
 	}
 	
+	/*
 	public static void main(String[] args) {
 		MaxMovieView mmv = new MaxMovieView();
 		mmv.jl_logo_small.setVisible(true);
-		mmv.jp_lv.setVisible(false);
-		mmv.jp_mcv.setVisible(false);
-		mmv.jp_scv.setVisible(false);
-		mmv.jp_rv.setVisible(false);
+		//mmv.jp_lv.setVisible(false);
+		//mmv.jp_mcv.setVisible(false);
+		//mmv.jp_scv.setVisible(false);
+		//mmv.jp_rv.setVisible(false);
 		mmv.jp_mv.setVisible(true);
 		
 		mmv.jl_logo_small.setVisible(true);
@@ -100,4 +101,5 @@ public class MyPageView extends JPanel{
 		
 		MyPageView mpv = new MyPageView(mmv.em);
 	}
+	*/
 }

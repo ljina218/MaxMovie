@@ -8,16 +8,7 @@ import javax.swing.JOptionPane;
 
 public class ClientThread extends Thread{
 	
-	/*to 미경언니
-		언니, 
-		로그인 성공시 넘어오는 아이디와 닉네임을 
-		mmv.em으로 접근해서 EventMapping 클래스 전변에 있는 
-		myid, mynickname에 저장해주세여~~
-	* dear 진아
-	* 	EventMapping 전변에 mynick만 저장
-	* 	myid는 로그인시 입력값은 전변에 저장해야함
-	* 	EventMapping 전변에 저장한 두 값은 mypage에서 쓰일 것
-	*/
+
 	MaxMovieView mmv = null;
 	
 	boolean stop = false;
@@ -25,6 +16,21 @@ public class ClientThread extends Thread{
 	public ClientThread(MaxMovieView mmv) {
 		this.mmv = mmv;
 	}
+	
+	//화면전환 할 때 사용하는 제어 메소드
+	public void display(boolean lv, boolean mv, 
+							boolean miv,boolean muv, boolean thv, 
+									boolean mcv, boolean sc, boolean rv) {
+		mmv.jp_lv.setVisible(lv);//로그인
+		mmv.jp_mv.setVisible(mv);//마이페이지-틀뷰
+		mmv.jp_mv.jp_miv.setVisible(miv);//마이페이지-비밀번호입력뷰
+		mmv.jp_mv.jp_muv.setVisible(muv);//마이페이지-회원정보수정뷰
+		mmv.jp_mv.jp_thv.setVisible(thv);//마이페이지-영화내역뷰
+		mmv.jp_mcv.setVisible(mcv);//영화선택뷰
+		mmv.jp_scv.setVisible(sc);//좌석선택뷰
+		mmv.jp_rv.setVisible(rv);//결제뷰
+	}
+		
 	
 	//서버로부터 메세지를 듣고 뷰에 변화를 주는 메소드
 	@Override
@@ -46,14 +52,16 @@ public class ClientThread extends Thread{
 					if(login_result==null){//로그인 성공시 result값엔 저장값 없음
 						mmv.jp_lv.jl_id_warning.setVisible(false);
 						mmv.jp_lv.jl_pw_warning.setVisible(false);
-						mmv.em.mynickname = st.nextToken();
+						mmv.mem_nick = st.nextToken();
 						//moviechoiceView 화면전환메소드 호출
-						mmv.em.display(false, false, false, false, false, true, false, false);
+						display(false, false, false, false, false, true, false, false);
 					}else {//로그인 실패시 "-1" or "2"
 						if(login_result=="-1") {
 							mmv.jp_lv.jtf_id.setText("");
 							mmv.jp_lv.jpf_pw.setText("");
 							mmv.jp_lv.jl_id_warning.setText("아이디가 존재하지 않습니다.");;
+							/////////////////////////////
+							mmv.socket.close();
 						}
 						else if(login_result=="2") {
 							mmv.jp_lv.jtf_id.setText("");
@@ -94,7 +102,7 @@ public class ClientThread extends Thread{
 					tVO.setTicketing_code(st.nextToken());
 					v.add(tVO);
 					mmv.jp_mv.jp_thv.dtm_history.addRow(v);
-					mmv.em.display(false, false, false, false, true, false, false, false);
+					display(false, false, false, false, true, false, false, false);
 				}
 				case MovieProtocol.MY_INFO:{//회원 정보조회
 					//회원정보 조회와 수정을 같은 화면으로 사용하고 있다. 
@@ -110,16 +118,16 @@ public class ClientThread extends Thread{
 					mmv.jp_mv.jp_muv.jl_mem_day.setText(tempDate.substring(6, 7));
 					mmv.jp_mv.jp_muv.jl_mem_gender.setText(st.nextToken());
 					mmv.jp_mv.jp_muv.jtf_email.setText(st.nextToken());
-					mmv.em.display(false, false, true, false, false, false, false, false);
+					display(false, false, true, false, false, false, false, false);
 				}
 				case MovieProtocol.INFO_UPDATE:{//회원 정보수정
 					String update_result = st.nextToken();
 					if(update_result=="1") {
 						JOptionPane.showConfirmDialog(mmv, "회원정보가 수정되었습니다."); 
-						mmv.em.display(false, false, false, true, false, false, false, false);
+						display(false, false, false, true, false, false, false, false);
 					} else {
 						JOptionPane.showConfirmDialog(mmv, "회원정보 수정 중 오류가 발생했습니다. 재시도해주세요.");
-						mmv.em.display(false, false, false, true, false, false, false, false);
+						display(false, false, false, true, false, false, false, false);
 					}
 					
 				}
