@@ -24,6 +24,21 @@ public class ClientThread extends Thread{
 	public ClientThread(MaxMovieView mmv) {
 		this.mmv = mmv;
 	}
+	//화면전환 할 때 사용하는 제어 메소드
+		public void display(boolean lv, boolean mrv, boolean mcv, boolean scv, boolean pv,
+							boolean mv, boolean thv, boolean miv, boolean muv, boolean rv) {
+			mmv.jp_lv.setVisible(lv);
+			mmv.jp_mrv.setVisible(mrv);
+			mmv.jp_mrv.jp_mcv.setVisible(mcv);
+			mmv.jp_mrv.jp_scv.setVisible(scv);
+			mmv.jp_mrv.jp_pv.setVisible(pv);
+			mmv.jp_mv.setVisible(mv);
+			mmv.jp_mv.jp_thv.setVisible(thv);
+			mmv.jp_mv.jp_miv.setVisible(miv);
+			mmv.jp_mv.jp_muv.setVisible(muv);
+			mmv.jp_rv.setVisible(rv);
+		}
+	
 	
 	
 	
@@ -36,8 +51,10 @@ public class ClientThread extends Thread{
 		mmv.jp_mv.jp_miv.setVisible(miv);//마이페이지-비밀번호입력뷰
 		mmv.jp_mv.jp_muv.setVisible(muv);//마이페이지-회원정보수정뷰
 		mmv.jp_mv.jp_thv.setVisible(thv);//마이페이지-영화내역뷰
-		mmv.jp_mcv.setVisible(mcv);//영화선택-틀뷰
-		mmv.jp_scv.setVisible(sc);//좌석선택뷰
+		mmv.jp_mrv.setVisible(mcv);//영화선택뷰
+		mmv.jp_mrv.jp_mcv.setVisible(mcv);//영화선택뷰
+		mmv.jp_mrv.jp_pv.setVisible(mcv);//영화선택뷰
+		mmv.jp_mrv.jp_scv.setVisible(mcv);//영화선택뷰
 		mmv.jp_rv.setVisible(rv);//결제뷰
 	}
 		

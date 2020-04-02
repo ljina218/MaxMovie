@@ -8,6 +8,8 @@ import java.awt.event.ItemListener;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.StringTokenizer;
@@ -23,7 +25,7 @@ import javax.swing.border.TitledBorder;
 
 import com.sun.mail.iap.Protocol;
 
-public class EventMapping implements ActionListener, ItemListener, KeyListener{
+public class EventMapping implements ActionListener, ItemListener, KeyListener, MouseListener{
 
 	
 	/* 뷰 패널들의 변수이름
@@ -63,6 +65,9 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	int birth = 0;
 	int email = 0;
 	int email_r = 0;
+	
+	
+	
 	
 	//인증메일을 위한 선언부
 	SendMail sm = null;
@@ -331,6 +336,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 			String login_pw = pwToString(mmv.jp_lv.jpf_pw.getPassword());
 			String login_msg = MovieProtocol.LOGIN+"#"+login_id+"#"+login_pw;
 			send(login_msg);//아이디,비번 검사해주세요
+			
 		}
 		//회원가입 ----------------------------------------------------------------------------------------
 		else if(obj==mmv.jp_lv.jbt_join) {//회원가입하고 싶니?
@@ -364,7 +370,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				send(join_msg);//db에 넣어주세요
 				//refreshCheck();//기준모두초기화@@@@@@@
 				//jv.dispose();//가입화면 닫기
-							
+
 			}else {
 				JOptionPane.showMessageDialog(jv, "입력한 정보가 부적합합니다. 다시 확인해주세요.");
 			}
@@ -571,9 +577,10 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 			mmv.jp_mv.jp_miv.setVisible(true);//마이페이지-비밀번호입력뷰
 			mmv.jp_mv.jp_muv.setVisible(false);
 			mmv.jp_mv.jp_thv.setVisible(false);
-			mmv.jp_mcv.setVisible(false);
-			mmv.jp_scv.setVisible(false);
-			mmv.jp_rv.setVisible(false);
+			mmv.jp_mrv.setVisible(false);
+			mmv.jp_mrv.jp_mcv.setVisible(false);
+			mmv.jp_mrv.jp_pv.setVisible(false);
+			mmv.jp_mrv.jp_scv.setVisible(false);
 		}
 	}
 	
@@ -773,6 +780,36 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	@Override
 	public void keyTyped(KeyEvent e) {
 
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}

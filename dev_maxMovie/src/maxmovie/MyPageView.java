@@ -12,7 +12,6 @@ import javax.swing.border.TitledBorder;
 
 public class MyPageView extends JPanel{
 
-
 	JButton						jbt_thv				= new JButton("예매화면");
 	JButton						jbt_miv				= new JButton("회원정보");
 	
@@ -71,33 +70,40 @@ public class MyPageView extends JPanel{
 		 * jp_miv.setVisible(false);
 		 * jp_muv.setVisible(true);
 		 ***************************************************************/
-		jbt_thv.addActionListener(em);
-		jbt_miv.addActionListener(em);
 		this.add(jbt_thv);
 		this.add(jbt_miv);
-		this.add(jp_muv);
-		this.add(jp_thv);
 		this.add(jp_miv);
+		this.add(jp_thv);
+		this.add(jp_muv);
 		this.add(jp_center);
+		jp_miv.setVisible(false);
+		jp_muv.setVisible(true);
+		jp_thv.setVisible(false);
+	}
+	public void eventMapping() {
+		jbt_thv.addActionListener(em);
+		jbt_miv.addActionListener(em);
 	}
 	
 	public static void main(String[] args) {
 		MaxMovieView mmv = new MaxMovieView();
-		mmv.jl_logo_small.setVisible(true);
 		mmv.jp_lv.setVisible(false);
-		mmv.jp_mcv.setVisible(false);
-		mmv.jp_scv.setVisible(false);
-		mmv.jp_rv.setVisible(false);
+		mmv.jp_mrv.setVisible(false);
+		mmv.jp_mrv.jp_mcv.setVisible(false);
+		mmv.jp_mrv.jp_scv.setVisible(false);
+		mmv.jp_mrv.jp_pv.setVisible(false);
 		mmv.jp_mv.setVisible(true);
-		
+		mmv.jp_mv.jp_thv.setVisible(true);
+		mmv.jp_mv.jp_miv.setVisible(false);
+		mmv.jp_mv.jp_muv.setVisible(false);
+		mmv.jp_rv.setVisible(false);
+
 		mmv.jl_logo_small.setVisible(true);
 		mmv.jl_nickInfo.setVisible(true);
-		mmv.jl_nickInfo.setText("kong");
 		mmv.jl_nickInfoEnd.setVisible(true);
 		mmv.jbt_logout.setVisible(true);
 		mmv.jbt_myPage.setVisible(true);
 		mmv.jbt_ticketing.setVisible(true);
-		
-		MyPageView mpv = new MyPageView(mmv.em);
+	
 	}
 }
