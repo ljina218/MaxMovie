@@ -78,10 +78,34 @@ public class MemInfoView extends JPanel {
 		this.add(jpf_pw);
 		this.add(jl_pw_warning);
 		this.add(jbt_modified);
-		jpf_pw.addActionListener(em);
+	}
+	
+	public void eventMapping() {
+		jpf_pw.addKeyListener(em);
 		jbt_modified.addActionListener(em);
 	}
 
-	
+	public static void main(String[] args) {
+		MaxMovieView mmv = new MaxMovieView();
+		mmv.jp_lv.setVisible(false);
+		mmv.jp_mrv.setVisible(false);
+		mmv.jp_mrv.jp_mcv.setVisible(false);
+		mmv.jp_mrv.jp_scv.setVisible(false);
+		mmv.jp_mrv.jp_pv.setVisible(false);
+		mmv.jp_mv.setVisible(true);
+		mmv.jp_mv.jp_thv.setVisible(false);
+		mmv.jp_mv.jp_miv.setVisible(true);
+		mmv.jp_mv.jp_muv.setVisible(false);
+		mmv.jp_rv.setVisible(false);
+		
+		
+		mmv.jl_logo_small.setVisible(true);
+		mmv.jl_nickInfo.setVisible(true);
+		mmv.jl_nickInfoEnd.setVisible(true);
+		mmv.jbt_logout.setVisible(true);
+		mmv.jbt_myPage.setVisible(true);
+		mmv.jbt_ticketing.setVisible(true);
+		
+	}
 
 }

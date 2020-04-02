@@ -8,6 +8,8 @@ import java.awt.event.ItemListener;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.StringTokenizer;
@@ -22,7 +24,7 @@ import javax.swing.border.TitledBorder;
 
 import com.sun.mail.iap.Protocol;
 
-public class EventMapping implements ActionListener, ItemListener, KeyListener{
+public class EventMapping implements ActionListener, ItemListener, KeyListener, MouseListener{
 
 	
 	//진아수정
@@ -54,6 +56,9 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	int email = 0;
 	int email_r = 0;
 	
+	
+	
+	
 	//인증메일을 위한 선언부
 	SendMail sm = null;
 	long start_millisecond = 0;//메일 보낸 시간
@@ -75,14 +80,6 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 		}
 	}
 	
-	//화면전환 할 때 사용하는 제어 메소드
-	public void display(boolean lv, boolean mv, boolean mcv, boolean sc, boolean rv) {
-		mmv.jp_lv.setVisible(lv);
-		mmv.jp_mv.setVisible(mv);
-		mmv.jp_mcv.setVisible(mcv);
-		mmv.jp_scv.setVisible(sc);
-		mmv.jp_rv.setVisible(rv);
-	}
 	
 	/**************************************************************************************************
 	 * 회원가입 기준체크를 위한 메소드들.....
@@ -219,10 +216,12 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 		Object obj = e.getSource();
 		//로그인 -----------------------------------------------------------------------------------------
 		if(obj==mmv.jp_lv.jbt_login) {//로그인이 하고 싶어요
-			String login_id = mmv.jp_lv.jtf_id.getText();
-			String login_pw = pwToString(mmv.jp_lv.jpf_pw.getPassword());
-			String msg = MovieProtocol.LOGIN+"#"+login_id+"#"+login_pw;
-			send(msg);//아이디,비번 검사해주세요
+			display(false, false, false, false, false, true, false, true, false, false);
+//			
+//			String login_id = mmv.jp_lv.jtf_id.getText();
+//			String login_pw = pwToString(mmv.jp_lv.jpf_pw.getPassword());
+//			String msg = MovieProtocol.LOGIN+"#"+login_id+"#"+login_pw;
+//			send(msg);//아이디,비번 검사해주세요
 		}
 		//회원가입 ----------------------------------------------------------------------------------------
 		else if(obj==mmv.jp_lv.jbt_join) {//회원가입하고 싶니?
@@ -255,7 +254,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				String msg = MovieProtocol.JOIN+"#"+name+"#"+id+"#"+pw+"#"+email+"#"+nickName+"#"+birth+"#"+gender;
 				send(msg);//db에 넣어주세요
 				jv.dispose();//가입화면 닫고
-				display(false, true, false, false, false);//영화 예매화면으로 가자~
+//				display(false, true, false, false, false);//영화 예매화면으로 가자~
 			}else {
 				JOptionPane.showMessageDialog(jv, "입력한 정보가 부적합합니다. 다시 확인해주세요.");
 			}
@@ -269,7 +268,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 		jl_id_success.setText(" 사용 가능한 아이디입니다.");
 		jl_id_warning2.setText(" 7~12자이어야하고 특수문자는 입력할 수 없습니다.");
 		 */
-		if(obj==jv.jbt_id_check) {//아이디 중복 체크하고 싶니?
+		else if(obj==jv.jbt_id_check) {//아이디 중복 체크하고 싶니?
 			jv.jl_id_warning.setVisible(false);
 			jv.jl_id_warning2.setVisible(false);
 			jv.jl_id_success.setVisible(false);
@@ -531,6 +530,36 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	@Override
 	public void keyTyped(KeyEvent e) {
 
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
