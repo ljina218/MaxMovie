@@ -331,7 +331,6 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 			String login_pw = pwToString(mmv.jp_lv.jpf_pw.getPassword());
 			String login_msg = MovieProtocol.LOGIN+"#"+login_id+"#"+login_pw;
 			send(login_msg);//아이디,비번 검사해주세요
-			//@@@@@@@@ mmv.mem_id = 아이디; mmv.mem_nickname = 닉네임;
 		}
 		//회원가입 ----------------------------------------------------------------------------------------
 		else if(obj==mmv.jp_lv.jbt_join) {//회원가입하고 싶니?
@@ -390,7 +389,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				id = 0;
 			}else {//기준통과했다면, 이제 중복 체크 해줄게
 				String chektid_msg = MovieProtocol.CHECK_ID+"#"+inputId;
-				/*서버가 트이면~~~~~
+				/*@@@@@@@@@
 				send(chektid_msg);//중복체크해주세요
 				*/
 				id=1;
@@ -469,11 +468,6 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 			if(pw.length()>0) {
 				String info_msg = MovieProtocol.MY_INFO+"#"+pw;
 				this.send(info_msg);
-				/*@@@@@@@@
-				 * mmv.jp_mv.jp_miv.setVisible(false);
-				mmv.jp_mv.jp_muv.setVisible(true);
-				mmv.jp_mv.jp_miv.jpf_pw.setText("");
-				 */
 			}else {
 				JOptionPane.showMessageDialog(mmv.jp_mv.jp_miv, "비밀번호를 입력해주세요.");
 			}
@@ -568,7 +562,6 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 		else if(obj==mmv.jbt_logout) {//로그아웃 하려고?
 			String logout_msg = MovieProtocol.LOGOUT+"#"+mmv.mem_id;
 			this.send(logout_msg);
-			//@@@@@@@@ mmv.mem_id = null;
 		}
 		else if(obj==mmv.jbt_myPage||obj==mmv.jp_mv.jbt_thv) {//마이페이지로 가보자 => 영화예매내역
 			String mypageView_msg = MovieProtocol.MY_MOVIE+"#"+mmv.mem_id;
