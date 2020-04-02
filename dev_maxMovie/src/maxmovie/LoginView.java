@@ -107,6 +107,10 @@ public class LoginView extends JPanel{
  * 		○#login 17	jl_pw_warning.setVisible(false);
  * 		○#login 18	jl_pw_warning.setVisible(true);
  *******************************************************/
+
+		jl_id_warning.setVisible(true);
+		jl_pw_warning.setVisible(true);
+		
 		jtf_id.addActionListener(em);
 		jpf_pw.addActionListener(em);
 		jbt_join.addActionListener(em);

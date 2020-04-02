@@ -203,6 +203,5 @@ public class MemUpdateView extends JPanel  {
 		jbt_back.addActionListener(em);
 		jbt_modifiedGo.addActionListener(em);
 	}	
-	
 
 }

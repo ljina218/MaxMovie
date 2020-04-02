@@ -42,7 +42,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	 * MemInfoView miv = new MemInfoView();
 		MemUpdateView muv = new MemUpdateView();
 		TicketHistoryView thv = new TicketHistoryView();
-	 */
+	*/
 	
 	//회원 아이디 및 닉네임
 	String myid = null;
@@ -320,10 +320,10 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
 		Object obj = e.getSource();
 		//로그인 -----------------------------------------------------------------------------------------
 		if(obj==mmv.jp_lv.jbt_login) {//로그인이 하고 싶어요
+			myid = mmv.jp_lv.jtf_id.getText(); //아이디 전역변수 저장
 			String login_id = mmv.jp_lv.jtf_id.getText();
 			String login_pw = pwToString(mmv.jp_lv.jpf_pw.getPassword());
 			String msg = MovieProtocol.LOGIN+"#"+login_id+"#"+login_pw;
@@ -387,8 +387,8 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				id = 0;
 			}else {//기준통과했다면, 이제 중복 체크 해줄게
 				String msg = MovieProtocol.CHECK_ID+"#"+inputId;
-				/*서버가 트이면~~~~~
 				send(msg);//중복체크해주세요
+				/* ClientThread에서 처리할 코드
 				if(id==1) {//사용가능한 아이디라면
 					jv.jl_id_success.setVisible(true);
 					id =1;
@@ -396,9 +396,9 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 					jv.jl_id_warning.setVisible(true);
 					id=0;
 				}
-				*/
 				id=1;
 				jv.jl_id_success.setVisible(true);
+				*/
 			}
 		}
 		

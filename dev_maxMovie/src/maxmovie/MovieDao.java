@@ -62,25 +62,44 @@ public class MovieDao {
 		}
 		return sth;
 	}
+	//테스트용
+//	public MemberVO proc_login(String p_id, String p_pw) {
+//		MemberVO mvo = new MemberVO();
+//		String sth = null;
+//		con = dbMgr.getConnection();
+//		try {
+//			cstmt = con.prepareCall("{call proc_logintest(?,?,?)}");
+//			cstmt.setString(1, p_id);
+//			cstmt.setString(2, p_pw);
+//			cstmt.registerOutParameter(3, java.sql.Types.VARCHAR);
+//			rs = cstmt.executeQuery();
+//			sth = cstmt.getString(3);
+//			mvo.setMem_nickname(sth);
+//		} catch (SQLException e) {
+//			System.out.println("proc_login() Exception : " + e.toString());
+//			e.printStackTrace();
+//		}
+//		return mvo;
+//	}
 	/*************************************************************************************************************************
 	 * 아이디 중복검사 프로시저 메소드 
 	 * @param JoinView에서 입력된 사용자 아이디 p_id
-	 * @return 메세지 반환 : "-1" - 동일아이디 존재. OR "1" - 사용 가능
+	 * @return 결과값 반환 : "-1" - 동일아이디 존재. OR "1" - 사용 가능
 	 *************************************************************************************************************************/
 	public String proc_checkID(String p_id) {
-		String msg = null;
+		String result = null;
 		con = dbMgr.getConnection();
 		try {
 			cstmt = con.prepareCall("{call proc_checkID(?,?)}");
 			cstmt.setString(1, p_id);
 			cstmt.registerOutParameter(2, java.sql.Types.VARCHAR);
 			rs = cstmt.executeQuery();
-			msg = cstmt.getString(2);
+			result = cstmt.getString(2);
 		} catch (SQLException e) {
 			System.out.println("proc_checkID() Exception : " + e.toString());
 			e.printStackTrace();
 		}
-		return msg;
+		return result;
 	}
 	/*************************************************************************************************************************
 	 * 회원가입 DB로 INSERT하는 메소드 
@@ -126,13 +145,13 @@ public class MovieDao {
 			pstmt.setString(1, pmVO.mem_id);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				rmVO.setMem_name(rs.getString("mem_name"));
 				rmVO.setMem_id(rs.getString("mem_id"));
 				rmVO.setMem_pw("mem_pw");
-				rmVO.setMem_email(rs.getString("mem_email"));
+				rmVO.setMem_name(rs.getString("mem_name"));
 				rmVO.setMem_nickname("mem_nickname");
 				rmVO.setMem_birth("mem_birth");
 				rmVO.setMem_gender("mem_gender");
+				rmVO.setMem_email(rs.getString("mem_email"));
 			}
 		} catch (SQLException e) {
 			System.out.println(e.toString());
@@ -189,9 +208,9 @@ public class MovieDao {
 	 * @param 사용자 아이디값이 담긴 MemberVO 
 	 * @return DB에서 조회한 해당 사용자의 예매내역(1건 이상)을 모두 담은 List<Map<String, Object>>
 	 *************************************************************************************************************************/
-		public List<Map<String, Object>> showMyticket(MemberVO pmVO) {
-			List<Map<String, Object>> ticketList = new Vector<Map<String,Object>>();
-			Map<String, Object> rMap = null;
+		public List<TicketingVO> showMyticket(TicketingVO ptVO) {
+			List<TicketingVO> ticket_List = new Vector<TicketingVO>();
+			TicketingVO rtVO = null;
 			con = dbMgr.getConnection();
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT mem_id, movie_title, theater_name");
@@ -201,25 +220,25 @@ public class MovieDao {
 	        sql.append(" WHERE mem_id=?			                ");
 			try {
 				pstmt = con.prepareStatement(sql.toString());
-				pstmt.setString(1, pmVO.mem_id);
+				pstmt.setString(1, ptVO.getMem_id());
 				rs = pstmt.executeQuery();
 				while(rs.next()) {
-					rMap = new HashMap<String, Object>();
-					rMap.put("mem_id", rs.getString("mem_id"));
-					rMap.put("movie_title", rs.getString("movie_title"));
-					rMap.put("theater_name", rs.getString("theater_name"));
-					rMap.put("theater_loc", rs.getString("theater_loc"));
-					rMap.put("scr_name", rs.getString("scr_name"));
-					rMap.put("show_date", rs.getString("show_date"));
-					rMap.put("show_time", rs.getString("show_time"));
-					rMap.put("ticketing_code", rs.getString("ticketing_code"));
-					ticketList.add(rMap);
+					rtVO = new TicketingVO();
+					rtVO.setMem_id(rs.getString("mem_id"));
+					rtVO.setMovie_name(rs.getString("movie_title"));
+					rtVO.setTheater(rs.getString("theater_name"));
+					rtVO.setLoc(rs.getString("theater_loc"));
+					rtVO.setMovie_screen(rs.getString("scr_name"));
+					rtVO.setMovie_date(rs.getString("show_date"));
+					rtVO.setMovie_time(rs.getString("show_time"));
+					rtVO.setTicketing_code(rs.getString("ticketing_code"));
+					ticket_List.add(rtVO);
 				}
 			} catch (SQLException e) {
 				System.out.println(e.toString());
 				e.printStackTrace();
 			}
-			return ticketList;
+			return ticket_List;
 		}
 /*************************************************************************************************************************
  * Server가 On이 되거나 24시가 되면 데이터베이스에 있는 상영시간표를 가져오는 메소드
@@ -301,34 +320,36 @@ public class MovieDao {
 							+"\n");
 		}
 		*/
-		/*
 		//박미경 : proc_login() & proc_checkID() : 함수 단위 테스트 코드입니다.
 		MovieDao md = new MovieDao();
 		String nickname = null;
-		nickname = md.proc_login("clousky7", "1234");
+		//로그인 테스트
+		nickname = md.proc_login("cloudsky7", "1234");
 		System.out.println(nickname);
+//		MemberVO mvo = md.proc_login("cloudsky7", "1234");
+//		System.out.println(mvo.getResult());
 		
-		String msg = null;
-		msg = md.proc_checkID("clou7");
-		System.out.println(msg);
+//		String msg = null;
+//		msg = md.proc_checkID("clou7");
+//		System.out.println(msg);
+//		
+//		MemberVO mVO = new MemberVO();
+//		mVO.setMem_id("mimitest");
+//		mVO.setMem_email("2222@gmail.com");
+//		mVO.setMem_nickname("hhhha");
+//		int result = 0;
+////		result = md.insertUser(mVO);
+////		result = md.updateUser(mVO);
+//		System.out.println(result);
+//		
+//		TicketingVO tVO = new TicketingVO();
+//		tVO.setMem_id("cloudsky7");
+//		List<TicketingVO> tList = null;
+//		tList = md.showMyticket(tVO);
+//		for(TicketingVO rMap : tList) {
+//			System.out.println(rMap.getTicketing_code());
+//		}
 		
-		MemberVO mVO = new MemberVO();
-		mVO.setMem_id("mimitest");
-		mVO.setMem_email("2222@gmail.com");
-		mVO.setMem_nickname("hhhha");
-		int result = 0;
-//		result = md.insertUser(mVO);
-//		result = md.updateUser(mVO);
-		System.out.println(result);
-		
-		mVO = new MemberVO();
-		mVO.setMem_id("cloudsky7");
-		List<Map<String, Object>> tList = null;
-		tList = md.showMyticket(mVO);
-		for(Map<String, Object> rMap : tList) {
-			System.out.println(rMap.get("movie_title"));
-		}
-		*/
 	}
 	
 }
