@@ -76,11 +76,16 @@ public class AdminServer extends JFrame implements Runnable{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Object obj = e.getSource();
+				//나가기를 눌렀니?
 				if(obj==jbtn_exit) {
 					try {
+						if(socket != null) socket.close();
+						if(server != null) server.close();
 						System.exit(0);
 					} catch (Exception e2) {
 						System.out.println(e2.toString());
+						e2.printStackTrace();
+					} finally {
 					}
 				}
 			}
@@ -109,7 +114,7 @@ public class AdminServer extends JFrame implements Runnable{
 		adminList = new Vector<>();
 		boolean isStop = false;
 		try {
-			server = new ServerSocket(5001);
+			server = new ServerSocket(5100);
 			jta_log.append("*Start* Server Ready Complet\n\n");
 			while(!isStop) {
 				socket = server.accept();

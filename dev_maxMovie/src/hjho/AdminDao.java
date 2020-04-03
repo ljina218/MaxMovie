@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Vector;
 
 import com.util.DBConnectionMgr;
 
-public class Admin_Dao {
+public class AdminDao {
 	//오라클과의 통신을 위한 선언부 
 	DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
 	Connection 			con 	= null;
@@ -19,7 +20,7 @@ public class Admin_Dao {
 	ResultSet 			rs 		= null;
 	CallableStatement 	cstmt 	= null;
 	
-	AdminMovieVO mVO = null;
+	AdminShowtimeVO astVO = null;
 	
 	String admin_name = null;
 	String admin_t_loc = null;
@@ -85,8 +86,8 @@ public class Admin_Dao {
 		return admin_name;
 	}
 
-	public List<AdminMovieVO> refreshData(String adminID) {
-		List<AdminMovieVO> r_movieList = null;
+	public List<AdminShowtimeVO> refreshData(String adminID) {
+		List<AdminShowtimeVO> r_movieList = null;
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT SC_NAME, M_TITLE, S_DATE, S_TIME  ");
 		sql.append("   FROM V_ADMIN_SHOWTIME                  ");
@@ -97,14 +98,44 @@ public class Admin_Dao {
 			pstmt = con.prepareStatement(sql.toString());
 			pstmt.setString(1, adminID);
 			rs = pstmt.executeQuery();
-			r_movieList = new Vector<AdminMovieVO>();
+			r_movieList = new Vector<AdminShowtimeVO>();
 			while(rs.next()) {
-				mVO = new AdminMovieVO();
-				mVO.setScr_name(rs.getString("SC_NAME"));
-				mVO.setMovie_title(rs.getString("M_TITLE"));
-				mVO.setShow_date(rs.getString("S_DATE"));
-				mVO.setShow_time(rs.getString("S_TIME"));
-				r_movieList.add(mVO);
+				astVO = new AdminShowtimeVO();
+				astVO.setScrName(rs.getString("SC_NAME"));
+				astVO.setMovieTitle(rs.getString("M_TITLE"));
+				astVO.setDate(rs.getString("S_DATE"));
+				astVO.setTime(rs.getString("S_TIME"));
+				r_movieList.add(astVO);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			dbMgr.freeConnection(con, pstmt, rs);
+		}
+		return r_movieList;
+	}
+	public List<AdminShowtimeVO> selectData(String adminID, String currentYMD) {
+		List<AdminShowtimeVO> r_movieList = null;
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SC_NAME, M_TITLE, S_DATE, S_TIME  ");
+		sql.append("   FROM V_ADMIN_SHOWTIME                  ");
+		sql.append("  WHERE a_id   = ?                          ");
+		sql.append("    AND S_DATE = ?                          ");
+		sql.append("  ORDER BY s_date, s_time                 ");
+		try {
+			con = dbMgr.getConnection();
+			pstmt = con.prepareStatement(sql.toString());
+			pstmt.setString(1, adminID);
+			pstmt.setString(2, "20200324");//실제 데이터는 currentYMD 으로 넣는다
+			rs = pstmt.executeQuery();
+			r_movieList = new Vector<AdminShowtimeVO>();
+			while(rs.next()) {
+				astVO = new AdminShowtimeVO();
+				astVO.setScrName(rs.getString("SC_NAME"));
+				astVO.setMovieTitle(rs.getString("M_TITLE"));
+				astVO.setDate(rs.getString("S_DATE"));
+				astVO.setTime(rs.getString("S_TIME"));
+				r_movieList.add(astVO);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -120,8 +151,81 @@ public class Admin_Dao {
 //		for (Map<String, Object> map : rList) {
 //			System.out.println(map.get("First"));
 //			System.out.println(map.get("Second"));
-//			
 //		}
 //	}
 
+	public String insertShowtime(AdminShowtimeVO astVO) {
+		String msg = null;
+		int i = 0;
+		try {
+			con = dbMgr.getConnection();
+			cstmt = con.prepareCall("{ call proc_showtime_insert(?,?,?,?,?,?,?,?,?)}");
+			cstmt.setString(++i, astVO.getId());
+			cstmt.setString(++i, astVO.getMovieTitle());
+			cstmt.setString(++i, astVO.getScrName());
+			cstmt.setString(++i, astVO.getYy());
+			cstmt.setString(++i, astVO.getMm());
+			cstmt.setString(++i, astVO.getDd());
+			cstmt.setString(++i, astVO.getHh24());
+			cstmt.setString(++i, astVO.getMi() );
+			cstmt.registerOutParameter(++i, java.sql.Types.VARCHAR);
+			cstmt.execute();
+			msg = cstmt.getString(i);
+		} catch (SQLException se) {
+			se.printStackTrace();
+		} catch (Exception e) {
+			msg = "오라클서버에서 처리 오류";
+			e.printStackTrace();
+		} finally {
+			dbMgr.freeConnection(con, cstmt);
+		}
+		return msg;
+	}
+
+	public String deleteShowtime(AdminShowtimeVO astVO) {
+		String msg = null;
+		int i = 0;
+		try {
+			con = dbMgr.getConnection();
+			cstmt = con.prepareCall("{ call proc_showtime_delete(?,?,?,?,?,?,?,?,?)}");
+			cstmt.setString(++i, astVO.getId());
+			cstmt.setString(++i, astVO.getMovieTitle());
+			cstmt.setString(++i, astVO.getScrName());
+			cstmt.setString(++i, astVO.getYy());
+			cstmt.setString(++i, astVO.getMm());
+			cstmt.setString(++i, astVO.getDd());
+			cstmt.setString(++i, astVO.getHh24());
+			cstmt.setString(++i, astVO.getMi() );
+			cstmt.registerOutParameter(++i, java.sql.Types.VARCHAR);
+			cstmt.execute();
+			msg = cstmt.getString(i);
+		} catch (SQLException se) {
+			se.printStackTrace();
+		} catch (Exception e) {
+			msg = "오라클서버에서 처리 오류";
+			e.printStackTrace();
+		} finally {
+			dbMgr.freeConnection(con, cstmt);
+		}
+		return msg;
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

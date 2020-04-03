@@ -13,8 +13,8 @@ public class AdminServerThread  extends Thread {
 	ObjectOutputStream oos = null;
 	ObjectInputStream ois = null;
 	String adminID = null;//현재서버에 입장한 클라이언트 스레드 ID 저장
-	List<AdminMovieVO> movieList = null;
-	Admin_Dao aDao = new Admin_Dao();
+	List<AdminShowtimeVO> astVO = null;
+	AdminDao aDao = new AdminDao();
 	
 	/***************************************************************
 	 * 생성자 : admin이 들어오면 그 admin에 상영시간표를 보내주고 
@@ -30,22 +30,24 @@ public class AdminServerThread  extends Thread {
 			ois = new ObjectInputStream(admin.getInputStream());
 			String msg = (String)ois.readObject();
 			String time = as.setTimer()+" "+as.setHMS();
-			as.jta_log.append("*LOG*"+time+" : "+msg+"\n");
+			as.jta_log.append("*LOGIN*"+time+" : "+msg+"\n");
 			StringTokenizer st = new StringTokenizer(msg,"#");
 			st.nextToken(); // 프로토콜
 			adminID = st.nextToken();
-			movieList = aDao.refreshData(adminID);
-			for(AdminMovieVO mVO: movieList) {
-				this.send(100 
-						 +"#"+mVO.getScr_name()
-						 +"#"+mVO.getMovie_title()
-						 +"#"+mVO.getShow_date()
-						 +"#"+mVO.getShow_time());
+			List<Map<String, Object>> rList = null;
+			rList = aDao.ins(adminID);
+			for(Map<String, Object> map: rList) {
+				this.send(AdminProtocol._DIAL 
+						 +"#"+map.get("First")
+						 +"#"+map.get("Second"));
 			}
 			as.adminList.add(this);
 			int inwon = as.adminList.size();
 			as.jta_log.append("    - 현재 인원 수  : "+inwon+" 명 \n\n");
 			as.jta_log.setCaretPosition(as.jta_log.getDocument().getLength());
+		} catch (NullPointerException ne) {
+			System.out.println("오라클서버에 접속할수 없습니다.");
+			ne.printStackTrace();
 		} catch (Exception e) {
 			System.out.print("[AdminServerThread]-생성자:");
 			e.printStackTrace();
@@ -53,8 +55,10 @@ public class AdminServerThread  extends Thread {
 	}
 	//현재입장해 있는 친구들 모두에게 메시지 전송하기 구현
 	public void broadCasting(String msg) {
-		for (AdminServerThread ast : as.adminList) {
-			ast.send(msg);
+		synchronized (this) {
+			for (AdminServerThread ast : as.adminList) {
+				ast.send(msg);
+			}
 		}
 	}
 	//클라이언트에게 말하기 구현
@@ -62,6 +66,7 @@ public class AdminServerThread  extends Thread {
 		try {
 			oos.writeObject(msg);
 		} catch (Exception e) {
+			System.out.println(e.toString());
 			e.printStackTrace();
 		}
 	}	
@@ -82,30 +87,78 @@ public class AdminServerThread  extends Thread {
 					protocol = Integer.parseInt(st.nextToken());
 				}
 				switch(protocol) {
-					case Admin_Protocol._REFRESH: {
+					case AdminProtocol._LOGIN: {
+
+					} break;
+					
+					//그 지점의 전체 사영시간표를 보내준다.
+					case AdminProtocol._REFRESH: {
 						adminID = st.nextToken();
-						movieList = aDao.refreshData(adminID);
-						for(AdminMovieVO mVO: movieList) {
-							this.send(Admin_Protocol._REFRESH
-									 +"#"+mVO.getScr_name()
-									 +"#"+mVO.getMovie_title()
-									 +"#"+mVO.getShow_date()
-									 +"#"+mVO.getShow_time());
+						astVO = aDao.refreshData(adminID);
+						for(AdminShowtimeVO mVO: astVO) {
+							this.send(AdminProtocol._REFRESH
+									 +"#"+mVO.getScrName()
+									 +"#"+mVO.getMovieTitle()
+									 +"#"+mVO.getDate()
+									 +"#"+mVO.getTime());
+						}
+					} break;
+					
+					//오늘날짜의 상영시간표를 보내준다.
+					case AdminProtocol._SEL: {
+						adminID = st.nextToken();
+						String currentYMD = st.nextToken();
+						astVO = aDao.selectData(adminID, currentYMD);
+						for(AdminShowtimeVO mVO: astVO) {
+							this.send(AdminProtocol._REFRESH
+									 +"#"+mVO.getScrName()
+									 +"#"+mVO.getMovieTitle()
+									 +"#"+mVO.getDate()
+									 +"#"+mVO.getTime());
 						}
 					} break;
 					//클라이언트에서 상영시간표 추가하기를 눌렀니?
-					case Admin_Protocol._INS: {
+					case AdminProtocol._DIAL: {
 						adminID = st.nextToken();
 						List<Map<String, Object>> rList = null;
 						rList = aDao.ins(adminID);
 						for(Map<String, Object> map: rList) {
-							this.send(Admin_Protocol._INS 
+							this.send(AdminProtocol._DIAL 
 									 +"#"+map.get("First")
 									 +"#"+map.get("Second"));
 						}
 					} break;
+					//다이얼 로그에서 상영시간표 추가 정보를 줬니?
+					case AdminProtocol._INS: {
+						AdminShowtimeVO astVO = new AdminShowtimeVO();
+						astVO.setId(st.nextToken());
+						astVO.setMovieTitle(st.nextToken());
+						astVO.setScrName(st.nextToken());
+						astVO.setYy(st.nextToken());
+						astVO.setMm(st.nextToken());
+						astVO.setDd(st.nextToken());
+						astVO.setHh24(st.nextToken());
+						astVO.setMi(st.nextToken());
+						String r_msg = aDao.insertShowtime(astVO);
+							this.send(AdminProtocol._INS 
+									 +"#"+r_msg);
+					} break;
+					case AdminProtocol._DEL: {
+						AdminShowtimeVO astVO = new AdminShowtimeVO();
+						astVO.setId(st.nextToken());
+						astVO.setMovieTitle(st.nextToken());
+						astVO.setScrName(st.nextToken());
+						astVO.setYy(st.nextToken());
+						astVO.setMm(st.nextToken());
+						astVO.setDd(st.nextToken());
+						astVO.setHh24(st.nextToken());
+						astVO.setMi(st.nextToken());
+						String r_msg = aDao.deleteShowtime(astVO);
+							this.send(AdminProtocol._DEL 
+									 +"#"+r_msg);
+					} break;
 					//종료
-					case Admin_Protocol._EXIT: {
+					case AdminProtocol._EXIT: {
 						String nickName = st.nextToken();
 						//String message = st.nextToken();
 						as.jta_log.append("   -INFO : "+as.socket+"\n");
@@ -116,7 +169,7 @@ public class AdminServerThread  extends Thread {
 				as.jta_log.setCaretPosition(as.jta_log.getDocument().getLength());
 			}			
 		} catch (Exception e) {
-			System.out.print("[TalkClientThread]-run():");
+			System.out.print("[AdminServerThread]-run():");
 			e.printStackTrace();
 		}
 	}
