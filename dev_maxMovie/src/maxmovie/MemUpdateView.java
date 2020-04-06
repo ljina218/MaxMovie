@@ -208,7 +208,7 @@ public class MemUpdateView extends JPanel  {
 		jbt_email_r.addActionListener(em);
 		jbt_back.addActionListener(em);
 		jbt_modifiedGo.addActionListener(em);
-	}
+	}	
 	
 	public static void main(String[] args) {
 		MaxMovieView mmv = new MaxMovieView();

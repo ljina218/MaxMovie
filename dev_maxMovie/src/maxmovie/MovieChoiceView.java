@@ -4,11 +4,15 @@ package maxmovie;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import java.util.StringTokenizer;
+
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -20,7 +24,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+
+
+	
+
 public class MovieChoiceView extends JPanel implements TableCellRenderer{
+	Vector<String> arealist = null;//지역정보 저장
+	Vector<String> loclist = null;//지점정보 저장
 
 	
 	JLabel				jl_movie				= new JLabel("영화");
@@ -29,10 +39,11 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	JLabel				jl_time					= new JLabel("시간");
 	JLabel				jl_timeLock				= new JLabel("영화 극장 날짜를 선택해 주세요.");
 
-	ImageIcon			grade19					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade19.png");
-	ImageIcon			grade15					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade15.png");
-	ImageIcon			grade12					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade12.png");
-	ImageIcon			grade0					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade0.png");
+	ImageIcon			_19					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade19.png");
+	ImageIcon			_15					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade15.png");
+	ImageIcon			_12					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade12.png");
+	ImageIcon			_0					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade0.png");
+
 	
 	String 				col_movie[] 			= {"이용등급", "영화"};
 	Object 				data_movie[][] 			= new String[0][2];
@@ -48,24 +59,32 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
                     return String.class;
             }
         }
+        public boolean isCellEditable(int rowIndex, int mColindex) {
+			return false;
+		}
     };
 	JTable 				jt_movie 				= new JTable(dtm_movie);
 	JScrollPane 		jsp_movie 				= new JScrollPane(jt_movie);
 	
 	String 				col_local[] 			= {"지역"};
 	String 				data_local[][] 			= new String[0][1];
+
 	DefaultTableModel 	dtm_local  				= new DefaultTableModel(data_local, col_local);
+
 	JTable 				jt_local				= new JTable(dtm_local);
 	JScrollPane 		jsp_local				= new JScrollPane(jt_local);
 	
 	String 				col_theater[] 			= {"지점"};
 	String 				data_theater[][] 		= new String[0][1];
+
 	DefaultTableModel 	dtm_theater  			= new DefaultTableModel(data_theater, col_theater);
+
 	JTable 				jt_theater 			= new JTable(dtm_theater);
 	JScrollPane 		jsp_theater 			= new JScrollPane(jt_theater);
 	
 	String 				col_date[] 				= {"날짜"};
 	String 				data_date[][] 			= new String[0][1];
+
 	DefaultTableModel 	dtm_date 				= new DefaultTableModel(data_date, col_date);
 	JTable 				jt_date 				= new JTable(dtm_date);
 	JScrollPane 		jsp_date 				= new JScrollPane(jt_date);
@@ -227,6 +246,7 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		}
 		
 
+
 		jl_movie.setBounds(200, 25, 295, 32);
 		jl_locThe.setBounds(500, 25, 346, 32);
 		jl_date.setBounds(850, 25, 146, 32);
@@ -240,6 +260,7 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	
 		jl_timeLock.setVisible(true);
 		
+		jsp_movie.getViewport().setBackground(Color.white);
 		jt_movie.setBackground(Color.white);
 		DefaultTableCellRenderer dtcr_movie = new DefaultTableCellRenderer();
 		jt_movie.getColumn("영화").setCellRenderer(dtcr_movie);
@@ -249,7 +270,6 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		jt_movie.setShowHorizontalLines(false);
 		jt_movie.getColumn("이용등급").setPreferredWidth(26);
 		jt_movie.getColumn("영화").setPreferredWidth(268);
-
 		jt_local.setBackground(Color.white);
 		DefaultTableCellRenderer dtcr_local = new DefaultTableCellRenderer() {
 			@Override
@@ -294,6 +314,7 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		jt_theater.setShowVerticalLines(false);
 		jt_theater.setShowHorizontalLines(false);
 		
+		jsp_date.getViewport().setBackground(Color.white);
 		jt_date.setBackground(Color.white);
 		DefaultTableCellRenderer dtcr_date = new DefaultTableCellRenderer();
 		dtcr_date.setHorizontalAlignment(JLabel.CENTER);
@@ -303,6 +324,7 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		jt_date.setShowVerticalLines(false);
 		jt_date.setShowHorizontalLines(false);
 		
+		jsp_time.getViewport().setBackground(Color.white);
 		jt_time.setBackground(Color.white);
 		DefaultTableCellRenderer dtcr_time = new DefaultTableCellRenderer();
 		dtcr_time.setHorizontalAlignment(JLabel.CENTER);
@@ -344,6 +366,8 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		this.add(jsp_date);
 		this.add(jsp_time);
 		this.add(jl_timeLock);
+		
+		
 	}
 	
 
@@ -390,6 +414,7 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	 */
 	public static void main(String[] args) {
 		MaxMovieView mmv = new MaxMovieView();
+		
 		mmv.jp_lv.setVisible(false);
 		mmv.jp_mrv.setVisible(true);
 		mmv.jp_mrv.jp_mcv.setVisible(true);

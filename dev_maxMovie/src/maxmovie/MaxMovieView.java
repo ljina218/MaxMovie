@@ -9,9 +9,13 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -23,6 +27,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 public class MaxMovieView extends JFrame{
+	
+	List<Map<String, Object>> movieList = null;
+	
 	//로고들에 사용한 폰트    : Futura XBlk BT
 	//텍스트들에 사용한 폰트 : 굴림체
 	//기본 메인 규격 res.width = 모니터해상도 가로길이,  res.height = 모니터해상도 세로길이
@@ -50,7 +57,7 @@ public class MaxMovieView extends JFrame{
 	};
 	String						mem_id				= "";
 	String						mem_nick			= "";
-	
+
 	JLabel						jl_nickInfo			=	new JLabel();
 	JLabel						jl_nickInfoEnd		=	new JLabel("님");
 	JButton						jbt_logout			=	new JButton("로그아웃");
@@ -68,10 +75,8 @@ public class MaxMovieView extends JFrame{
 	LoginView 					jp_lv 				= new LoginView(em);
 	//마이페이지뷰
 	MyPageView 					jp_mv 				= new MyPageView(em);
-
 	//무비리저레이션뷰
 	MovieReserationView 		jp_mrv 				= new MovieReserationView(em);
-
 	//리절트뷰
 	ResultView 					jp_rv 				= new ResultView(em);
 	
@@ -122,12 +127,12 @@ public class MaxMovieView extends JFrame{
 		jbt_logout.setBorder(new TitledBorder(new LineBorder(Color.white)));
 		jbt_myPage.setBorder(new TitledBorder(new LineBorder(Color.white)));
 		jbt_ticketing.setBorder(new TitledBorder(new LineBorder(Color.white)));
-		jl_logo_small.setVisible(false);
+		jl_logo_small.setVisible(false);//
 		jl_nickInfo.setVisible(false);
 		jl_nickInfoEnd.setVisible(false);
 		jbt_logout.setVisible(false);
 		jbt_myPage.setVisible(false);
-		jbt_ticketing.setVisible(false);
+		jbt_ticketing.setVisible(false);//
 		jtp_south_south.setText("회사소개 (930307)경기도 고양시 덕양구 토당동 양우아파트 102동 502호 대표이사 : 이진아 박미경 이정훈 사업자등록번호 : 501-39-76677-7 호스팅사업자 : CJ올리브네트웍스개인정보보호  \n" +
 							   "책임자 : 이진아 대표이메일 : ljina0218@naver.com 고객센터 : 1588-1588 (04377)서울특별시 용산구 한강대로 23길 55, 아이파크몰 6층(한강로동)\n" +
 							   "호스팅사업자 : CJ 올리브 네트웍스 개인정보 보호 책임자 : 정종민 대표이메일 : cjcgvmaster@cj.netCGV고객센터 : 1544-1122 \n" +
@@ -195,12 +200,10 @@ public class MaxMovieView extends JFrame{
 		this.add("East", jp_east);
 		this.setSize(res.width, res.height);
 		this.setResizable(false);
-
 		this.setVisible(true);		
 
 	}
 	public void eventMapping() {
-
 		jbt_logout.addActionListener(em);
 		jbt_myPage.addActionListener(em);
 		jbt_ticketing.addActionListener(em);
@@ -209,19 +212,19 @@ public class MaxMovieView extends JFrame{
 	public static void main(String[] args) {
 		new MaxMovieView();
 	}
-//	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
-//		try {
-//			socket = new Socket("192.168.0.244",5000);
-//			oos = new ObjectOutputStream(socket.getOutputStream());
-//			ois = new ObjectInputStream(socket.getInputStream());
-//			ClientThread ct = new ClientThread(this);
-//			ct.start();
-//		} catch (UnknownHostException e) {
-//			System.out.println(e.toString());
-//			//e.printStackTrace();
-//		} catch (IOException e) {
-//			System.out.println(e.toString());
-//			//e.printStackTrace();
-//		}
-//	}
+	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
+		try {
+			socket = new Socket("192.168.0.244",5000);
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
+			ClientThread ct = new ClientThread(this);//로그인 성공시
+			ct.start();
+		} catch (UnknownHostException e) {
+			System.out.println(e.toString());
+			//e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println(e.toString());
+			//e.printStackTrace();
+		}
+	}
 }
