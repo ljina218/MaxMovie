@@ -1,4 +1,4 @@
-package maxmovie;
+package jina;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -59,10 +59,10 @@ public class MemUpdateView extends JPanel  {
 //		현접속유저 정보(수정불가한)
 //		jl_pageInfoLeft.setText(em.mmv.mem_nick);
 //		jl_mem_id.setText(em.mmv.mem_nick);
-//		jl_mem_month.setText(em.mmv.mem_nick);
-//		jl_mem_day.setText(em.mmv.mem_nick);	
-//		jl_mem_gender.setText(em.mmv.mem_nick);
-
+//		jl_mem_name.setText(em.mmv.mem_name);
+//		String birth = em.mmv.mem_birth;
+//		char[] births = birth.toCharArray();
+		
 		jl_pageInfoLeft.setText("kong");
 		jl_mem_id.setText("cloudsky7");
 		jl_mem_name.setText("박미경");
@@ -198,37 +198,13 @@ public class MemUpdateView extends JPanel  {
 		this.add(jl_email_r_warning);
 		this.add(jl_email_r_warning2);
 		
-	
-	}
-	
-	public void eventMapping() {
-		jpf_pw.addActionListener(em);
-		jtf_nick.addActionListener(em);
 		jbt_email.addActionListener(em);
 		jbt_email_r.addActionListener(em);
 		jbt_back.addActionListener(em);
 		jbt_modifiedGo.addActionListener(em);
-	}
+		jpf_pw.addKeyListener(em);
+		jtf_nick.addKeyListener(em);
+	}	
 	
-	public static void main(String[] args) {
-		MaxMovieView mmv = new MaxMovieView();
-		mmv.jp_lv.setVisible(false);
-		mmv.jp_mrv.setVisible(false);
-		mmv.jp_mrv.jp_mcv.setVisible(false);
-		mmv.jp_mrv.jp_scv.setVisible(false);
-		mmv.jp_mrv.jp_pv.setVisible(false);
-		mmv.jp_mv.setVisible(true);
-		mmv.jp_mv.jp_thv.setVisible(false);
-		mmv.jp_mv.jp_miv.setVisible(false);
-		mmv.jp_mv.jp_muv.setVisible(true);
-		mmv.jp_rv.setVisible(false);
-		
-		mmv.jl_logo_small.setVisible(true);
-		mmv.jl_nickInfo.setVisible(true);
-		mmv.jl_nickInfoEnd.setVisible(true);
-		mmv.jbt_logout.setVisible(true);
-		mmv.jbt_myPage.setVisible(true);
-		mmv.jbt_ticketing.setVisible(true);
-	}
 
 }

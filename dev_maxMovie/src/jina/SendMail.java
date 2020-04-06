@@ -1,4 +1,4 @@
-package maxmovie;
+package jina;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
@@ -46,8 +46,8 @@ public class SendMail {
 		//Session 클래스의 인스턴스를 생성
 		String smtpServer = "smtp.naver.com"; 
 		int smtpPort = 465;
-		final String sendId = ""; //naver ID
-		final String sendPass = ""; //naver PW
+		final String sendId = "jhleelego@naver.com"; //naver ID
+		final String sendPass = "gksmftkf1"; //naver PW
 		String sendEmailAddress =  "jhleelego@naver.com";
 		Session session = Session.getDefaultInstance(props, new Authenticator(){
 			protected PasswordAuthentication getPasswordAuthentication(){

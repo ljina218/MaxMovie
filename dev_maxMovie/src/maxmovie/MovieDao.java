@@ -19,13 +19,33 @@ public class MovieDao {
 	ResultSet rs = null;
 	CallableStatement cstmt = null;
 	
-/*************************************************************************************************************************
- * 로그인 프로시저 메소드 
- * @param LoginView에서 입력된 사용자 아이디 p_id와 비밀번호 p_pw
- * @return 사용자의 nickname 반환 : 아이디 비밀번호가 모두 맞음
- * 			"-1" 반환 : 아이디가 존재하지 않음
- * 			" 2" 반환 : 비밀번호가 맞지 않음 
- *************************************************************************************************************************/
+	/*************************************************************************************************************************
+	 * 결제-예매완료 정보 DB저장 프로시저 메소드 
+	 * @param 결제버튼 클릭시 예매정보 담은 ticketingVO (pay_status : 1)
+	 * @return 메세지 반환 : "-1" 실패. OR "1" - 성공
+	 *************************************************************************************************************************/
+	/*public String proc_payTicket(List<TicketingVO> ptVO) {
+		String msg = null;
+		con = dbMgr.getConnection();
+		try {
+			cstmt = con.prepareCall("{call proc_checkID(?,?)}");
+			cstmt.setString(1, p_id);
+			cstmt.registerOutParameter(2, java.sql.Types.VARCHAR);
+			rs = cstmt.executeQuery();
+			msg = cstmt.getString(2);
+		} catch (SQLException e) {
+			System.out.println("proc_checkID() Exception : " + e.toString());
+			e.printStackTrace();
+		}
+		return msg;
+	}*/
+	/*************************************************************************************************************************
+	 * 로그인 프로시저 메소드 
+	 * @param LoginView에서 입력된 사용자 아이디 p_id와 비밀번호 p_pw
+	 * @return 사용자의 nickname 반환 : 아이디 비밀번호가 모두 맞음
+	 * 			"-1" 반환 : 아이디가 존재하지 않음
+	 * 			" 2" 반환 : 비밀번호가 맞지 않음 
+	 *************************************************************************************************************************/
 	public String proc_login(String p_id, String p_pw) {
 		String sth = null;
 		con = dbMgr.getConnection();
@@ -42,11 +62,11 @@ public class MovieDao {
 		}
 		return sth;
 	}
-/*************************************************************************************************************************
- * 아이디 중복검사 프로시저 메소드 
- * @param JoinView에서 입력된 사용자 아이디 p_id
- * @return 메세지 반환 : "-1" - 동일아이디 존재. OR "1" - 사용 가능
- *************************************************************************************************************************/
+	/*************************************************************************************************************************
+	 * 아이디 중복검사 프로시저 메소드 
+	 * @param JoinView에서 입력된 사용자 아이디 p_id
+	 * @return 메세지 반환 : "-1" - 동일아이디 존재. OR "1" - 사용 가능
+	 *************************************************************************************************************************/
 	public String proc_checkID(String p_id) {
 		String msg = null;
 		con = dbMgr.getConnection();
@@ -62,12 +82,12 @@ public class MovieDao {
 		}
 		return msg;
 	}
-/*************************************************************************************************************************
- * 회원가입 DB로 INSERT하는 메소드 
- * @param JoinView에서 입력된 사용자 정보값이 모두 담긴 MemberVO
- * @return INSERT 성공 : 1 , INSERT 실패 : 0
- *************************************************************************************************************************/
-	public int insertUser(MemberVO pmVO) {
+	/*************************************************************************************************************************
+	 * 회원가입 DB로 INSERT하는 메소드 
+	 * @param JoinView에서 입력된 사용자 정보값이 모두 담긴 MemberVO
+	 * @return INSERT 성공 : 1 , INSERT 실패 : 0
+	 *************************************************************************************************************************/
+	public String insertUser(MemberVO pmVO) {
 		int result = 0;
 		con = dbMgr.getConnection();
 		StringBuilder sql = new StringBuilder();
@@ -86,13 +106,13 @@ public class MovieDao {
 			System.out.println(e.toString());
 			e.printStackTrace();
 		}
-		return result;
+		return Integer.toString(result);
 	}
-/*************************************************************************************************************************
- * 회원정보 조회(SELECT)하는 메소드 
- * @param 사용자 아이디값이 담긴 MemberVO 
- * @return DB에서 조회한 해당 사용자의 정보를 모두 담은 MemberVO
- *************************************************************************************************************************/
+	/*************************************************************************************************************************
+	 * 회원정보 조회(SELECT)하는 메소드 
+	 * @param 사용자 아이디값이 담긴 MemberVO 
+	 * @return DB에서 조회한 해당 사용자의 정보를 모두 담은 MemberVO
+	 *************************************************************************************************************************/
 	public MemberVO showUserInfo(MemberVO pmVO) {
 		MemberVO rmVO = new MemberVO();
 		con = dbMgr.getConnection();
@@ -120,12 +140,12 @@ public class MovieDao {
 		}
 		return rmVO;
 	}
-/*************************************************************************************************************************
- * 회원정보 수정(UPDATE)하는 메소드 
- * @param 사용자가 수정한 정보값이 담긴 MemberVO 
- * @return UPDATE 성공 : 1 , UPDATE 실패 : 0
- *************************************************************************************************************************/
-	public int updateUser(MemberVO pmVO) {
+	/*************************************************************************************************************************
+	 * 회원정보 수정(UPDATE)하는 메소드 
+	 * @param 사용자가 수정한 정보값이 담긴 MemberVO 
+	 * @return UPDATE 성공 : 1 , UPDATE 실패 : 0
+	 *************************************************************************************************************************/
+	public String updateUser(MemberVO pmVO) {
 		int result = 0;
 		con = dbMgr.getConnection();
 		StringBuilder sql = new StringBuilder();
@@ -162,13 +182,13 @@ public class MovieDao {
 			System.out.println(e.toString());
 			e.printStackTrace();
 		}
-		return result;
+		return Integer.toString(result);
 	}
-/*************************************************************************************************************************
- * 해당 회원의 예매내역(1건 이상)을 조회하는 메소드 
- * @param 사용자 아이디값이 담긴 MemberVO 
- * @return DB에서 조회한 해당 사용자의 예매내역(1건 이상)을 모두 담은 List<Map<String, Object>>
- *************************************************************************************************************************/
+	/*************************************************************************************************************************
+	 * 해당 회원의 예매내역(1건 이상)을 조회하는 메소드 
+	 * @param 사용자 아이디값이 담긴 MemberVO 
+	 * @return DB에서 조회한 해당 사용자의 예매내역(1건 이상)을 모두 담은 List<Map<String, Object>>
+	 *************************************************************************************************************************/
 		public List<Map<String, Object>> showMyticket(MemberVO pmVO) {
 			List<Map<String, Object>> ticketList = new Vector<Map<String,Object>>();
 			Map<String, Object> rMap = null;
@@ -267,7 +287,7 @@ public class MovieDao {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		/* 허준호 : refreshMovieAll() : 함수 단위 테스트 코드입니다.*/
+		/* 허준호 : refreshMovieAll() : 함수 단위 테스트 코드입니다.
 		MovieDao md = new MovieDao();
 		List<Map<String, Object>> movieList = md.refreshMovieAll(new Vector<>());
 		for(Map<String, Object> showtime : movieList) {
@@ -280,7 +300,8 @@ public class MovieDao {
 							+" "+showtime.get("SC_NAME").toString()
 							+"\n");
 		}
-
+		*/
+		/*
 		//박미경 : proc_login() & proc_checkID() : 함수 단위 테스트 코드입니다.
 		String nickname = null;
 		nickname = md.proc_login("clousky7", "1234");
@@ -306,6 +327,7 @@ public class MovieDao {
 		for(Map<String, Object> rMap : tList) {
 			System.out.println(rMap.get("movie_title"));
 		}
+		*/
 	}
 	
 }

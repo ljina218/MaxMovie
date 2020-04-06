@@ -1,4 +1,4 @@
-package maxmovie;
+package jina;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,6 +12,7 @@ import javax.swing.border.TitledBorder;
 
 public class MyPageView extends JPanel{
 
+
 	JButton						jbt_thv				= new JButton("예매화면");
 	JButton						jbt_miv				= new JButton("회원정보");
 	
@@ -23,9 +24,9 @@ public class MyPageView extends JPanel{
 	JPanel						jp_center			= new JPanel();
 	public MyPageView(EventMapping em) {
 		this.em = em;
-		jp_thv				= new TicketHistoryView(em);
 		jp_miv				= new MemInfoView(em);
 		jp_muv				= new MemUpdateView(em);
+		jp_thv				= new TicketHistoryView(em);
 		initDisplay();
 	}
 	public void initDisplay() {
@@ -40,8 +41,8 @@ public class MyPageView extends JPanel{
 		jp_miv.setBounds(310, 150, 920, 440);
 		jp_muv.setBounds(310, 150, 920, 440);
 		jp_center.setBackground(new Color(215, 215, 215));
-		jp_thv.setVisible(true);
-		jp_miv.setVisible(false);
+		jp_thv.setVisible(false);
+		jp_miv.setVisible(true);
 		jp_muv.setVisible(false);
 		jbt_thv.setFont(new Font("굴림체", Font.BOLD, 12));
 		jbt_thv.setBackground(new Color(52, 152, 219));
@@ -70,40 +71,35 @@ public class MyPageView extends JPanel{
 		 * jp_miv.setVisible(false);
 		 * jp_muv.setVisible(true);
 		 ***************************************************************/
-		this.add(jbt_thv);
-		this.add(jbt_miv);
-		this.add(jp_miv);
-		this.add(jp_thv);
-		this.add(jp_muv);
-		this.add(jp_center);
-		jp_miv.setVisible(false);
-		jp_muv.setVisible(true);
-		jp_thv.setVisible(false);
-	}
-	public void eventMapping() {
 		jbt_thv.addActionListener(em);
 		jbt_miv.addActionListener(em);
+		this.add(jbt_thv);
+		this.add(jbt_miv);
+		this.add(jp_muv);
+		this.add(jp_thv);
+		this.add(jp_miv);
+		this.add(jp_center);
 	}
 	
+	/*
 	public static void main(String[] args) {
 		MaxMovieView mmv = new MaxMovieView();
-		mmv.jp_lv.setVisible(false);
-		mmv.jp_mrv.setVisible(false);
-		mmv.jp_mrv.jp_mcv.setVisible(false);
-		mmv.jp_mrv.jp_scv.setVisible(false);
-		mmv.jp_mrv.jp_pv.setVisible(false);
+		mmv.jl_logo_small.setVisible(true);
+		//mmv.jp_lv.setVisible(false);
+		//mmv.jp_mcv.setVisible(false);
+		//mmv.jp_scv.setVisible(false);
+		//mmv.jp_rv.setVisible(false);
 		mmv.jp_mv.setVisible(true);
-		mmv.jp_mv.jp_thv.setVisible(true);
-		mmv.jp_mv.jp_miv.setVisible(false);
-		mmv.jp_mv.jp_muv.setVisible(false);
-		mmv.jp_rv.setVisible(false);
-
+		
 		mmv.jl_logo_small.setVisible(true);
 		mmv.jl_nickInfo.setVisible(true);
+		mmv.jl_nickInfo.setText("kong");
 		mmv.jl_nickInfoEnd.setVisible(true);
 		mmv.jbt_logout.setVisible(true);
 		mmv.jbt_myPage.setVisible(true);
 		mmv.jbt_ticketing.setVisible(true);
-	
+		
+		MyPageView mpv = new MyPageView(mmv.em);
 	}
+	*/
 }

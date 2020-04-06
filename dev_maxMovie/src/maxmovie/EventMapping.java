@@ -8,12 +8,15 @@ import java.awt.event.ItemListener;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.StringTokenizer;
 
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
@@ -22,7 +25,7 @@ import javax.swing.border.TitledBorder;
 
 import com.sun.mail.iap.Protocol;
 
-public class EventMapping implements ActionListener, ItemListener, KeyListener{
+public class EventMapping implements ActionListener, ItemListener, KeyListener, MouseListener{
 
 	
 	/* 뷰 패널들의 변수이름
@@ -45,15 +48,15 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	 */
 	
 	//회원 아이디 및 닉네임
-	String myid = null;
-	String mynickname = null;
+	//String myid = null;
+	//String mynickname = null;
 	
 	//필요한 주소값 선언부
 	MaxMovieView mmv = null;
 	MovieController ctrl = new MovieController();
 	JoinView jv = null;
 	
-	//회원가입 목록별 기준체크를 위한 선언부
+	//회원가입 목록별 기준체크를 위한 선언부 (회원정보 수정 포함)
 	int id = 0;
 	int pw = 0;
 	int name = 0;
@@ -62,6 +65,9 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	int birth = 0;
 	int email = 0;
 	int email_r = 0;
+	
+	
+	
 	
 	//인증메일을 위한 선언부
 	SendMail sm = null;
@@ -85,23 +91,25 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 		}
 	}
 	
-	//화면전환 할 때 사용하는 제어 메소드
-	public void display(boolean lv, boolean mv, 
-							boolean miv,boolean muv, boolean thv, 
-									boolean mcv, boolean sc, boolean rv) {
-		mmv.jp_lv.setVisible(lv);//로그인
-		mmv.jp_mv.setVisible(mv);//마이페이지-틀뷰
-		mmv.jp_mv.jp_miv.setVisible(miv);//마이페이지-비밀번호입력뷰
-		mmv.jp_mv.jp_muv.setVisible(muv);//마이페이지-회원정보수정뷰
-		mmv.jp_mv.jp_thv.setVisible(thv);//마이페이지-영화내역뷰
-		mmv.jp_mcv.setVisible(mcv);//영화선택뷰
-		mmv.jp_scv.setVisible(sc);//좌석선택뷰
-		mmv.jp_rv.setVisible(rv);//결제뷰
-	}
-	
 	/**************************************************************************************************
 	 * 회원가입 기준체크를 위한 메소드들.....
 	 */
+	//기준 모두 초기화 메소드
+	public void refreshCheck() {
+		this.id = 0;
+		this.pw = 0;
+		this.name = 0;
+		this.nickName = 0;
+		this.gender = 0;
+		this.birth = 0;
+		this.email = 0;
+		this.email_r = 0;
+		this.start_millisecond = 0;
+		this.end_millisecond = 0;
+		this.beforeEmail = null;
+		this.afterEmail = null;
+	}
+	
 	//아이디 기준체크 메소드
 	public int checkId (String inputId) {
 		int sum = 0;
@@ -316,7 +324,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	}
 	
 	/**************************************************************************************************
-	 * ActionListener(로그인,회원가입,회원가입-이메일)
+	 * ActionListener(로그인,회원가입,회원가입-이메일,마이페이지,화면전환)
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -326,8 +334,9 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 		if(obj==mmv.jp_lv.jbt_login) {//로그인이 하고 싶어요
 			String login_id = mmv.jp_lv.jtf_id.getText();
 			String login_pw = pwToString(mmv.jp_lv.jpf_pw.getPassword());
-			String msg = MovieProtocol.LOGIN+"#"+login_id+"#"+login_pw;
-			send(msg);//아이디,비번 검사해주세요
+			String login_msg = MovieProtocol.LOGIN+"#"+login_id+"#"+login_pw;
+			send(login_msg);//아이디,비번 검사해주세요
+			
 		}
 		//회원가입 ----------------------------------------------------------------------------------------
 		else if(obj==mmv.jp_lv.jbt_join) {//회원가입하고 싶니?
@@ -357,11 +366,11 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				String birth = jv.choiceYear+""+jv.choiceMonth+""+jv.choiceDay;//[형식]19960218
 				String gender = jv.jcb_genderChoice;
 				//서버스레드로 메세지 전송
-				String msg = MovieProtocol.JOIN+"#"+name+"#"+id+"#"+pw+"#"+email+"#"+nickName+"#"+birth+"#"+gender;
-				send(msg);//db에 넣어주세요
-				System.out.println(msg);
-				jv.dispose();//가입화면 닫고
-				display(false, false, false, false, false, true, false, false);//영화 예매화면으로 가자~
+				String join_msg = MovieProtocol.JOIN+"#"+name+"#"+id+"#"+pw+"#"+email+"#"+nickName+"#"+birth+"#"+gender;
+				send(join_msg);//db에 넣어주세요
+				//refreshCheck();//기준모두초기화@@@@@@@
+				//jv.dispose();//가입화면 닫기
+
 			}else {
 				JOptionPane.showMessageDialog(jv, "입력한 정보가 부적합합니다. 다시 확인해주세요.");
 			}
@@ -375,7 +384,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 		jl_id_success.setText(" 사용 가능한 아이디입니다.");
 		jl_id_warning2.setText(" 7~12자이어야하고 특수문자는 입력할 수 없습니다.");
 		 */
-		if(obj==jv.jbt_id_check) {//아이디 중복 체크하고 싶니?
+		else if(obj==jv.jbt_id_check) {//아이디 중복 체크하고 싶니?
 			jv.jl_id_warning.setVisible(false);
 			jv.jl_id_warning2.setVisible(false);
 			jv.jl_id_success.setVisible(false);
@@ -386,16 +395,9 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				jv.jl_id_warning2.setVisible(true);
 				id = 0;
 			}else {//기준통과했다면, 이제 중복 체크 해줄게
-				String msg = MovieProtocol.CHECK_ID+"#"+inputId;
-				/*서버가 트이면~~~~~
-				send(msg);//중복체크해주세요
-				if(id==1) {//사용가능한 아이디라면
-					jv.jl_id_success.setVisible(true);
-					id =1;
-				}else if(id==-1){//중복되었다면
-					jv.jl_id_warning.setVisible(true);
-					id=0;
-				}
+				String chektid_msg = MovieProtocol.CHECK_ID+"#"+inputId;
+				/*@@@@@@@@@
+				send(chektid_msg);//중복체크해주세요
 				*/
 				id=1;
 				jv.jl_id_success.setVisible(true);
@@ -466,6 +468,123 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				email_r = 0;
 				sm.rnum = null;
 			}
+		}
+		//마이페이지 --------------------------------------------------------------------------------------
+		else if(obj==mmv.jp_mv.jp_miv.jbt_modified) {//회원정보 조회하고 싶어요
+			String pw = pwToString(mmv.jp_mv.jp_miv.jpf_pw.getPassword());//비번을 입력했어요
+			if(pw.length()>0) {
+				String info_msg = MovieProtocol.MY_INFO+"#"+pw;
+				this.send(info_msg);
+			}else {
+				JOptionPane.showMessageDialog(mmv.jp_mv.jp_miv, "비밀번호를 입력해주세요.");
+			}
+		}
+		else if(obj==mmv.jp_mv.jp_muv.jbt_back) {//다시 뒤로! miv로
+			String mypageView_msg = MovieProtocol.MY_MOVIE+"#"+mmv.mem_id;
+			this.send(mypageView_msg);
+		}
+		else if(obj==mmv.jp_mv.jp_muv.jbt_email) {//마이페이지 회원정보 수정- 이메일 입력버튼 눌렀니?
+			String inputemail = mmv.jp_mv.jp_muv.jtf_email.getText();
+			if(inputemail!=null) {
+				beforeEmail = inputemail;
+				mmv.jp_mv.jp_muv.jl_email_warning.setVisible(false);
+				mmv.jp_mv.jp_muv.jl_email_r_warning.setVisible(false);
+				mmv.jp_mv.jp_muv.jl_email_r_warning2.setVisible(false);
+				mmv.jp_mv.jp_muv.jl_email_r_success.setVisible(false);
+				//기준 검사를 먼저 할게
+				int result = checkEmail(inputemail);
+				if(result>0) {//이메일 형식에 안맞다면
+					mmv.jp_mv.jp_muv.jl_email_warning.setVisible(true);
+					email = 0;
+				}else {//이메일형식이 맞다면
+					mmv.jp_mv.jp_muv.jl_email_warning.setVisible(false);
+					email = 1;
+					try {//메일 발송
+						sm = new SendMail(inputemail);
+						mmv.jp_mv.jp_muv.jl_email_warning2.setVisible(true);//입력시간 2분이라는 알림
+						start_millisecond = System.currentTimeMillis();//메일 보낸시간 저장
+					} catch (UnsupportedEncodingException ee) {
+						System.out.println(ee.toString());
+						//e.printStackTrace();
+					}
+				}
+			}else {
+				mmv.jp_mv.jp_muv.jl_email_warning.setVisible(true);
+				email = 0;
+			}
+		}
+		else if(obj==mmv.jp_mv.jp_muv.jbt_email_r) {//마이페이지 회원정보 수정- 인증번호 버튼을 눌렀니?
+			end_millisecond = System.currentTimeMillis();//인증번호 입력시간 저장
+			long term = end_millisecond - start_millisecond;//전송~입력 시간 계산
+			if(term<120000) {//2분안에 입력한다면
+				String inputNum =mmv.jp_mv.jp_muv.jtf_email_r.getText();
+				if(sm.rnum!=null) {
+					if(sm.rnum.equals(inputNum)) {//인증번호가 일치시
+						mmv.jp_mv.jp_muv.jl_email_r_success.setVisible(true);
+						mmv.jp_mv.jp_muv.jl_email_r_warning.setVisible(false);
+						mmv.jp_mv.jp_muv.jl_email_warning2.setVisible(false);
+						
+					}
+					else {//인증번호가 일치하지 않다면
+						mmv.jp_mv.jp_muv.jl_email_r_warning.setVisible(true);
+						mmv.jp_mv.jp_muv.jtf_email_r.setText("");
+						email_r = 0;
+					}
+				}
+			}
+			else {//입력시간이 초과했다면
+				mmv.jp_mv.jp_muv.jl_email_r_warning2.setVisible(true);
+				mmv.jp_mv.jp_muv.jtf_email_r.setText("");
+				email_r = 0;
+				sm.rnum = null;
+			}
+		}
+		else if(obj==mmv.jp_mv.jp_muv.jbt_modifiedGo) {//회원가입 수정하고 싶어요
+			//회원가입을 위한 기준들 마지막 체크 
+			afterEmail = mmv.jp_mv.jp_muv.jtf_email.getText();
+			if(afterEmail!=null) {
+				if(afterEmail.equals(beforeEmail)) {
+					email_r = 1;								
+				}
+			}
+			int sum = pw + nickName + email + email_r;
+			if(sum==4) {//모든 기준 통과시, 모든 값들 가져와서
+				String id = mmv.mem_id;
+				String pw = pwToString(mmv.jp_mv.jp_muv.jpf_pw.getPassword());
+				String email = mmv.jp_mv.jp_muv.jtf_email.getText();
+				String nickName = mmv.jp_mv.jp_muv.jtf_nick.getText();
+				//서버스레드로 메세지 전송
+				String update_msg = MovieProtocol.JOIN+"#"+name+"#"+id+"#"+pw+"#"+email+"#"+nickName+"#"+birth+"#"+gender;
+				send(update_msg);//db에 넣어주세요
+				//refreshCheck();//기준모두초기화@@@@@@@
+				//jv.dispose();//가입화면 닫기
+			}else {
+				JOptionPane.showMessageDialog(mmv.jp_mv.jp_muv, "입력한 정보가 부적합합니다. 다시 확인해주세요.");
+			}
+		}
+		//화면전환 ---------------------------------------------------------------------------------------
+		else if(obj==mmv.jbt_logout) {//로그아웃 하려고?
+			String logout_msg = MovieProtocol.LOGOUT+"#"+mmv.mem_id;
+			this.send(logout_msg);
+		}
+		else if(obj==mmv.jbt_myPage||obj==mmv.jp_mv.jbt_thv) {//마이페이지로 가보자 => 영화예매내역
+			String mypageView_msg = MovieProtocol.MY_MOVIE+"#"+mmv.mem_id;
+			this.send(mypageView_msg);
+		}
+		else if(obj==mmv.jbt_ticketing) {//예매를 하고 싶구나
+			String moviechoiceView_msg = MovieProtocol.SELECT+"#";
+			this.send(moviechoiceView_msg);
+		}
+		else if(obj==mmv.jp_mv.jbt_miv) {//마이페이지에서 회원정보조회버튼
+			mmv.jp_lv.setVisible(false);
+			mmv.jp_mv.setVisible(true);//마이페이지-틀뷰
+			mmv.jp_mv.jp_miv.setVisible(true);//마이페이지-비밀번호입력뷰
+			mmv.jp_mv.jp_muv.setVisible(false);
+			mmv.jp_mv.jp_thv.setVisible(false);
+			mmv.jp_mrv.setVisible(false);
+			mmv.jp_mrv.jp_mcv.setVisible(false);
+			mmv.jp_mrv.jp_pv.setVisible(false);
+			mmv.jp_mrv.jp_scv.setVisible(false);
 		}
 	}
 	
@@ -595,6 +714,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		Object obj = e.getSource();
+		//회원가입 ---------------------------------------------------------------------------------------
 		/*
 		 * jl_pw_warning.setText(" 7~12자이어야 하고 공백은 불가합니다.");
 		jl_name_warning.setText(" 2~8자이어야 하고 특수문자는 사용할 수 없습니다");
@@ -622,9 +742,8 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				nickName = 1;
 			}
 		}
-		else if(obj==jv.jpf_pw) {
+		else if(obj==jv.jpf_pw) {//비밀번호 검사
 			String inputpw = pwToString(jv.jpf_pw.getPassword());
-			System.out.println(inputpw);
 			int result = checkPw(inputpw, 7 ,12);
 			if(result>0) {//기준미통과
 				jv.jl_pw_warning.setVisible(true);
@@ -634,11 +753,67 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				pw = 1;
 			}
 		}
+		//마이페이지 --------------------------------------------------------------------------------------
+		/*jl_pw_warning  	   		= new JLabel(" 7~12자이어야 하고 공백은 불가합니다.");
+		jl_nick_warning	    	= new JLabel(" 2~8자이이어야 하고 특수문자는 사용할 수 없습니다.");
+		 */
+		else if(obj==mmv.jp_mv.jp_muv.jpf_pw) {//비밀번호 검사
+			String inputpw = pwToString(mmv.jp_mv.jp_muv.jpf_pw.getPassword());
+			int result = checkPw(inputpw, 7 ,12);
+			if(result>0) {//기준미통과
+				mmv.jp_mv.jp_muv.jl_pw_warning.setVisible(true);
+				pw = 0;
+			}else {//기준통과
+				mmv.jp_mv.jp_muv.jl_pw_warning.setVisible(false);
+				pw = 1;
+			}
+		}
+		else if(obj==mmv.jp_mv.jp_muv.jtf_nick) {//닉네임 검사
+			String inputnick = mmv.jp_mv.jp_muv.jtf_nick.getText();
+			int result = checkNames(inputnick, 2, 8);
+			if(result>0) {//기준미통과
+				mmv.jp_mv.jp_muv.jl_nick_warning.setVisible(true);
+				nickName = 0;
+			}else {//기준통과
+				mmv.jp_mv.jp_muv.jl_nick_warning.setVisible(false);
+				nickName = 1;
+			}
+		}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}

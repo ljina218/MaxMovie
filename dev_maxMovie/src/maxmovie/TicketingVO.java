@@ -1,24 +1,23 @@
 package maxmovie;
 /********************************************************************************
- * TicketingVO : 클라이언트에서 결제할 때 Datebase에 정보를 주기 위한 VO
- * 
+ * TicketingVO : 클라이언트에서 결제할 때 Database에 정보를 주기 위한 VO
  * @author kosmo_06
- *
  ********************************************************************************/
 public class TicketingVO {
-	String command      	= null;
-	String mem_id 			= null;//아이디
-	String movie_name		= null;//영화 이름
-	String movie_age		= null;//영화 연령
-	String loc 				= null;//지역
-	String theater			= null;//지점
-	String movie_screen		= null;//상영관
-	String movie_date		= null;//날짜
-	String movie_time 		= null;//시간
-	String screen_seat		= null;//좌석
-	String pay_status    	= null;//결제 상태 
-	String ticketting_code	= null;//예매코드
-	String result 		 	= null;
+	private String command      	= null;
+	private String mem_id 			= null;//아이디
+	private String movie_name		= null;//영화 이름
+	private String movie_age		= null;//영화 연령
+	private String loc 				= null;//지역
+	private String theater			= null;//지점
+	private String movie_screen		= null;//상영관
+	private String movie_date		= null;//날짜
+	private String movie_time 		= null;//시간
+	private String screen_seat		= null;//좌석
+	private String pay_status    	= null;//결제 상태 
+	private String result 		 	= null;
+	private int    ticketing_code = 0; //예매코드
+
 	public String getCommand() {
 		return command;
 	}
@@ -85,11 +84,11 @@ public class TicketingVO {
 	public void setPay_status(String pay_status) {
 		this.pay_status = pay_status;
 	}
-	public String getTicketting_code() {
-		return ticketting_code;
+	public int getTicketing_code() {
+		return ticketing_code;
 	}
-	public void setTicketting_code(String ticketting_code) {
-		this.ticketting_code = ticketting_code;
+	public void setTicketing_code(int ticketing_code) {
+		this.ticketing_code = ticketing_code;
 	}
 	public String getResult() {
 		return result;
