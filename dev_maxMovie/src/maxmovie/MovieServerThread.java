@@ -1,7 +1,5 @@
 package maxmovie;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -10,19 +8,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+
 import java.util.StringTokenizer;
-import java.util.Vector;
+
 
 public class MovieServerThread extends Thread{
 	
 	//id와 nickname 저장
-	String id = null;
-	String nickname = null;
-	
-	//영화정보 셋팅할 변수
-	TicketingVO tVO = null;
+	//String id = null;
+	//String nickname = null;
 	
 	//컨트롤러 생성
 	MovieController ctrl = new MovieController();
@@ -41,7 +35,8 @@ public class MovieServerThread extends Thread{
 	public MovieServerThread(MovieServer ms) {
 		this.ms = ms;
 		ms.globalist.add(this);
-		//ms.movieList = ctrl.sendAll(ms.movieList);//서버에 3일치 영화정보 저장
+		ms.jta_log.append(ms.globalist.size()+"\n");
+		ms.movieList = ctrl.dao.refreshMovieAll(ms.movieList);//서버에 3일치 영화정보 저장
 		try {
 			oos = new ObjectOutputStream(ms.socket.getOutputStream());
 			ois = new ObjectInputStream(ms.socket.getInputStream());
@@ -92,30 +87,53 @@ public class MovieServerThread extends Thread{
 		return result;
 	}
 	
-	//영화 선택 리스트 전달 메소드
-	public void choiceMoive(int MovieProtocol) {
-		for(int i=0; i<ms.movieList.size(); i++) {
-			String title = ms.movieList.get(i).get("M_TITLE").toString();
-			String loc = ms.movieList.get(i).get("T_LOC").toString();
-			String theater = ms.movieList.get(i).get("T_NAME").toString();
-			String date = ms.movieList.get(i).get("S_DATE").toString();
-			String time = ms.movieList.get(i).get("S_TIME").toString();
-			String screen = ms.movieList.get(i).get("SC_NAME").toString();
-			int result = checkTime(time);
-			if(result==1) {//상영시간이 30분 전이고....
-				if(tVO.getMovie_name().equals(title)||
-						tVO.getLoc().equals(loc)||
-							tVO.getTheater().equals(theater)||
-								tVO.getMovie_date().equals(date)||
-									tVO.getMovie_time().equals(time)||
-										tVO.getMovie_screen().equals(screen)){
-					String msg = MovieProtocol+"#"+title+"#"+
-							loc+"#"+theater+"#"+date+"#"+time+"#"+screen;
-					this.send(msg);	
-				}
-			}
-		}
-	}
+//	//영화 선택 리스트 전달 메소드
+//	public void choiceMoive(int MovieProtocol) {
+//		for(int i=0; i<ms.movieList.size(); i++) {
+//			String title = ms.movieList.get(i).get("M_TITLE").toString();
+//			String age = ms.movieList.get(i).get("M_CERTIF").toString();
+//			String loc = ms.movieList.get(i).get("T_LOC").toString();
+//			String theater = ms.movieList.get(i).get("T_NAME").toString();
+//			String date = ms.movieList.get(i).get("S_DATE").toString();
+//			String time = ms.movieList.get(i).get("S_TIME").toString();
+//			String screen = ms.movieList.get(i).get("SC_NAME").toString();
+//			int result = checkTime(time);
+//			if(result==1) {//상영시간이 30분 전이고....
+//				
+//				if(tVO.getMovie_name()==null) {
+//					tVO.setMovie_name(title);
+//				}
+//				if(tVO.getMovie_age()==null) {
+//					tVO.setMovie_age(age);
+//				}
+//				if(tVO.getLoc()==null) {
+//					tVO.setLoc(loc);
+//				}
+//				if(tVO.getTheater()==null) {
+//					tVO.setTheater(theater);
+//				}
+//				if(tVO.getMovie_date()==null) {
+//					tVO.setMovie_date(date);
+//				}
+//				if(tVO.getMovie_time()==null) {
+//					tVO.setMovie_time(time);
+//				}
+//				if(tVO.getMovie_screen()==null) {
+//					tVO.setMovie_screen(screen);
+//				}
+//				if(tVO.getMovie_name().equals(title)&&
+//						tVO.getLoc().equals(loc)&&
+//							tVO.getTheater().equals(theater)&&
+//								tVO.getMovie_date().equals(date)&&
+//									tVO.getMovie_time().equals(time)&&
+//										tVO.getMovie_screen().equals(screen)){
+//					String msg = MovieProtocol+"#"+tVO.getMovie_name()+"#"+tVO.getMovie_age()+"#"+
+//							tVO.getLoc()+"#"+tVO.getTheater()+"#"+tVO.getMovie_date()+"#"+tVO.getMovie_time()+"#"+tVO.getMovie_screen();
+//					this.send(msg);	
+//				}
+//			}
+//		}
+//	}
 		
 	//이벤트로부터 넘어온 메세지를 듣고 말하는 메소드
 	@Override
@@ -164,10 +182,11 @@ public class MovieServerThread extends Thread{
 			 */
 			try {
 				String msg = (String) ois.readObject();
+				ms.jta_log.append(msg+"\n");
 				int protocol = 0;
 				StringTokenizer st = null;
 				if(msg!=null) {
-					st = new StringTokenizer("","#");
+					st = new StringTokenizer(msg,"#");
 					protocol = Integer.parseInt(st.nextToken());
 				}
 				switch(protocol) {
@@ -192,7 +211,7 @@ public class MovieServerThread extends Thread{
 					}
 					*/
 					
-				}
+				}break;
 				case MovieProtocol.JOIN:{//회원가입 
 				//MovieProtocol.JOIN+"#"+name+"#"+id+"#"+pw+"#"+email+"#"+nickName+"#"+birth+"#"+gender;
 					MemberVO pVO = new MemberVO();
@@ -210,7 +229,7 @@ public class MovieServerThread extends Thread{
 					String join_msg = MovieProtocol.JOIN+"#"+join_result;
 					this.send(msg);
 					*/
-				}
+				}break;
 				case MovieProtocol.CHECK_ID:{//회원가입-아이디 중복확인
 					MemberVO pVO = new MemberVO();
 					pVO.setMem_id(st.nextToken());
@@ -220,7 +239,7 @@ public class MovieServerThread extends Thread{
 					String checkId_result = rVO.getResult();
 					String checkId_msg = MovieProtocol.CHECK_ID+"#"+checkId_result;
 					*/		
-				}
+				}break;
 				case MovieProtocol.MY_MOVIE:{//회원 예매내역 조회
 					//영화이름, 지역, 지점, 상영날짜 시간, 상영관, 좌석, 예매번호
 					TicketingVO pVO = new TicketingVO();
@@ -242,11 +261,11 @@ public class MovieServerThread extends Thread{
 						this.send(ticket_msg);
 					}
 					*/
-				}
+				}break;
 				case MovieProtocol.MY_INFO:{//회원 정보조회
 					//아이디, 비번, 이름, 닉네임, 생일, 성별, 이메일
 					MemberVO pVO = new MemberVO();
-					pVO.setMem_id(this.id);
+					pVO.setMem_id(st.nextToken());
 					pVO.setMem_pw(st.nextToken());
 					pVO.setCommand(ctrl.SELECT_MY);
 					/*
@@ -262,7 +281,7 @@ public class MovieServerThread extends Thread{
 											"#"+nickname+"#"+birth+"#"+gender+"#"+email;
 					this.send(myinfo_msg);
 					*/
-				}
+				}break;
 				case MovieProtocol.INFO_UPDATE:{//회원 정보수정
 					//아이디, 비번, 이름, 닉네임, 생일, 성별, 이메일
 					MemberVO pVO = new MemberVO();
@@ -280,7 +299,7 @@ public class MovieServerThread extends Thread{
 					String update_msg = MovieProtocol.MY_INFO+"#"+update_result;
 					this.send(update_msg);
 					*/
-				}
+				}break;
 				case MovieProtocol.SELECT:{//MovieChoiceView 호출
 					//오늘의 영화정보 list 선언부
 					/* List<Map<String, Object>> movieList = null;
@@ -291,10 +310,9 @@ public class MovieServerThread extends Thread{
 						showMap.put("S_TIME", rs.getString("S_TIME"));
 						showMap.put("SC_NAME", rs.getString("SC_NAME"));
 					 */
-					tVO = null;
-					tVO = new TicketingVO();
+					
 					for(int i=0; i<ms.movieList.size(); i++) {
-						String age = ms.movieList.get(i).get("M_AGE").toString();
+						String age = ms.movieList.get(i).get("M_CERTIF").toString();
 						String title = ms.movieList.get(i).get("M_TITLE").toString();
 						String loc = ms.movieList.get(i).get("T_LOC").toString();
 						String theater = ms.movieList.get(i).get("T_NAME").toString();
@@ -309,37 +327,37 @@ public class MovieServerThread extends Thread{
 							this.send(movielist_msg);	
 						}
 					}
-				}
-				case MovieProtocol.SELECT_MOVIE:{//영화선택
-					String choiceMovie = st.nextToken();
-					if(choiceMovie!=null){
-						tVO.setMovie_name(choiceMovie);
-					}
-					choiceMoive(MovieProtocol.SELECT_MOVIE);
-				}
-				case MovieProtocol.SELECT_LOCAL:{//지역선택
-					String choiceLoc = st.nextToken();
-					if(choiceLoc!=null){
-						tVO.setLoc(choiceLoc);
-					}
-					choiceMoive(MovieProtocol.SELECT_LOCAL);
-				}
-				case MovieProtocol.SELECT_SCR:{//지점명선택
-					String choiceTheater = st.nextToken();
-					if(choiceTheater!=null){
-						tVO.setTheater(choiceTheater);
-					}
-					choiceMoive( MovieProtocol.SELECT_SCR);
-				}
-				case MovieProtocol.SELECT_DATE:{//관, 시간선택
-					String choiceScr = st.nextToken();
-					String choiceTime = st.nextToken();
-					if(choiceTime!=null&&choiceScr!=null){
-						tVO.setMovie_time(choiceTime);
-						tVO.setMovie_screen(choiceScr);
-					}
-					choiceMoive(MovieProtocol.SELECT_DATE);
-				}
+				}break;
+//				case MovieProtocol.SELECT_MOVIE:{//영화선택
+//					String choiceMovie = st.nextToken();
+//					if(choiceMovie!=null){
+//						tVO.setMovie_name(choiceMovie);
+//					}
+//					choiceMoive(MovieProtocol.SELECT_MOVIE);
+//				}break;
+//				case MovieProtocol.SELECT_LOCAL:{//지역선택
+//					String choiceLoc = st.nextToken();
+//					if(choiceLoc!=null){
+//						tVO.setLoc(choiceLoc);
+//					}
+//					choiceMoive(MovieProtocol.SELECT_LOCAL);
+//				}break;
+//				case MovieProtocol.SELECT_SCR:{//지점명선택
+//					String choiceTheater = st.nextToken();
+//					if(choiceTheater!=null){
+//						tVO.setTheater(choiceTheater);
+//					}
+//					choiceMoive( MovieProtocol.SELECT_SCR);
+//				}break;
+//				case MovieProtocol.SELECT_DATE:{//관, 시간선택
+//					String choiceScr = st.nextToken();
+//					String choiceTime = st.nextToken();
+//					if(choiceTime!=null&&choiceScr!=null){
+//						tVO.setMovie_time(choiceTime);
+//						tVO.setMovie_screen(choiceScr);
+//					}
+//					choiceMoive(MovieProtocol.SELECT_DATE);
+//				}break;
 				case MovieProtocol.SELECT_SEAT:{//좌석선택
 					TicketingVO pVO = tVO;
 					pVO.setCommand(ctrl.SELECT_SEAT);
@@ -352,7 +370,7 @@ public class MovieServerThread extends Thread{
 						this.send(seat_msg);
 					}
 					*/
-				}
+				}break;
 				case MovieProtocol.PAY:{//결제하기
 					//아이디, 영화이름, 지역, 지점, 상영관, 날짜 , 시간, 좌석
 					TicketingVO pVO = new TicketingVO();
@@ -369,7 +387,7 @@ public class MovieServerThread extends Thread{
 					TicketingVO rVO = ctrl.메소드();
 					String result = rVO.getResult();
 					*/
-				}
+				}break;
 				}
 			} catch (ClassNotFoundException e) {
 				System.out.println(e.toString());

@@ -1,4 +1,4 @@
-package maxmovie;
+package jina;
 
 
 import java.awt.Color;
@@ -31,6 +31,8 @@ import javax.swing.table.TableCellRenderer;
 
 public class MovieChoiceView extends JPanel{
 	
+	//영화정보 담는 리스트
+	List<Map<String, String>> movielist = null;
 	Vector<String> arealist = null;//지역정보 저장
 	Vector<String> loclist = null;//지점정보 저장
 	
@@ -128,6 +130,9 @@ public class MovieChoiceView extends JPanel{
 		this.setLayout(null);
 		this.setBackground(Color.white);
 		
+		
+		
+
 		jl_movie.setBounds(200, 25, 295, 32);
 		jl_locThe.setBounds(500, 25, 346, 32);
 		jl_date.setBounds(850, 25, 146, 32);
@@ -231,10 +236,10 @@ public class MovieChoiceView extends JPanel{
 
 	public void eventMapping() {
 		jt_movie.addMouseListener(em);
-		jt_local.addMouseListener(em);
-		jt_theater.addMouseListener(em);
-		jt_date.addMouseListener(em);
-		jt_time.addMouseListener(em);		
+//		jt_local.addMouseListener(em);
+//		jt_theater.addMouseListener(em);
+//		jt_date.addMouseListener(em);
+//		jt_time.addMouseListener(em);		
 		
 	}
 	/**********************************************************************************
@@ -273,16 +278,16 @@ public class MovieChoiceView extends JPanel{
 	public static void main(String[] args) {
 		MaxMovieView mmv = new MaxMovieView();
 		
-		mmv.jp_lv.setVisible(false);
+//		mmv.jp_lv.setVisible(false);
 		mmv.jp_mrv.setVisible(true);
 		mmv.jp_mrv.jp_mcv.setVisible(true);
-		mmv.jp_mrv.jp_scv.setVisible(false);
-		mmv.jp_mrv.jp_pv.setVisible(false);
-		mmv.jp_mv.setVisible(false);
-		mmv.jp_mv.jp_thv.setVisible(false);
-		mmv.jp_mv.jp_miv.setVisible(false);
-		mmv.jp_mv.jp_muv.setVisible(false);
-		mmv.jp_rv.setVisible(false);
+//		mmv.jp_mrv.jp_scv.setVisible(false);
+//		mmv.jp_mrv.jp_pv.setVisible(false);
+//		mmv.jp_mv.setVisible(false);
+//		mmv.jp_mv.jp_thv.setVisible(false);
+//		mmv.jp_mv.jp_miv.setVisible(false);
+//		mmv.jp_mv.jp_muv.setVisible(false);
+//		mmv.jp_rv.setVisible(false);
 
 		
 		mmv.jl_logo_small.setVisible(true);

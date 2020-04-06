@@ -98,12 +98,7 @@ public class MyPageView extends JPanel{
 		mmv.jp_mv.jp_muv.setVisible(false);
 		mmv.jp_rv.setVisible(false);
 
-		mmv.jl_logo_small.setVisible(true);
-		mmv.jl_nickInfo.setVisible(true);
-		mmv.jl_nickInfoEnd.setVisible(true);
-		mmv.jbt_logout.setVisible(true);
-		mmv.jbt_myPage.setVisible(true);
-		mmv.jbt_ticketing.setVisible(true);
+
 	
 	}
 }

@@ -1,4 +1,4 @@
-package maxmovie;
+package jina;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,8 +12,8 @@ import javax.swing.border.TitledBorder;
 public class MovieReserationView extends JPanel{
 	EventMapping				em						= null;
 	MovieChoiceView				jp_mcv					= new MovieChoiceView(em);
-	SeatChoiceView				jp_scv					= new SeatChoiceView(em);
-	PayView						jp_pv					= new PayView(em);
+	//SeatChoiceView				jp_scv					= new SeatChoiceView(em);
+	//PayView						jp_pv					= new PayView(em);
 	
 	JLabel						jl_south				= new JLabel("　　　　　　　　　　　　　         　  　 　　　　>　　　　　　　 　　　>　　　　　　　 　　　>　　　　　　　 　　　>　　　　　　　 　　　>");
 	JLabel						jl_south_movie			= new JLabel("영화선택");
@@ -41,8 +41,8 @@ public class MovieReserationView extends JPanel{
 		this.setBackground(Color.white);
 
 		jp_mcv.setBounds(0, 0, 1360, 660);
-		jp_scv.setBounds(0, 0, 1360, 660);
-		jp_pv.setBounds(0, 0, 1360, 660);
+		//jp_scv.setBounds(0, 0, 1360, 660);
+		//jp_pv.setBounds(0, 0, 1360, 660);
 		
 		jl_south.setBounds(200, 664, 1144, 90);		
 		jl_south_movie.setBounds(340, 698, 150, 20);		
@@ -59,8 +59,8 @@ public class MovieReserationView extends JPanel{
 		jbt_goMovieChoice.setBounds(220, 685, 100, 45);	
 		jbt_goSeatChoice.setBounds(1220, 685, 100, 45);
 		jbt_goPayChoice.setBounds(1220, 685, 100, 45);
-		jp_scv.setVisible(false);
-		jp_pv.setVisible(false);
+		//jp_scv.setVisible(false);
+		//jp_pv.setVisible(false);
 		jp_mcv.setVisible(false);
 		jl_south.setOpaque(true);
 		jl_south.setBackground(new Color(190, 190, 190));
@@ -264,8 +264,8 @@ public class MovieReserationView extends JPanel{
 		jbt_goSeatChoice.setVisible(true);
 		jbt_goPayChoice.setVisible(false);
 		
-		this.add(jp_scv);
-		this.add(jp_pv);
+		//this.add(jp_scv);
+		//this.add(jp_pv);
 		this.add(jp_mcv);
 		this.add(jl_south_movie);
 		this.add(jl_south_ctf);
@@ -292,16 +292,16 @@ public class MovieReserationView extends JPanel{
 	
 	public static void main(String[] args) {
 		MaxMovieView mmv = new MaxMovieView();
-		mmv.jp_lv.setVisible(false);
-		mmv.jp_mrv.setVisible(true);
-		mmv.jp_mrv.jp_mcv.setVisible(true);
-		mmv.jp_mrv.jp_scv.setVisible(false);
-		mmv.jp_mrv.jp_pv.setVisible(false);
-		mmv.jp_mv.setVisible(false);
-		mmv.jp_mv.jp_thv.setVisible(false);
-		mmv.jp_mv.jp_miv.setVisible(false);
-		mmv.jp_mv.jp_muv.setVisible(false);
-		mmv.jp_rv.setVisible(false);
+//		mmv.jp_lv.setVisible(false);
+//		mmv.jp_mrv.setVisible(true);
+//		mmv.jp_mrv.jp_mcv.setVisible(true);
+//		mmv.jp_mrv.jp_scv.setVisible(false);
+//		mmv.jp_mrv.jp_pv.setVisible(false);
+//		mmv.jp_mv.setVisible(false);
+//		mmv.jp_mv.jp_thv.setVisible(false);
+//		mmv.jp_mv.jp_miv.setVisible(false);
+//		mmv.jp_mv.jp_muv.setVisible(false);
+//		mmv.jp_rv.setVisible(false);
 		
 
 		mmv.jl_logo_small.setVisible(true);

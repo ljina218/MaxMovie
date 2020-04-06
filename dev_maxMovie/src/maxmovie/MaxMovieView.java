@@ -9,9 +9,13 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -23,6 +27,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 public class MaxMovieView extends JFrame{
+	
+	List<Map<String, Object>> movieList = null;
+	
 	//로고들에 사용한 폰트    : Futura XBlk BT
 	//텍스트들에 사용한 폰트 : 굴림체
 	//기본 메인 규격 res.width = 모니터해상도 가로길이,  res.height = 모니터해상도 세로길이
@@ -198,7 +205,6 @@ public class MaxMovieView extends JFrame{
 
 	}
 	public void eventMapping() {
-
 		jbt_logout.addActionListener(em);
 		jbt_myPage.addActionListener(em);
 		jbt_ticketing.addActionListener(em);
@@ -207,19 +213,19 @@ public class MaxMovieView extends JFrame{
 	public static void main(String[] args) {
 		new MaxMovieView();
 	}
-//	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
-//		try {
-//			socket = new Socket("192.168.0.244",5000);
-//			oos = new ObjectOutputStream(socket.getOutputStream());
-//			ois = new ObjectInputStream(socket.getInputStream());
-//			ClientThread ct = new ClientThread(this);//로그인 성공시
-//			ct.start();
-//		} catch (UnknownHostException e) {
-//			System.out.println(e.toString());
-//			//e.printStackTrace();
-//		} catch (IOException e) {
-//			System.out.println(e.toString());
-//			//e.printStackTrace();
-//		}
-//	}
+	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
+		try {
+			socket = new Socket("192.168.0.244",5000);
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
+			ClientThread ct = new ClientThread(this);//로그인 성공시
+			ct.start();
+		} catch (UnknownHostException e) {
+			System.out.println(e.toString());
+			//e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println(e.toString());
+			//e.printStackTrace();
+		}
+	}
 }

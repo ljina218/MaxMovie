@@ -1,15 +1,21 @@
 package jina;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -48,47 +54,41 @@ public class MaxMovieView extends JFrame{
 	};
 	String						mem_id				= "";
 	String						mem_nick			= "";
-	String						mem_name			= "";
-	String 						mem_birth			= "";
-	String 						mem_gender 			= "";
-	
+
 	JLabel						jl_nickInfo			=	new JLabel();
 	JLabel						jl_nickInfoEnd		=	new JLabel("님");
 	JButton						jbt_logout			=	new JButton("로그아웃");
 	JButton						jbt_myPage			=	new JButton("마이페이지");
 	JButton						jbt_ticketing		=	new JButton("예매하기");
 	
+	JPanel						jp_center			= new JPanel();
 	
 	JPanel 						jp_north 			= new JPanel();
 	JPanel 						jp_south 			= new JPanel();
 	JPanel 						jp_west 			= new JPanel();
 	JPanel 						jp_east 			= new JPanel();
 	JTextPane 					jtp_south_south		= new JTextPane();	
-	//로그인뷰
-	LoginView 					jp_lv 				= new LoginView(em);
-	//마이페이지뷰
-	MyPageView 					jp_mv 				= new MyPageView(em);
-	//무비초이스뷰
-	//MovieChoiceView 			jp_mcv 				= new MovieChoiceView(em);
-	//시트초이스뷰
-
-	//SeatChoiceView 				jp_scv 				= new SeatChoiceView(em);
-
-	//리절트뷰
-	//ResultView 					jp_rv 				= new ResultView(em);
+//	//로그인뷰
+//	LoginView 					jp_lv 				= new LoginView(em);
+//	//마이페이지뷰
+//	MyPageView 					jp_mv 				= new MyPageView(em);
+//
+//	//무비리저레이션뷰
+	MovieReserationView 		jp_mrv 				= new MovieReserationView(em);
+//
+//	//리절트뷰
+//	ResultView 					jp_rv 				= new ResultView(em);
 	
 	public MaxMovieView() {
 		initDisplay();
 		eventMapping();//이벤트 맵핑 메소드
-//		connect();//클라이언트 스레드를 생성하기 위한 메소드
+		connect();//클라이언트 스레드를 생성하기 위한 메소드
 	}
 
 	public void initDisplay(){
-		
 		jp_north.setLayout(null);
 		//예매화면으로 이동시 jl_logo_small.setVisible(true); 로 변환
 		jl_logo_small.setBounds(840, 30, 200, 94);
-		
 		jl_nickInfo.setBounds(1080, 100, 150, 20);
 		jl_nickInfoEnd.setBounds(1240, 100, 20, 20);
 		jbt_logout.setBounds(1260, 100, 90, 20);	
@@ -105,12 +105,10 @@ public class MaxMovieView extends JFrame{
  		 * jbt_myPage.setVisible(true);
  		 * jbt_ticketing.setVisible(true);
 		 *****************************************************************/
+		///
 		mem_id = "cloudsky7";	
 		mem_nick = "kong";
-		mem_name = "박미경";
-		mem_birth ="19960218";
-		mem_gender = "남자";	
-				
+
 		jl_nickInfo.setText(mem_nick);
 		jl_nickInfo.setFont(new Font("굴림체", Font.BOLD, 20));
 		jl_nickInfo.setForeground(Color.black);
@@ -127,12 +125,12 @@ public class MaxMovieView extends JFrame{
 		jbt_logout.setBorder(new TitledBorder(new LineBorder(Color.white)));
 		jbt_myPage.setBorder(new TitledBorder(new LineBorder(Color.white)));
 		jbt_ticketing.setBorder(new TitledBorder(new LineBorder(Color.white)));
-		jl_logo_small.setVisible(false);
+		jl_logo_small.setVisible(false);//
 		jl_nickInfo.setVisible(false);
 		jl_nickInfoEnd.setVisible(false);
 		jbt_logout.setVisible(false);
 		jbt_myPage.setVisible(false);
-		jbt_ticketing.setVisible(false);
+		jbt_ticketing.setVisible(false);//
 		jtp_south_south.setText("회사소개 (930307)경기도 고양시 덕양구 토당동 양우아파트 102동 502호 대표이사 : 이진아 박미경 이정훈 사업자등록번호 : 501-39-76677-7 호스팅사업자 : CJ올리브네트웍스개인정보보호  \n" +
 							   "책임자 : 이진아 대표이메일 : ljina0218@naver.com 고객센터 : 1588-1588 (04377)서울특별시 용산구 한강대로 23길 55, 아이파크몰 6층(한강로동)\n" +
 							   "호스팅사업자 : CJ 올리브 네트웍스 개인정보 보호 책임자 : 정종민 대표이메일 : cjcgvmaster@cj.netCGV고객센터 : 1544-1122 \n" +
@@ -167,55 +165,25 @@ public class MaxMovieView extends JFrame{
  		 * jbt_myPage.setVisible(true);
  		 * jbt_ticketing.setVisible(true);
 		 **********************************************/
-		/**********************************************
-		 * jp_lv일때
-		 * jp_lv.setVisible(true);
-		 * jp_mv.setVisible(false);
-		 * jp_mcv.setVisible(false);
-		 * jp_sc.setVisible(false);
-		 * jp_rv.setVisible(false);
-		 * 
-		 * jp_mcv일때
-		 * jp_lv.setVisible(false);
-		 * jp_mv.setVisible(true);
-		 * jp_mcv.setVisible(false);
-		 * jp_sc.setVisible(false);
-		 * jp_rv.setVisible(false);
-		 * 
-		 * jp_mv일때
-		 * jp_lv.setVisible(false);
-		 * jp_mv.setVisible(false);
-		 * jp_mcv.setVisible(true);
-		 * jp_sc.setVisible(false);
-		 * jp_rv.setVisible(false);
-		 * 
-		 * jp_scv일때
-		 * jp_lv.setVisible(false);
-		 * jp_mv.setVisible(false);
-		 * jp_mcv.setVisible(false);
-		 * jp_sc.setVisible(true);
-		 * jp_rv.setVisible(false);
-		 * 
-		 * jp_rv일때
-		 * jp_lv.setVisible(false);
-		 * jp_mv.setVisible(false);
-		 * jp_mcv.setVisible(false);
-		 * jp_sc.setVisible(false);
-		 * jp_rv.setVisible(true);
-		 **********************************************/
-
 		/***********************************************
 		 * 기본 메인 규격 res.width = 모니터해상도 가로길이,  res.height = 모니터해상도 세로길이  
 		 * border여서 전체길이를 매개변수로 넘겼음
-		 ***********************************************/	
-		
+		 ***********************************************/		
 
-		jl_logo_small.setVisible(false);
-		jl_nickInfo.setVisible(false);
-		jl_nickInfoEnd.setVisible(false);
-		jbt_logout.setVisible(false);
-		jbt_myPage.setVisible(false);
-		jbt_ticketing.setVisible(false);
+		jp_center.setLayout(null);
+//		jp_lv.setBounds(0, 0, 1535, 770);
+//		jp_mv.setBounds(0, 0, 1535, 770);
+		jp_mrv.setBounds(0, 0, 1535, 770);
+//		jp_rv.setBounds(0, 0, 1535, 770);
+//		jp_center.add(jp_lv);
+//		jp_center.add(jp_mv);
+		jp_center.add(jp_mrv);
+//		jp_center.add(jp_rv);
+//		 
+//		jp_mv.setVisible(false);
+		jp_mrv.setVisible(true);
+//		jp_rv.setVisible(false);
+//		jp_lv.setVisible(true);
 		
 		this.add(jl_nickInfo);
 		this.add(jl_nickInfoEnd);
@@ -224,47 +192,39 @@ public class MaxMovieView extends JFrame{
 		this.add(jbt_ticketing);
 		this.add("North", jp_north);
 		this.add("South", jp_south);
-		//this.add("Center", jp_rv);
-		this.add("Center", jp_mv);
-		//this.add("Center", jp_mcv);
-		//this.add("Center", jp_scv);
-		this.add("Center", jp_lv);
+		this.add("Center", jp_center);
+
 		this.add("West", jp_west);
 		this.add("East", jp_east);
 		this.setSize(res.width, res.height);
 		this.setResizable(false);
-		this.setVisible(true);
+		this.setVisible(true);		
 
-		
-		
-		jp_lv.setVisible(true);
-		jp_mv.setVisible(false);
-		//jp_mcv.setVisible(false);
-		//jp_scv.setVisible(false);
-		//jp_rv.setVisible(false);
 	}
 	public void eventMapping() {
-		jbt_logout.addActionListener(em);			
-		jbt_myPage.addActionListener(em);				
-		jbt_ticketing.addActionListener(em);	
+		jbt_logout.addActionListener(em);
+		jbt_myPage.addActionListener(em);
+		jbt_ticketing.addActionListener(em);
+
 	}
 	public static void main(String[] args) {
 		new MaxMovieView();
-		
 	}
-//	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
-//		try {
-//			socket = new Socket("192.168.0.244",5000);
-//			oos = new ObjectOutputStream(socket.getOutputStream());
-//			ois = new ObjectInputStream(socket.getInputStream());
-//			ClientThread ct = new ClientThread(this);
-//			ct.start();
-//		} catch (UnknownHostException e) {
-//			System.out.println(e.toString());
-//			//e.printStackTrace();
-//		} catch (IOException e) {
-//			System.out.println(e.toString());
-//			//e.printStackTrace();
-//		}
-//	}
+	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
+		try {
+			socket = new Socket("192.168.0.237",6000);
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
+			//jp_mrv.jp_mcv.movielist = new Vector<Map<String,String>>();
+			//oos.writeObject(MovieProtocol.SELECT+"#");
+			ClientThread ct = new ClientThread(this);//로그인 성공시
+			ct.start();
+		} catch (UnknownHostException e) {
+			System.out.println(e.toString());
+			//e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println(e.toString());
+			//e.printStackTrace();
+		}
+	}
 }
