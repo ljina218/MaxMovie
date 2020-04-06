@@ -303,7 +303,6 @@ public class MovieDao {
 		*/
 		/*
 		//박미경 : proc_login() & proc_checkID() : 함수 단위 테스트 코드입니다.
-		MovieDao md = new MovieDao();
 		String nickname = null;
 		nickname = md.proc_login("clousky7", "1234");
 		System.out.println(nickname);
