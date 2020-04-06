@@ -11,9 +11,9 @@ import javax.swing.border.TitledBorder;
 
 public class MovieReserationView extends JPanel{
 	EventMapping				em						= null;
-	MovieChoiceView				jp_mcv					= new MovieChoiceView(em);
-	SeatChoiceView				jp_scv					= new SeatChoiceView(em);
-	PayView						jp_pv					= new PayView(em);
+	MovieChoiceView				jp_mcv					= null;
+	SeatChoiceView				jp_scv					= null;
+	PayView						jp_pv					= null;
 	
 	JLabel						jl_south				= new JLabel("　　　　　　　　　　　　　         　  　 　　　　>　　　　　　　 　　　>　　　　　　　 　　　>　　　　　　　 　　　>　　　　　　　 　　　>");
 	JLabel						jl_south_movie			= new JLabel("영화선택");
@@ -34,6 +34,9 @@ public class MovieReserationView extends JPanel{
 	
 	public MovieReserationView(EventMapping em) {
 		this.em = em;
+		jp_mcv = new MovieChoiceView(em);
+		jp_scv = new SeatChoiceView(em);
+		jp_pv = new PayView(em);
 		initDisplay();
 	}
 	public void initDisplay() {
@@ -263,6 +266,7 @@ public class MovieReserationView extends JPanel{
 		jbt_goMovieChoice.setVisible(false);
 		jbt_goSeatChoice.setVisible(true);
 		jbt_goPayChoice.setVisible(false);
+
 		
 		this.add(jp_scv);
 		this.add(jp_pv);

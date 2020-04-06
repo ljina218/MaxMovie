@@ -16,8 +16,8 @@ public class TicketingVO {
 	private String screen_seat		= null;//좌석
 	private String pay_status    	= null;//결제 상태 
 	private String result 		 	= null;
-	private int    ticketing_code = 0; //예매코드
-
+	private String ticketing_code = null; //예매코드
+	private String seat_tablename = null; 
 	public String getCommand() {
 		return command;
 	}
@@ -84,10 +84,10 @@ public class TicketingVO {
 	public void setPay_status(String pay_status) {
 		this.pay_status = pay_status;
 	}
-	public int getTicketing_code() {
+	public String getTicketing_code() {
 		return ticketing_code;
 	}
-	public void setTicketing_code(int ticketing_code) {
+	public void setTicketing_code(String ticketing_code) {
 		this.ticketing_code = ticketing_code;
 	}
 	public String getResult() {
@@ -95,6 +95,12 @@ public class TicketingVO {
 	}
 	public void setResult(String result) {
 		this.result = result;
+	}
+	public String getSeat_tablename() {
+		return seat_tablename;
+	}
+	public void setSeat_tablename(String seat_tablename) {
+		this.seat_tablename = seat_tablename;
 	}
 	
 	

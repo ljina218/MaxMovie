@@ -9,6 +9,7 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
@@ -89,8 +90,8 @@ public class PayInfoView extends JDialog{
 		jl_movie.setBounds(10, 30, 150, 15);          
 		jl_locThe.setBounds(10, 50, 150, 15);          
 		jl_dateTime.setBounds(10, 70, 150, 15);           
-		jl_screen.setBounds(10, 90, 150, 15);          
-		jl_seat.setBounds(10, 110, 150, 15);    
+		jl_screen.setBounds(10, 110, 150, 15);          
+		jl_seat.setBounds(10, 130, 150, 15);    
 		jl_choice_movie.setBounds(75, 30, 150, 15);	
 		jl_choice_locThe.setBounds(75, 50, 150, 15);  
 		jl_choice_date.setBounds(75, 70, 150, 15);   
@@ -139,7 +140,8 @@ public class PayInfoView extends JDialog{
 		jp_ticktingInfo.add(jl_choice_totalPay);
 		this.add(jl_logo_s);
 		this.add(jl_payInfo_header);
-		
+
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.add(jp_payInfo);
 		this.add(jp_ticktingInfo);
 		this.add(jbt_PayGo);
@@ -147,6 +149,7 @@ public class PayInfoView extends JDialog{
 		this.setSize(500, 400);
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
+		
 	}
 
 	

@@ -75,10 +75,8 @@ public class MaxMovieView extends JFrame{
 	LoginView 					jp_lv 				= new LoginView(em);
 	//마이페이지뷰
 	MyPageView 					jp_mv 				= new MyPageView(em);
-
 	//무비리저레이션뷰
 	MovieReserationView 		jp_mrv 				= new MovieReserationView(em);
-
 	//리절트뷰
 	ResultView 					jp_rv 				= new ResultView(em);
 	
@@ -112,6 +110,7 @@ public class MaxMovieView extends JFrame{
 		mem_id = "cloudsky7";	
 		mem_nick = "kong";
 
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jl_nickInfo.setText(mem_nick);
 		jl_nickInfo.setFont(new Font("굴림체", Font.BOLD, 20));
 		jl_nickInfo.setForeground(Color.black);
