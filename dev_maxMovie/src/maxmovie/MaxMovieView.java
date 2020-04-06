@@ -70,10 +70,8 @@ public class MaxMovieView extends JFrame{
 	LoginView 					jp_lv 				= new LoginView(em);
 	//마이페이지뷰
 	MyPageView 					jp_mv 				= new MyPageView(em);
-
 	//무비리저레이션뷰
 	MovieReserationView 		jp_mrv 				= new MovieReserationView(em);
-
 	//리절트뷰
 	ResultView 					jp_rv 				= new ResultView(em);
 	

@@ -20,6 +20,8 @@ import javax.swing.JTextPane;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import maxmovie.MovieReserationView;
+
 public class MaxMovieView extends JFrame{
 	//로고들에 사용한 폰트    : Futura XBlk BT
 	//텍스트들에 사용한 폰트 : 굴림체
@@ -69,13 +71,11 @@ public class MaxMovieView extends JFrame{
 	//마이페이지뷰
 	MyPageView 					jp_mv 				= new MyPageView(em);
 	//무비초이스뷰
-	//MovieChoiceView 			jp_mcv 				= new MovieChoiceView(em);
+	MovieReserationView 		jp_mrv 				= new MovieReserationView(em);
 	//시트초이스뷰
 
-	//SeatChoiceView 				jp_scv 				= new SeatChoiceView(em);
-
 	//리절트뷰
-	//ResultView 					jp_rv 				= new ResultView(em);
+	ResultView 					jp_rv 				= new ResultView(em);
 	
 	public MaxMovieView() {
 		initDisplay();

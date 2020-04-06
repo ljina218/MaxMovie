@@ -70,20 +70,17 @@ public class MovieController {
 			ticket_list = dao.showMyticket(ptVO);
 		}
 		return ticket_list;
-		
 	}
 	/***********************************************************************
-	 * 회원 예매 결제시 DB저장 처리하는 메소드
+	 * 예매완료 정보 DB저장 및 seat테이블의 pay_status UPDATE 처리하는 메소드
 	 * @param List<TicketingVO> =>한사람의 여러 좌석 예매정보를 저장한 List
 	 * @return 
 	 ***********************************************************************/
-//	public List<TicketingVO> control(List<TicketingVO> tVOList) {
-//		List<TicketingVO> ticket_list = new Vector<>();
-//		TicketingVO rtVO = new TicketingVO();
-//		System.out.println("control(pmVO) - command : " + tVOList.get(index).getCommand());
-//		
-//	}
-	
+	public List<TicketingVO> control(List<TicketingVO> tVOList) {
+		System.out.println("control(List<TicketingVO>) - command : " + tVOList.get(0).getCommand());
+		dao.proc_payTicket(tVOList);
+		return tVOList;
+	}
 	
 	public List<Map<String, Object>> sendAll(String date) {//서버 켰을 때
 		List<Map<String, Object>> rList = null;

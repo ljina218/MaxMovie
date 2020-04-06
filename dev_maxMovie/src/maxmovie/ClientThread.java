@@ -28,24 +28,7 @@ public class ClientThread extends Thread{
 	public ClientThread(MaxMovieView mmv) {
 		this.mmv = mmv;
 	}
-	//화면전환 할 때 사용하는 제어 메소드
-		public void display(boolean lv, boolean mrv, boolean mcv, boolean scv, boolean pv,
-							boolean mv, boolean thv, boolean miv, boolean muv, boolean rv) {
-			mmv.jp_lv.setVisible(lv);
-			mmv.jp_mrv.setVisible(mrv);
-			mmv.jp_mrv.jp_mcv.setVisible(mcv);
-			mmv.jp_mrv.jp_scv.setVisible(scv);
-			mmv.jp_mrv.jp_pv.setVisible(pv);
-			mmv.jp_mv.setVisible(mv);
-			mmv.jp_mv.jp_thv.setVisible(thv);
-			mmv.jp_mv.jp_miv.setVisible(miv);
-			mmv.jp_mv.jp_muv.setVisible(muv);
-			mmv.jp_rv.setVisible(rv);
-		}
-	
-	
-	
-	
+
 	//화면전환 할 때 사용하는 제어 메소드
 	public void display(boolean lv, boolean mv, 
 							boolean miv,boolean muv, boolean thv, 
@@ -86,13 +69,13 @@ public class ClientThread extends Thread{
 						mmv.mem_nick = st.nextToken();
 						//moviechoiceView 화면전환메소드 호출
 						display(false, false, false, false, false, true, false, false);
+						//예매화면에 세팅해야하니까 예매그거 호출하는거 
+						
 					}else {//로그인 실패시 "-1" or "2"
 						if(login_result=="-1") {
 							mmv.jp_lv.jtf_id.setText("");
 							mmv.jp_lv.jpf_pw.setText("");
 							mmv.jp_lv.jl_id_warning.setText("아이디가 존재하지 않습니다.");;
-							/////////////////////////////
-							mmv.socket.close();
 						}
 						else if(login_result=="2") {
 							mmv.jp_lv.jtf_id.setText("");
@@ -102,6 +85,9 @@ public class ClientThread extends Thread{
 					}
 				}
 				case MovieProtocol.LOGOUT:{//로그아웃
+					mmv.em.refreshCheck();
+					mmv.mem_id = null;
+					mmv.mem_nick = null;
 					movieList = null;
 				}
 				case MovieProtocol.JOIN:{//회원가입
@@ -110,7 +96,6 @@ public class ClientThread extends Thread{
 						JOptionPane.showConfirmDialog(mmv, "회원가입이 완료되었습니다.");
 					} else {
 						JOptionPane.showConfirmDialog(mmv, "회원가입 중 오류가 발생했습니다. 재시도해주세요.");
-						
 					}
 				}
 				case MovieProtocol.CHECK_ID:{//회원가입-아이디 중복확인
@@ -123,7 +108,7 @@ public class ClientThread extends Thread{
 						mmv.em.id = 0;
 					}
 				}
-				case MovieProtocol.MY_MOVIE:{//회원 예매내역 조회@@@@@@@@@@@@@@@@
+				case MovieProtocol.MY_MOVIE:{//회원 예매내역 조회
 					//영화이름, 지역, 지점, 상영날짜 시간, 상영관, 좌석, 예매번호
 					TicketingVO tVO = new TicketingVO();
 					tVO.setMovie_name(st.nextToken());
@@ -136,35 +121,38 @@ public class ClientThread extends Thread{
 					tVO.setTicketing_code(st.nextToken());
 					v.add(tVO);
 					mmv.jp_mv.jp_thv.dtm_history.addRow(v);
-					display(false, false, false, false, true, false, false, false);
+//display()			마이페이지-틀뷰 & 마이페이지-영화내역뷰
+					display(false, true, false, false, true, false, false, false);
 				}
-				case MovieProtocol.MY_INFO:{//회원 정보조회
-					//회원정보 조회와 수정을 같은 화면으로 사용하고 있다. 
-					//
-					mmv.jp_mv.jp_muv.jl_mem_id.setText(st.nextToken());
-					mmv.jp_mv.jp_muv.jpf_pw.setText(st.nextToken());
-					mmv.jp_mv.jp_muv.jl_mem_name.setText(st.nextToken());
-					mmv.jp_mv.jp_muv.jtf_nick.setText(st.nextToken());
-					//"20200331" 문자열 자르기
-					String tempDate = st.nextToken();
-					mmv.jp_mv.jp_muv.jl_mem_year.setText(tempDate.substring(0, 3));
-					mmv.jp_mv.jp_muv.jl_mem_month.setText(tempDate.substring(4, 5));
-					mmv.jp_mv.jp_muv.jl_mem_day.setText(tempDate.substring(6, 7));
-					mmv.jp_mv.jp_muv.jl_mem_gender.setText(st.nextToken());
-					mmv.jp_mv.jp_muv.jtf_email.setText(st.nextToken());
-					display(false, false, true, false, false, false, false, false);
-					movieList = null;
+				case MovieProtocol.MY_INFO:{//회원 정보조회(PW)
+					String firstToken = st.nextToken();
+					if(firstToken=="2") {
+						JOptionPane.showMessageDialog(mmv, "비밀번호가 맞지 않습니다.");
+					} else {
+						mmv.jp_mv.jp_muv.jl_mem_id.setText(firstToken);
+						mmv.jp_mv.jp_muv.jpf_pw.setText(st.nextToken());
+						mmv.jp_mv.jp_muv.jl_mem_name.setText(st.nextToken());
+						mmv.jp_mv.jp_muv.jtf_nick.setText(st.nextToken());
+						String tempDate = st.nextToken();
+						mmv.jp_mv.jp_muv.jl_mem_year.setText(tempDate.substring(0, 3));
+						mmv.jp_mv.jp_muv.jl_mem_month.setText(tempDate.substring(4, 5));
+						mmv.jp_mv.jp_muv.jl_mem_day.setText(tempDate.substring(6, 7));
+						mmv.jp_mv.jp_muv.jl_mem_gender.setText(st.nextToken());
+						mmv.jp_mv.jp_muv.jtf_email.setText(st.nextToken());
+//display()				마이페이지-틀뷰 & 마이페이지-회원정보수정뷰
+						display(false, true, false, true, false, false, false, false);
+						movieList = null;
+					}
 				}
 				case MovieProtocol.INFO_UPDATE:{//회원 정보수정
 					String update_result = st.nextToken();
 					if(update_result=="1") {
 						JOptionPane.showConfirmDialog(mmv, "회원정보가 수정되었습니다."); 
-						display(false, false, false, true, false, false, false, false);
+//display()				마이페이지-틀뷰 & 마이페이지-비밀번호입력뷰
+						display(false, true, true, false, false, false, false, false);
 					} else {
 						JOptionPane.showConfirmDialog(mmv, "회원정보 수정 중 오류가 발생했습니다. 재시도해주세요.");
-						display(false, false, false, true, false, false, false, false);
 					}
-					
 				}
 				case MovieProtocol.SELECT:{//MovieChoiceView 호출하는 프로토콜
 					movieList = null;
@@ -206,10 +194,11 @@ public class ClientThread extends Thread{
 				case MovieProtocol.SELECT_SEAT:{//좌석선택
 					
 				}
-				case MovieProtocol.PAY:{//결제하기
+				case MovieProtocol.PAY:{
 					
 				}
-				}
+				
+				}// end of switch
 			}
 		} catch (Exception e) {
 			System.out.println(e.toString());
