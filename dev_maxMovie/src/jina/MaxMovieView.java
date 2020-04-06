@@ -20,6 +20,8 @@ import javax.swing.JTextPane;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import maxmovie.MovieReserationView;
+
 public class MaxMovieView extends JFrame{
 	//로고들에 사용한 폰트    : Futura XBlk BT
 	//텍스트들에 사용한 폰트 : 굴림체
@@ -65,17 +67,15 @@ public class MaxMovieView extends JFrame{
 	JPanel 						jp_east 			= new JPanel();
 	JTextPane 					jtp_south_south		= new JTextPane();	
 	//로그인뷰
-	//LoginView 					jp_lv 				= new LoginView(em);
+	LoginView 					jp_lv 				= new LoginView(em);
 	//마이페이지뷰
 	MyPageView 					jp_mv 				= new MyPageView(em);
 	//무비초이스뷰
-	//MovieChoiceView 			jp_mcv 				= new MovieChoiceView(em);
+	MovieReserationView 		jp_mrv 				= new MovieReserationView(em);
 	//시트초이스뷰
 
-	//SeatChoiceView 				jp_scv 				= new SeatChoiceView(em);
-
 	//리절트뷰
-	//ResultView 					jp_rv 				= new ResultView(em);
+	ResultView 					jp_rv 				= new ResultView(em);
 	
 	public MaxMovieView() {
 		initDisplay();
@@ -210,12 +210,12 @@ public class MaxMovieView extends JFrame{
 		 ***********************************************/	
 		
 
-		jl_logo_small.setVisible(true);
-		jl_nickInfo.setVisible(true);
-		jl_nickInfoEnd.setVisible(true);
-		jbt_logout.setVisible(true);
-		jbt_myPage.setVisible(true);
-		jbt_ticketing.setVisible(true);
+		jl_logo_small.setVisible(false);
+		jl_nickInfo.setVisible(false);
+		jl_nickInfoEnd.setVisible(false);
+		jbt_logout.setVisible(false);
+		jbt_myPage.setVisible(false);
+		jbt_ticketing.setVisible(false);
 		
 		this.add(jl_nickInfo);
 		this.add(jl_nickInfoEnd);
@@ -228,7 +228,7 @@ public class MaxMovieView extends JFrame{
 		this.add("Center", jp_mv);
 		//this.add("Center", jp_mcv);
 		//this.add("Center", jp_scv);
-		//this.add("Center", jp_lv);
+		this.add("Center", jp_lv);
 		this.add("West", jp_west);
 		this.add("East", jp_east);
 		this.setSize(res.width, res.height);
@@ -237,8 +237,8 @@ public class MaxMovieView extends JFrame{
 
 		
 		
-		//jp_lv.setVisible(true);
-		jp_mv.setVisible(true);
+		jp_lv.setVisible(true);
+		jp_mv.setVisible(false);
 		//jp_mcv.setVisible(false);
 		//jp_scv.setVisible(false);
 		//jp_rv.setVisible(false);

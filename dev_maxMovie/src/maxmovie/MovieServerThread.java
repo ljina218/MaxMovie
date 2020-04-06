@@ -56,19 +56,18 @@ public class MovieServerThread extends Thread{
 	}
 	
 	//영화 시간 조건 메소드
-	public int checkTime (String time) {
+	public int checkTime (String time) {//스케줄에 있는 영화 시간 받아서
 		int result = 0;
-		//[1]스케줄에 있는 영화 시간
 		StringTokenizer token = new StringTokenizer(time, ":");//시와 분으로 쪼개기
 		char[] scheduledhour = token.nextToken().toCharArray();
 		char[] scheduledmin = token.nextToken().toCharArray();
 		String sethour = null;
+		String setmin = null;
 		if(scheduledhour[0]==0){//시 앞에 붙은 0 떼어내기
 			sethour = scheduledhour[1]+"";
 		}else {
 			sethour = scheduledhour[0]+""+scheduledhour[1]; 
 		}
-		String setmin = null;
 		if(scheduledmin[0]==0){//분 앞에 붙은 0 떼어내기
 			setmin = scheduledmin[1]+"";
 		}else {
@@ -76,12 +75,10 @@ public class MovieServerThread extends Thread{
 		}
 		int hour = Integer.parseInt(sethour);//시와 분을 string에서 int 형으로 바꾸기
 		int min = Integer.parseInt(setmin);
-		//[2]현재 시간에서 30분 빼기
-		Calendar now = Calendar.getInstance();
-		now.add(Calendar.MINUTE, -30);//30분 전까지만 예매가능
+		Calendar now = Calendar.getInstance();//현재 시간에서 
+		now.add(Calendar.MINUTE, -30);//30분 빼기 => 30분 전까지만 예매가능
 		int nowhour = now.get(Calendar.HOUR_OF_DAY);
 		int nowmin = now.get(Calendar.MINUTE);
-		//[3]비교
 		if(hour>=nowhour) {//시가 아직 안지났고
 			if(min>=nowmin) {//분이 아직 안지났다면,
 				result=1;
@@ -176,19 +173,18 @@ public class MovieServerThread extends Thread{
 					pVO.setMem_id(login_id);
 					pVO.setMem_pw(login_pw);
 					pVO.setCommand(ctrl.SELECT_LOGIN);
-					/*
-					MemberVO rVO = ctrl.메소드;
+					MemberVO rVO = ctrl.control(pVO);
 					String login_result = rVO.getResult();
-					if("".equals(login_result)){//로그인 성공시
+					if(login_result==null){//로그인 성공시 result값엔 저장값 없음
 						this.id = login_id;
-						this.nickName = rVO.getMem_nickname();
-						String login_msg = MovieProtocol.LOGIN+"#"+login_result+"#"+nickName;
+						this.nickname = rVO.getMem_nickname();
+						String login_msg = MovieProtocol.LOGIN+"#"+login_result+"#"+nickname;
 						this.send(login_msg);
-					}else {//로그인 실패시
+					}else {//로그인 실패시 "-1" or "2"
 						String fail_msg = MovieProtocol.LOGIN+"#"+login_result;
 						this.send(fail_msg);
 					}
-					*/
+					
 					
 				}
 				case MovieProtocol.JOIN:{//회원가입 
@@ -202,30 +198,26 @@ public class MovieServerThread extends Thread{
 					pVO.setMem_birth(st.nextToken());
 					pVO.setMem_gender(st.nextToken());
 					pVO.setCommand(ctrl.INSERT_JOIN);
-					/*
-					MemberVO rVO = ctrl.메소드;
+					MemberVO rVO = ctrl.control(pVO);
 					String join_result = rVO.getResult();
 					String join_msg = MovieProtocol.JOIN+"#"+join_result;
-					this.send(msg);
-					*/
+					this.send(join_msg);
 				}
 				case MovieProtocol.CHECK_ID:{//회원가입-아이디 중복확인
 					MemberVO pVO = new MemberVO();
 					pVO.setMem_id(st.nextToken());
 					pVO.setCommand(ctrl.CHECK_ID);
-					/*
-					MemberVO rVO = ctrl.메소드;
+					MemberVO rVO = ctrl.control(pVO);
 					String checkId_result = rVO.getResult();
 					String checkId_msg = MovieProtocol.CHECK_ID+"#"+checkId_result;
-					*/		
+					this.send(checkId_msg);
 				}
 				case MovieProtocol.MY_MOVIE:{//회원 예매내역 조회
 					//영화이름, 지역, 지점, 상영날짜 시간, 상영관, 좌석, 예매번호
 					TicketingVO pVO = new TicketingVO();
 					pVO.setMem_id(st.nextToken());
 					pVO.setCommand(ctrl.SELECT_TICKET);
-					/*
-					List<TicketingVO> ticket_list = ctrl.메소드;
+					List<TicketingVO> ticket_list = ctrl.control(pVO);
 					for(int i=0; i<ticket_list.size(); i++) {
 						String movieName = ticket_list.get(i).getMovie_name();
 						String loc = ticket_list.get(i).getLoc();
@@ -234,32 +226,39 @@ public class MovieServerThread extends Thread{
 						String time = ticket_list.get(i).getMovie_time();
 						String screen = ticket_list.get(i).getMovie_screen();
 						String seat = ticket_list.get(i).getScreen_seat();
-						String ticketCode = ticket_list.get(i).getTicketting_code();
+						String ticketCode = ticket_list.get(i).getTicketing_code();
 						String ticket_msg = MovieProtocol.MY_MOVIE+"#"+movieName+"#"+loc+"#"+theater+"#"+
-												date+"#"+time+"#"+screen+"#"+seat+"#"+ticketCode+"#"+ticketCode;
+												date+"#"+time+"#"+screen+"#"+seat+"#"+ticketCode;
 						this.send(ticket_msg);
 					}
-					*/
 				}
 				case MovieProtocol.MY_INFO:{//회원 정보조회
 					//아이디, 비번, 이름, 닉네임, 생일, 성별, 이메일
+					String temppw = st.nextToken();
 					MemberVO pVO = new MemberVO();
 					pVO.setMem_id(this.id);
-					pVO.setMem_pw(st.nextToken());
-					pVO.setCommand(ctrl.SELECT_MY);
-					/*
-					MemberVO rVO = ctrl.메소드;
-					String id = rVO.getMem_id();
-					String pw = rVO.getMem_pw();
-					String name = rVO.getMem_name();
-					String nickname = rVO.getMem_nickname();
-					String birth = rVO.getMem_birth();
-					String gender = rVO.getMem_gender();
-					String email = rVO.getMem_email();
-					String myinfo_msg = MovieProtocol.MY_INFO+"#"+id+"#"+pw+"#"+name+
-											"#"+nickname+"#"+birth+"#"+gender+"#"+email;
-					this.send(myinfo_msg);
-					*/
+					pVO.setMem_pw(temppw);
+					pVO.setCommand(ctrl.SELECT_LOGIN);
+					MemberVO tempVO = ctrl.control(pVO);
+					String result = null;
+					result = tempVO.getResult();
+					if(result=="2") { //비밀번호가 틀리면
+						String myinfo_msg = MovieProtocol.MY_INFO+"#"+result;
+						this.send(myinfo_msg);
+					} else { //비밀번호가 맞으면 회원정보 조회
+						pVO.setCommand(ctrl.SELECT_MY);
+						MemberVO rVO = ctrl.control(pVO);
+						String id = rVO.getMem_id();
+						String pw = rVO.getMem_pw();
+						String name = rVO.getMem_name();
+						String nickname = rVO.getMem_nickname();
+						String birth = rVO.getMem_birth();
+						String gender = rVO.getMem_gender();
+						String email = rVO.getMem_email();
+						String myinfo_msg = MovieProtocol.MY_INFO+"#"+id+"#"+pw+"#"+name+
+								"#"+nickname+"#"+birth+"#"+gender+"#"+email;
+						this.send(myinfo_msg);
+					}
 				}
 				case MovieProtocol.INFO_UPDATE:{//회원 정보수정
 					//아이디, 비번, 이름, 닉네임, 생일, 성별, 이메일
@@ -272,12 +271,10 @@ public class MovieServerThread extends Thread{
 					pVO.setMem_gender(st.nextToken());
 					pVO.setMem_email(st.nextToken());
 					pVO.setCommand(ctrl.UPDATE);
-					/*
-					MemberVO rVO = ctrl.메소드;
+					MemberVO rVO = ctrl.control(pVO);
 					String update_result = rVO.getResult();
 					String update_msg = MovieProtocol.MY_INFO+"#"+update_result;
 					this.send(update_msg);
-					*/
 				}
 				case MovieProtocol.SELECT:{//MovieChoiceView 호출
 					//오늘의 영화정보 list 선언부
