@@ -45,16 +45,22 @@ public class SeatChoiceView extends JPanel{
 	
 	List<Map<String, Object>>	seatList				= null;
 	
+	int							adultChoice				= 0;
+	int							teenChoice				= 0;
+	
+	List<String> 				seatChoiceList			= new ArrayList<>();				
+	
 	public SeatChoiceView(EventMapping em) {
-		this.em = em;
 		//리스트 받는곳(매개변수추가?) public SeatChoiceView(EventMapping em, ArrayList<Map<String, Object>> seatList)
 		//this.seatList = seatList;
-		
+		this.em = em;
+		seatSetting();
 		initDisplay();
 	}
-	//0빈자리  1결제 진행중  2결제완료
+	
+	//0:빈자리  1:결제 진행중  2:결제완료
 	public void seatSetting() {
-		seatList = new ArrayList<>();
+		seatList = new ArrayList<Map<String, Object>>();
 		
 		//만약 다른곳에서 온다면 이런형태로 올것이다. 임시모델↓↓↓
 		//A1~J12 셋팅 좌석 (120석)
@@ -80,11 +86,11 @@ public class SeatChoiceView extends JPanel{
 		
 		//A1~J16 셋팅 좌석 (160석)
 		for(char i=65; i<75; i++) {
-			Map<String, Object> map = new HashMap<>();
+			Map<String, Object> map  = null;
 			for(int j=1; j<17; j++) {
+				map = new HashMap<>();
 				map.put("좌석", (char)i+Integer.toString(j));
 				map.put("현황", 0);
-				System.out.println(map.get("좌석") + ", " + map.get("현황"));
 				seatList.add(map);
 			}
 		}
@@ -97,7 +103,7 @@ public class SeatChoiceView extends JPanel{
 //			int k=0;
 //			for(int i=0; i<10; i++) {
 //				char c_line = (char) (65+i);
-//				System.out.println(c_line);
+////				System.out.println(c_line);
 //				String line = String.valueOf(c_line);
 //				jl_seatLines[i] = new JLabel();
 //				jl_seatLines[i].setText(line);
@@ -108,7 +114,7 @@ public class SeatChoiceView extends JPanel{
 //				for(int j=0; j<12; j++) {
 //					int check = (int)seatList.get(k).get("현황");
 //					int between = 0;
-//					System.out.println(check);
+////					System.out.println(check);
 //					jbts_seat[i][j] = new JButton();
 //					jbts_seat[i][j].addActionListener(em);
 //					jbts_seat[i][j].setOpaque(true);
@@ -145,7 +151,7 @@ public class SeatChoiceView extends JPanel{
 //				}
 //			}
 //		}
-//	}
+	
 //		[140]석 셋팅 
 //		if(seatList.size()==140) {
 //			jbts_seat = new JButton[10][14];
@@ -200,8 +206,8 @@ public class SeatChoiceView extends JPanel{
 //				}
 //			}
 //		}
-//	}
-		//[160]석 셋팅 
+	
+//		[160]석 셋팅 
 		if(seatList.size()==160) {
 			jbts_seat = new JButton[10][16];
 			int k=0;
@@ -257,11 +263,10 @@ public class SeatChoiceView extends JPanel{
 		}
 	}
 		
+	
 	public void initDisplay() {
-		
 		this.setLayout(null);
 		this.setBackground(Color.white);
-		seatSetting();
 		
 		/**********************************************************************************
 		 * //영화 선택시
@@ -317,6 +322,10 @@ public class SeatChoiceView extends JPanel{
 			this.add(jbts_adult[i]);
 			this.add(jbts_teen[i]);
 		}
+		
+
+		jbts_adult[adultChoice].setBackground(Color.yellow);
+		jbts_teen[teenChoice].setBackground(Color.yellow);
 		/********************************************************
 		 * 인원수 클릭시
 		 * jbts_adult[?].setBackground(new Color(0, 0, 0));

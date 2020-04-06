@@ -21,8 +21,9 @@ public class MovieDao {
 	CallableStatement cstmt = null;
 	
 	/*************************************************************************************************************************
-	 * 결제-예매완료 정보 DB저장 및 seat테이블의 pay_status UPDATE 프로시저 처리 메소드 
-	 * @param 결제버튼 클릭시 예매정보 담은 ticketingVO (pay_status : 1)
+	 * 결제-예매완료 정보 DB저장
+	 * + seat테이블의 pay_status UPDATE 프로시저 처리 메소드 
+	 * @param 결제버튼 클릭시 예매정보 담은 ticketingVO (pay_status : "결제완료")
 	 * @return 
 	 *************************************************************************************************************************/
 	public void proc_payTicket(List<TicketingVO> ptList) {
@@ -49,7 +50,6 @@ public class MovieDao {
 				System.out.println("seat_code 이름 : "+ tvo.getScreen_seat());
 				System.out.println("theater_code 이름 : "+ theater_code);
 				System.out.println("scr_code 이름 : "+  scr_code);
-				/////////////////////////////함수 호출
 				cstmt = null;
 				cstmt = con.prepareCall("{call update_seat(?,?)}");
 				cstmt.setString(1, seatTableName);
@@ -58,7 +58,7 @@ public class MovieDao {
 			} catch (SQLException e) {
 				System.out.println("proc_checkID() Exception : " + e.toString());
 				e.printStackTrace();
-			}
+			} 
 		}
 	}
 	
@@ -182,6 +182,33 @@ public class MovieDao {
 		}
 		return rmVO;
 	}
+	/*************************************************************************************************************************
+	 * sc801104021900 조회 (SELECT)하는 메소드 
+	 * @param 사용자 아이디값이 담긴 MemberVO 
+	 * @return DB에서 조회한 해당 상영관의 좌석과 pay_status를 모두 담은 List<Map<String,Object>>
+	 *************************************************************************************************************************/
+	public List<Map<String,Object>> selectSeat(TicketingVO ptVO) {
+		List<Map<String,Object>> rList = new ArrayList<Map<String,Object>>();
+		Map<String, Object> rMap = null;
+		con = dbMgr.getConnection();
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT seat_code, pay_status FROM sc801104021900");
+		try {
+			pstmt = con.prepareStatement(sql.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				rMap = new HashMap<String, Object>();
+				rMap.put("좌석", rs.getString("seat_code"));
+				rMap.put("현황", rs.getString("pay_status"));
+				rList.add(rMap);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.toString());
+			e.printStackTrace();
+		}
+		return rList;
+	}
+	
 	/*************************************************************************************************************************
 	 * 회원정보 수정(UPDATE)하는 메소드 
 	 * @param 사용자가 수정한 정보값이 담긴 MemberVO 

@@ -239,21 +239,31 @@ public class MovieServerThread extends Thread{
 				}
 				case MovieProtocol.MY_INFO:{//회원 정보조회
 					//아이디, 비번, 이름, 닉네임, 생일, 성별, 이메일
+					String temppw = st.nextToken();
 					MemberVO pVO = new MemberVO();
 					pVO.setMem_id(this.id);
-					pVO.setMem_pw(st.nextToken());
-					pVO.setCommand(ctrl.SELECT_MY);
-					MemberVO rVO = ctrl.control(pVO);
-					String id = rVO.getMem_id();
-					String pw = rVO.getMem_pw();
-					String name = rVO.getMem_name();
-					String nickname = rVO.getMem_nickname();
-					String birth = rVO.getMem_birth();
-					String gender = rVO.getMem_gender();
-					String email = rVO.getMem_email();
-					String myinfo_msg = MovieProtocol.MY_INFO+"#"+id+"#"+pw+"#"+name+
-											"#"+nickname+"#"+birth+"#"+gender+"#"+email;
-					this.send(myinfo_msg);
+					pVO.setMem_pw(temppw);
+					pVO.setCommand(ctrl.SELECT_LOGIN);
+					MemberVO tempVO = ctrl.control(pVO);
+					String result = null;
+					result = tempVO.getResult();
+					if(result=="2") { //비밀번호가 틀리면
+						String myinfo_msg = MovieProtocol.MY_INFO+"#"+result;
+						this.send(myinfo_msg);
+					} else { //비밀번호가 맞으면 회원정보 조회
+						pVO.setCommand(ctrl.SELECT_MY);
+						MemberVO rVO = ctrl.control(pVO);
+						String id = rVO.getMem_id();
+						String pw = rVO.getMem_pw();
+						String name = rVO.getMem_name();
+						String nickname = rVO.getMem_nickname();
+						String birth = rVO.getMem_birth();
+						String gender = rVO.getMem_gender();
+						String email = rVO.getMem_email();
+						String myinfo_msg = MovieProtocol.MY_INFO+"#"+id+"#"+pw+"#"+name+
+								"#"+nickname+"#"+birth+"#"+gender+"#"+email;
+						this.send(myinfo_msg);
+					}
 				}
 				case MovieProtocol.INFO_UPDATE:{//회원 정보수정
 					//아이디, 비번, 이름, 닉네임, 생일, 성별, 이메일
