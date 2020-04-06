@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -34,7 +35,7 @@ public class AdminLoginView extends JFrame implements ActionListener{
 			}
 		}
 	};	
-	String nickName = null; //닉네임 등록
+	String name = null; //닉네임 등록
 	String id = null;
 	AdminDao aDao = new AdminDao();
 	Dimension 		res 			= Toolkit.getDefaultToolkit().getScreenSize();
@@ -139,29 +140,34 @@ public class AdminLoginView extends JFrame implements ActionListener{
 			try {
 				String admin_id = jtf_id.getText();
 				String admin_pw = jpf_pw.getText();
-				String admin_name = aDao.login(admin_id, admin_pw);
+				Map<String, Object> rMap = aDao.login(admin_id, admin_pw);
 				//System.out.println("result:"+result);
-				if("비밀번호가 맞지 않습니다.".equals(admin_name)) {
+				if("비밀번호가 맞지 않습니다.".equals(rMap.get("Name").toString())) {
 					JOptionPane.showMessageDialog(this, "비밀번호가 맞지 않습니다.");
 					jpf_pw.setText("");
 					return;
 				}
-				else if("아이디가 존재하지 않습니다.".equals(admin_name)) {
+				else if("아이디가 존재하지 않습니다.".equals(rMap.get("Name").toString())) {
 					JOptionPane.showMessageDialog(this, "아이디가 존재하지 않습니다.");
 					jtf_id.setText("");
 					jpf_pw.setText("");
 					return;
 				}
 				else {
-					nickName = admin_name;
+					name = rMap.get("Name").toString();
 					id = admin_id;
 					this.setVisible(false); //로그인 화면은 비 활성화
 					jtf_id.setText(""); 	//입력한 아이디 초기화
 					jpf_pw.setText("");		//입력한 비번도 초기화
 					
-					AdminClient tc = new AdminClient(this, nickName, id); //생성자 호출
+					//로그인 정보를 받아온다.
+					AdminClient tc = new AdminClient
+							(admin_id
+							,rMap.get("Name").toString()
+							, rMap.get("TLoc").toString()
+							, rMap.get("TName").toString()); //생성자 호출
 				}
-				System.out.println("admin_name:"+admin_name);
+				System.out.println("admin_name:"+rMap.get("Name").toString());
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}

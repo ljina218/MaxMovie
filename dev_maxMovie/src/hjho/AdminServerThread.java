@@ -34,6 +34,7 @@ public class AdminServerThread  extends Thread {
 			StringTokenizer st = new StringTokenizer(msg,"#");
 			st.nextToken(); // 프로토콜
 			adminID = st.nextToken();
+			//처음 로그인 성공시 현재 상영하는 영화정보와 지정의 상영과을 보내준다.
 			List<Map<String, Object>> rList = null;
 			rList = aDao.ins(adminID);
 			for(Map<String, Object> map: rList) {
@@ -41,6 +42,7 @@ public class AdminServerThread  extends Thread {
 						 +"#"+map.get("First")
 						 +"#"+map.get("Second"));
 			}
+			//쓰레드를 리스트에 추가
 			as.adminList.add(this);
 			int inwon = as.adminList.size();
 			as.jta_log.append("    - 현재 인원 수  : "+inwon+" 명 \n\n");
@@ -55,7 +57,7 @@ public class AdminServerThread  extends Thread {
 	}
 	//현재입장해 있는 친구들 모두에게 메시지 전송하기 구현
 	public void broadCasting(String msg) {
-		synchronized (this) {
+		synchronized(this) { //adminList 인터셉트 금지!!!!
 			for (AdminServerThread ast : as.adminList) {
 				ast.send(msg);
 			}
@@ -87,11 +89,12 @@ public class AdminServerThread  extends Thread {
 					protocol = Integer.parseInt(st.nextToken());
 				}
 				switch(protocol) {
+				//로그인 클라이언트에서 보내지도 않는다.*********************************
 					case AdminProtocol._LOGIN: {
 
 					} break;
-					
-					//그 지점의 전체 사영시간표를 보내준다.
+				//**********************************************************
+					//서버에 등록된 그 지점의 전체 상영시간표를 보내준다.
 					case AdminProtocol._REFRESH: {
 						adminID = st.nextToken();
 						astVO = aDao.refreshData(adminID);
@@ -103,7 +106,7 @@ public class AdminServerThread  extends Thread {
 									 +"#"+mVO.getTime());
 						}
 					} break;
-					
+				//**********************************************************
 					//오늘날짜의 상영시간표를 보내준다.
 					case AdminProtocol._SEL: {
 						adminID = st.nextToken();
@@ -117,7 +120,8 @@ public class AdminServerThread  extends Thread {
 									 +"#"+mVO.getTime());
 						}
 					} break;
-					//클라이언트에서 상영시간표 추가하기를 눌렀니?
+				//**********************************************************
+					//현재 상영중인 영화 정보와 요청한 지점의 상영관을 보내준다.
 					case AdminProtocol._DIAL: {
 						adminID = st.nextToken();
 						List<Map<String, Object>> rList = null;
@@ -128,7 +132,8 @@ public class AdminServerThread  extends Thread {
 									 +"#"+map.get("Second"));
 						}
 					} break;
-					//다이얼 로그에서 상영시간표 추가 정보를 줬니?
+				//**********************************************************
+					//상영시간표 추가해주고 처리결과 메시지를 반환 해준다.
 					case AdminProtocol._INS: {
 						AdminShowtimeVO astVO = new AdminShowtimeVO();
 						astVO.setId(st.nextToken());
@@ -143,6 +148,8 @@ public class AdminServerThread  extends Thread {
 							this.send(AdminProtocol._INS 
 									 +"#"+r_msg);
 					} break;
+				//**********************************************************
+					//상영시간표 삭제해주고 처리결과 메시지를 반환 해준다
 					case AdminProtocol._DEL: {
 						AdminShowtimeVO astVO = new AdminShowtimeVO();
 						astVO.setId(st.nextToken());
@@ -157,7 +164,8 @@ public class AdminServerThread  extends Thread {
 							this.send(AdminProtocol._DEL 
 									 +"#"+r_msg);
 					} break;
-					//종료
+				//**********************************************************
+					//클라이언트가 종료를 누르면 로그애 띄운다.
 					case AdminProtocol._EXIT: {
 						String nickName = st.nextToken();
 						//String message = st.nextToken();
@@ -166,6 +174,7 @@ public class AdminServerThread  extends Thread {
 						as.jta_log.append("    - 현재 인원 수  : "+as.adminList.size()+" 명 \n\n");
 					} break run_start;
 				}///end of switch
+				//JTextArea의 커서를 맨 밑으로 내려 스크롤을 맨 아래를 보게 한다.
 				as.jta_log.setCaretPosition(as.jta_log.getDocument().getLength());
 			}			
 		} catch (Exception e) {

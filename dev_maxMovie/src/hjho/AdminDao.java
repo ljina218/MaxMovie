@@ -26,12 +26,11 @@ public class AdminDao {
 	String admin_t_loc = null;
 	String admin_t_name = null;
 	
-	/******************************************************************
-	 * ins() : 메인 화면에서 상영시간표 추가를 누르면 서버에서 영화정보를 insert 해주고
-	 * 		  클라이언트로 넘겨준다. 
-	 * @param adminID
-	 * @return
-	 */
+/******************************************************************
+ * ins() : 클라이언트의 아이디로 식별하여 현재상영중인 영화정보와 요청한 지점의 상영관을 반환해주는 함수 
+ * @param adminID : 요청한 클라이언트 아이디
+ * @return rList : 현재상영중인 영화정보와 요청한 지점의 상영관을 반환
+ */
 	public List<Map<String, Object>> ins(String adminID) {
 		List<Map<String, Object>> rList= null;
 		StringBuilder sql = new StringBuilder();
@@ -63,8 +62,16 @@ public class AdminDao {
 		}
 		return rList;
 	}
-	
-	public String login(String admin_id, String admin_pw) {
+/***********************************************************************************************
+ * login() : 데이터베이스에 ADMIN 테이블에서 프로시저로 
+ *  		IN :아이디와 비밀번호 
+ *  		OUT : 이름, 지역, 지점명
+ * @param admin_id : 로그인 아이디
+ * @param admin_pw : 로그인 비번 
+ * @return admin_name : 이름 반환
+ */
+	public Map<String, Object> login(String admin_id, String admin_pw) {
+		Map<String, Object> rMap = new HashMap<>();
 		try {
 			con = dbMgr.getConnection();
 			cstmt = con.prepareCall("{ call proc_admin_login(?,?,?,?,?)}");
@@ -74,18 +81,22 @@ public class AdminDao {
 			cstmt.registerOutParameter(4, java.sql.Types.VARCHAR);
 			cstmt.registerOutParameter(5, java.sql.Types.VARCHAR);
 			cstmt.execute();
-			admin_name = cstmt.getString(3);
-			admin_t_loc = cstmt.getString(4);
-			admin_t_name = cstmt.getString(5);
+			rMap.put("Name", cstmt.getString(3));
+			rMap.put("TLoc", cstmt.getString(4));
+			rMap.put("TName", cstmt.getString(5));
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			dbMgr.freeConnection(con, cstmt);
 		}
 			System.out.println("지역 : "+admin_t_loc+", 지점 : "+admin_t_name);
-		return admin_name;
+		return rMap;
 	}
-
+/************************************************************************************************
+ * 요청한 지점의 아이디로 식별하여 그 지점에 상영하고 있는 전체 상영시간표 정보를 반환해준다. 
+ * @param adminID : 요청한 지점의 아이디 
+ * @return r_movieList : 상영관이름, 영화제목, 상영날짜, 상영시간
+ */
 	public List<AdminShowtimeVO> refreshData(String adminID) {
 		List<AdminShowtimeVO> r_movieList = null;
 		StringBuilder sql = new StringBuilder();
@@ -114,6 +125,11 @@ public class AdminDao {
 		}
 		return r_movieList;
 	}
+/************************************************************************************************
+ * 요청한 지점의 아이디로 식별하여 그 지점에 상영하고 있는 당일의 상영시간표 정보를 반환해준다. 
+ * @param adminID : 요청한 지점의 아이디 
+ * @return r_movieList : 상영관이름, 영화제목, 상영날짜, 상영시간
+ */
 	public List<AdminShowtimeVO> selectData(String adminID, String currentYMD) {
 		List<AdminShowtimeVO> r_movieList = null;
 		StringBuilder sql = new StringBuilder();
@@ -144,16 +160,12 @@ public class AdminDao {
 		}
 		return r_movieList;
 	}
-//	public static void main(String[] args) {
-//		Admin_Dao ad = new Admin_Dao();
-//		List<Map<String, Object>> rList = new Vector<Map<String,Object>>();
-//		rList = ad.ins("gangnam");
-//		for (Map<String, Object> map : rList) {
-//			System.out.println(map.get("First"));
-//			System.out.println(map.get("Second"));
-//		}
-//	}
 
+/***********************************************************************************************
+ * insertShowtime() : 상영시간표 추가해주는 함수로 처리결과 메시지를 반환한다.
+ * @param astVO : 요청아이디, 영화제목, 상영관, 연도, 월, 일, 시, 분 
+ * @return msg : 처리결과 메시지 
+ */
 	public String insertShowtime(AdminShowtimeVO astVO) {
 		String msg = null;
 		int i = 0;
@@ -181,7 +193,11 @@ public class AdminDao {
 		}
 		return msg;
 	}
-
+/***********************************************************************************************
+ * insertShowtime() : 상영시간표 삭제해주는 함수로 처리결과 메시지를 반환한다.
+ * @param astVO : 요청아이디, 영화제목, 상영관, 연도, 월, 일, 시, 분 
+ * @return msg : 처리결과 메시지 
+ */
 	public String deleteShowtime(AdminShowtimeVO astVO) {
 		String msg = null;
 		int i = 0;
@@ -209,6 +225,16 @@ public class AdminDao {
 		}
 		return msg;
 	}
+//	단위테스트를 하기위한 메인 메소드
+//	public static void main(String[] args) {
+//		Admin_Dao ad = new Admin_Dao();
+//		List<Map<String, Object>> rList = new Vector<Map<String,Object>>();
+//		rList = ad.ins("gangnam");
+//		for (Map<String, Object> map : rList) {
+//			System.out.println(map.get("First"));
+//			System.out.println(map.get("Second"));
+//		}
+//	}
 
 }
 

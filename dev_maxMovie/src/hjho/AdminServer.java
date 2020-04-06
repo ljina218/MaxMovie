@@ -41,7 +41,7 @@ public class AdminServer extends JFrame implements Runnable{
 	JButton jbtn_exit = new JButton("나가기");
 	
 	public void initDisplay() {
-		//익명 메소드
+		//익명 메소드*************************************************************
 		jbtn_log.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -72,6 +72,7 @@ public class AdminServer extends JFrame implements Runnable{
 				}
 			}
 		});
+		//익명 메소드*************************************************************
 		jbtn_exit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -90,6 +91,7 @@ public class AdminServer extends JFrame implements Runnable{
 				}
 			}
 		});
+		//initDisplay*************************************************************
 		//Center 화면 구성
 		jta_log.setBackground(Color.LIGHT_GRAY);
 		Font font = new Font("맑은 고딕", Font.BOLD, 15);
