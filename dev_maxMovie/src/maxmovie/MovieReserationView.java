@@ -260,9 +260,9 @@ public class MovieReserationView extends JPanel{
 		 * jl_choice_totalPay.setText(????);	기입 예)"18,000원"
 		**********************************************************************************/
 				
-		jbt_goMovieChoice.setVisible(true);
-		jbt_goSeatChoice.setVisible(false);
-		jbt_goPayChoice.setVisible(true);
+		jbt_goMovieChoice.setVisible(false);
+		jbt_goSeatChoice.setVisible(true);
+		jbt_goPayChoice.setVisible(false);
 
 		
 		this.add(jp_scv);

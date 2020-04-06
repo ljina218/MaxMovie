@@ -21,6 +21,7 @@ public class TicketHistoryView extends JPanel  {
 	DefaultTableModel 		dtm_history				= new DefaultTableModel(data_history, col_history);
 	JTable 					jt_history				= new JTable(dtm_history);
 	JScrollPane 			jsp_history				= new JScrollPane(jt_history);
+	JLabel					jl_curtain				= new JLabel();
 	EventMapping 			em 						= null;
 	
 	public TicketHistoryView(EventMapping em) {
@@ -31,8 +32,6 @@ public class TicketHistoryView extends JPanel  {
 	public void initDisplay(){
 		this.setLayout(null);
 		this.setBackground(new Color(215, 215, 215));
-//		jl_pageInfoLeft.setText(em.mmv.mem_nick);
-		jl_pageInfoLeft.setText("kong");
 		
 		DefaultTableCellRenderer dtcr_local = new DefaultTableCellRenderer();
 		dtcr_local.setHorizontalAlignment(JLabel.CENTER);
@@ -52,7 +51,15 @@ public class TicketHistoryView extends JPanel  {
 		jl_pageInfoLeft.setBounds(260, 0, 160, 100);
 		jl_pageInfoRight.setBounds(430, 0, 170, 100);
 		jsp_history.setBounds(40, 80, 840, 330);
-		
+		jl_curtain.setBounds(40, 80, 840, 330);
+		jl_curtain.setOpaque(true);
+		jl_curtain.setText("예매내역 없음");
+		jl_curtain.setBackground(new Color(5, 5, 5, 120));
+		jl_curtain.setHorizontalAlignment(JLabel.CENTER);
+		//커튼막 예매내역 없는 경우
+		//jl_curtain.setVisible(false);
+		jl_curtain.setVisible(false);
+		this.add(jl_curtain);
 		this.add(jl_pageInfoLeft);
 		this.add(jl_pageInfoRight);
 		this.add(jsp_history);
@@ -71,7 +78,6 @@ public class TicketHistoryView extends JPanel  {
 		mmv.jp_mv.jp_miv.setVisible(false);
 		mmv.jp_mv.jp_muv.setVisible(false);
 		mmv.jp_rv.setVisible(false);
-		
 		
 		mmv.jl_logo_small.setVisible(true);
 		mmv.jl_nickInfo.setVisible(true);
