@@ -105,6 +105,7 @@ public class MaxMovieView extends JFrame{
 		mem_id = "cloudsky7";	
 		mem_nick = "kong";
 
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jl_nickInfo.setText(mem_nick);
 		jl_nickInfo.setFont(new Font("굴림체", Font.BOLD, 20));
 		jl_nickInfo.setForeground(Color.black);

@@ -1,7 +1,5 @@
 package maxmovie;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -10,10 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 public class MovieServerThread extends Thread{
 	
