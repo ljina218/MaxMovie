@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -226,6 +227,8 @@ public class JoinView extends JDialog {
 		jbt_joingo.setBackground(new Color(52, 152, 219));
 		jbt_joingo.setForeground(Color.white);
 
+
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);		
 		this.add(jl_logo_m);
 		this.add(jl_id);
 		this.add(jbt_id_check);
