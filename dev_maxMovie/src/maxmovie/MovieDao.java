@@ -69,21 +69,26 @@ public class MovieDao {
 	 * 			"-1" 반환 : 아이디가 존재하지 않음
 	 * 			" 2" 반환 : 비밀번호가 맞지 않음 
 	 *************************************************************************************************************************/
-	public String proc_login(String p_id, String p_pw) {
-		String sth = null;
+	public MemberVO proc_login(String p_id, String p_pw) {
+		MemberVO rmVO = new MemberVO();
+		String member_id = null;
+		String nickORstatus = null;
 		con = dbMgr.getConnection();
 		try {
-			cstmt = con.prepareCall("{call proc_logintest(?,?,?)}");
+			cstmt = con.prepareCall("{call proc_logintest(?,?,?,?)}");
 			cstmt.setString(1, p_id);
 			cstmt.setString(2, p_pw);
 			cstmt.registerOutParameter(3, java.sql.Types.VARCHAR);
 			rs = cstmt.executeQuery();
-			sth = cstmt.getString(3);
+			//사용자가 입력한 아이디 (존재 유무에 상관없이 입력한 아이디가 그대로 저장됨)
+			rmVO.setMem_id(cstmt.getString(3));
+			//사용자가 입력한 아이디가 존재하고 로그인 성공이면 닉네임이 세팅되고 그렇지 않으면 -1이나 2가 저장됨
+			rmVO.setResult(cstmt.getString(4));
 		} catch (SQLException e) {
 			System.out.println("proc_login() Exception : " + e.toString());
 			e.printStackTrace();
 		}
-		return sth;
+		return rmVO;
 	}
 	//테스트용
 //	public MemberVO proc_login(String p_id, String p_pw) {
@@ -370,55 +375,13 @@ public class MovieDao {
 							+"\n");
 		}
 		*/
-		//박미경 : proc_login() & proc_checkID() : 함수 단위 테스트 코드입니다.
-		MovieDao md = new MovieDao();
+		String temp = "2020년 03월 28일";
+		String date = (temp.substring(0, 4)+temp.substring(6, 8)+temp.substring(10, 12));
+		System.out.println(date);
 		
-		List<TicketingVO> list = new ArrayList<>();
-		TicketingVO tvo = new TicketingVO();
-		tvo.setMem_id("test");
-		tvo.setMovie_name("작은아씨들");
-		tvo.setTheater("서면점");
-		tvo.setMovie_screen("1관");
-		tvo.setScreen_seat("f1");
-		tvo.setMovie_date("20200402");
-		tvo.setMovie_time("19:00");
-		list.add(tvo);
-		md.proc_payTicket(list);
-		
-		
-		
-		
-		
-		
-		/*
-		String nickname = null;
-		//로그인 테스트
-		nickname = md.proc_login("cloudsky7", "1234");
-		System.out.println(nickname);
-		MemberVO mvo = md.proc_login("cloudsky7", "1234");
-		System.out.println(mvo.getResult());
-		
-		String msg = null;
-		msg = md.proc_checkID("clou7");
-		System.out.println(msg);
-		
-		MemberVO mVO = new MemberVO();
-		mVO.setMem_id("mimitest");
-		mVO.setMem_email("2222@gmail.com");
-		mVO.setMem_nickname("hhhha");
-		int result = 0;
-			result = md.insertUser(mVO);
-			result = md.updateUser(mVO);
-		System.out.println(result);
-		
-		TicketingVO tVO = new TicketingVO();
-		tVO.setMem_id("cloudsky7");
-		List<TicketingVO> tList = null;
-		tList = md.showMyticket(tVO);
-		for(TicketingVO rMap : tList) {
-			System.out.println(rMap.getTicketing_code());
-		}
-		*/
+		String ttime = "12:00 ~ 13:45";
+		String time = (ttime.substring(0, 5));
+		System.out.println(time);
 	}
 	
 }

@@ -64,6 +64,8 @@ public class ClientThread extends Thread{
 				case MovieProtocol.LOGIN:{//로그인
 					String login_result = st.nextToken();
 					if(login_result==null){//로그인 성공시 result값엔 저장값 없음
+						mmv.jp_lv.jtf_id.setText("");
+						mmv.jp_lv.jpf_pw.setText("");
 						mmv.jp_lv.jl_id_warning.setVisible(false);
 						mmv.jp_lv.jl_pw_warning.setVisible(false);
 						mmv.mem_nick = st.nextToken();
@@ -75,12 +77,12 @@ public class ClientThread extends Thread{
 						if(login_result=="-1") {
 							mmv.jp_lv.jtf_id.setText("");
 							mmv.jp_lv.jpf_pw.setText("");
-							mmv.jp_lv.jl_id_warning.setText("아이디가 존재하지 않습니다.");;
+							mmv.jp_lv.jl_id_warning.setVisible(true);
 						}
 						else if(login_result=="2") {
 							mmv.jp_lv.jtf_id.setText("");
 							mmv.jp_lv.jpf_pw.setText("");
-							mmv.jp_lv.jl_pw_warning.setText("비밀번호가 일치하지 않습니다.");
+							mmv.jp_lv.jl_pw_warning.setVisible(true);
 						}
 					}
 				}
@@ -94,6 +96,12 @@ public class ClientThread extends Thread{
 					String join_result = st.nextToken();
 					if(join_result=="1") {//회원가입(DB저장) 성공 -화면전환은 eventmapping에서 처리
 						JOptionPane.showConfirmDialog(mmv, "회원가입이 완료되었습니다.");
+						mmv.em.jv.jtf_id.setText("");
+						mmv.em.jv.jtf_name.setText("");
+						mmv.em.jv.jtf_nick.setText("");
+						mmv.em.jv.jtf_email.setText("");
+						mmv.em.jv.jtf_email_r.setText("");
+						mmv.em.jv.jpf_pw.setText("");
 					} else {
 						JOptionPane.showConfirmDialog(mmv, "회원가입 중 오류가 발생했습니다. 재시도해주세요.");
 					}
@@ -148,6 +156,12 @@ public class ClientThread extends Thread{
 					String update_result = st.nextToken();
 					if(update_result=="1") {
 						JOptionPane.showConfirmDialog(mmv, "회원정보가 수정되었습니다."); 
+						mmv.em.jv.jtf_id.setText("");
+						mmv.em.jv.jtf_name.setText("");
+						mmv.em.jv.jtf_nick.setText("");
+						mmv.em.jv.jtf_email.setText("");
+						mmv.em.jv.jtf_email_r.setText("");
+						mmv.em.jv.jpf_pw.setText("");
 //display()				마이페이지-틀뷰 & 마이페이지-비밀번호입력뷰
 						display(false, true, true, false, false, false, false, false);
 					} else {

@@ -584,11 +584,40 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			mmv.jp_mrv.jp_mcv.setVisible(false);
 			mmv.jp_mrv.jp_pv.setVisible(false);
 			mmv.jp_mrv.jp_scv.setVisible(false);
+		}
+		/*************************************************************************************************
+		 * 좌석 선택이 끝나고 결제 버튼을 눌렀을때 
+		 */
+		else if(obj==mmv.jp_mrv.jbt_goPayChoice) {
+			System.out.println(mmv.jp_mrv.jp_scv.seatChoiceList.size());
+			for(String seatCode : mmv.jp_mrv.jp_scv.seatChoiceList) {
+				String mem_id 		= mmv.mem_id;
+				String movieName 	= mmv.jp_mrv.jl_south_movie.getText();
+				String theater 		= mmv.jp_mrv.jl_south_theater.getText();
+				String screen 		= mmv.jp_mrv.jl_south_screen.getText();
+				String seat 		= seatCode;
+				String tempdate 		= mmv.jp_mrv.jl_south_date.getText();
+				System.out.println("tempdate"+ tempdate);
+				//년월일 제외하여 20200408 형식 맞추기
+//				jl_south_date.setText("2020년 03월 28일") -> 20200328
+				String date = (tempdate.substring(0, 4)+tempdate.substring(6, 8)+tempdate.substring(10, 12));
+				String temptime 		= mmv.jp_mrv.jl_south_time.getText();
+				System.out.println("temptime"+ temptime);
+				//시간 형식 맞추기 00:00
+				String time = (temptime.substring(0, 5));
+				String pay_msg 	= MovieProtocol.PAY+"#"+mem_id+"#"+movieName+"#"+theater+"#"
+									+screen+"#"+seat+"#"+date+"#"+time;
+				this.send(pay_msg);
+			}
+		/**************************************************************************************************
+		 * 좌석 선택화면에서 adult, teen 인원 선택 - 선택한 인원만큼 좌석 선택	
+		 */
 		} else {
 			for(int i=0; i<mmv.jp_mrv.jp_scv.jbts_adult.length; i++) {
 				if(obj==mmv.jp_mrv.jp_scv.jbts_adult[i]) {
 					mmv.jp_mrv.jp_scv.jbts_adult[mmv.jp_mrv.jp_scv.adultChoice].setBackground(new Color(230, 230, 230));
 					mmv.jp_mrv.jp_scv.adultChoice = i;
+					System.out.println("mmv.jp_mrv.jp_scv.adultChoice 선택 인원수 : "+mmv.jp_mrv.jp_scv.adultChoice);
 					mmv.jp_mrv.jp_scv.jbts_adult[i].setBackground(Color.yellow);
 					mmv.jp_mrv.jp_scv.jbts_adult[i].setForeground(Color.black);
 					break;
@@ -598,6 +627,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				if(obj==mmv.jp_mrv.jp_scv.jbts_teen[i]) {
 					mmv.jp_mrv.jp_scv.jbts_teen[mmv.jp_mrv.jp_scv.teenChoice].setBackground(new Color(230, 230, 230));
 					mmv.jp_mrv.jp_scv.teenChoice = i;
+					System.out.println("mmv.jp_mrv.jp_scv.teenChoice 선택 인원수 : "+mmv.jp_mrv.jp_scv.teenChoice);
 					mmv.jp_mrv.jp_scv.jbts_teen[i].setBackground(Color.yellow);
 					mmv.jp_mrv.jp_scv.jbts_teen[i].setForeground(Color.black);
 					break;
@@ -613,19 +643,32 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 //								mmv.jp_mrv.jp_scv.seatChoiceList.remove(k);
 //							}
 //						}
-						if(mmv.jp_mrv.jp_scv.seatChoiceList.size()<mmv.jp_mrv.jp_scv.teenChoice+mmv.jp_mrv.jp_scv.adultChoice) {
+						if(mmv.jp_mrv.jp_scv.seatChoiceList.size() < mmv.jp_mrv.jp_scv.teenChoice + mmv.jp_mrv.jp_scv.adultChoice) {
 							String seatChoice = (char)(i+65) + Integer.toString(j+1);
 							//(행) : (char)(i+65)   (열) : Integer.toString(j+1) 행과열 : (char)(i+65) + Integer.toString(j+1)					
 							mmv.jp_mrv.jp_scv.jbts_seat[i][j].setBackground(Color.white);
 							mmv.jp_mrv.jp_scv.jbts_seat[i][j].setForeground(Color.black);
+							System.out.println("seatChoice : " + seatChoice);
 							mmv.jp_mrv.jp_scv.seatChoiceList.add(seatChoice);
+							
 						} else {
 							return;
 						}
 					}
 				}
 			}
+			//선택한 인원수에 맞게 좌석수를 선택한 경우에 좌석버튼이 활성화됨
+			if(mmv.jp_mrv.jp_scv.teenChoice!=0 && mmv.jp_mrv.jp_scv.teenChoice==mmv.jp_mrv.jp_scv.seatChoiceList.size()) {
+				mmv.jp_mrv.jbt_goSeatChoice.setForeground(Color.white);
+				mmv.jp_mrv.jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
+				mmv.jp_mrv.jbt_goSeatChoice.setEnabled(true);
+			} else if(mmv.jp_mrv.jp_scv.adultChoice!=0 && mmv.jp_mrv.jp_scv.adultChoice==mmv.jp_mrv.jp_scv.seatChoiceList.size()) {
+				mmv.jp_mrv.jbt_goSeatChoice.setForeground(Color.white);
+				mmv.jp_mrv.jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
+				mmv.jp_mrv.jbt_goSeatChoice.setEnabled(true);
+			}
 		}
+		
 	}
 	/**************************************************************************************************
 	 * ItemListener(회원가입-생년월일, 회원가입-성별)

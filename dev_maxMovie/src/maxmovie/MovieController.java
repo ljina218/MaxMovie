@@ -7,20 +7,19 @@ import java.util.Vector;
 
 public class MovieController {
 	MovieDao dao = new MovieDao();
-	final String SELECT_LOGIN = "로그인";
-	final String CHECK_ID = "중복검사";
-	final String INSERT_JOIN = "회원가입";
-	final String UPDATE = "회원정보수정";
-	final String SELECT_MY = "회원정보";//회원정보조회
-	final String SELECT_TICKET = "예매내역";//예매내역조회
-	final String SELECT_MOVIE = "영화선택";
-	final String SELECT_SCR = "극장선택";
-	final String SELECT_DATE = "날짜선택";
-	final String SELECT_SEAT = "좌석선택";
+	final String SELECT_LOGIN 	= "로그인";
+	final String CHECK_ID 		= "중복검사";
+	final String INSERT_JOIN 	= "회원가입";
+	final String UPDATE 		= "회원정보수정";
+	final String SELECT_MY 		= "회원정보";//회원정보조회
+	final String SELECT_TICKET 	= "예매내역";//예매내역조회
+	final String SELECT_MOVIE	= "영화선택";
+	final String SELECT_SCR 	= "극장선택";
+	final String SELECT_DATE 	= "날짜선택";
+	final String SELECT_SEAT 	= "좌석선택";
+	final String PAY 			= "결제";
 	//상영시간표 새로고침
 	final String MOVIE_REFRESH = "새로고침";
-	
-	String temp = null;
 	
 	/***********************************************************************
 	 * 로그인, 중복검사, 회원가입, 회원정보수정, 회원정보조회 처리하는 메소드
@@ -35,12 +34,14 @@ public class MovieController {
 		System.out.println("control(pmVO) - command : " + pmVO.getCommand());
 		String command = pmVO.getCommand();
 		if(SELECT_LOGIN.equals(command)) { //로그인
-			temp = dao.proc_login(pmVO.getMem_id(), pmVO.getMem_pw());
-			System.out.println(temp);
-			if(temp.equals("-1") || temp.equals("2")) { //로그인실패 결과값
-				rmVO.setResult(temp);			
-			} else { //로그인성공시 닉네임 반환
-				rmVO.setMem_nickname(temp);
+			rmVO = dao.proc_login(pmVO.getMem_id(), pmVO.getMem_pw());
+			System.out.println("사용자가 입력한 아이디 : "+ rmVO.getMem_id());
+			if(rmVO.getResult().equals("-1") || rmVO.getResult().equals("2")) { //로그인실패 결과값
+				System.out.println("result : 로그인실패 -1 or 2 : " + rmVO.getResult());
+				rmVO.setMem_id(null);
+			} else { //로그인성공시 닉네임 반환(result에 담겨있음 그렇게 됐음..)
+				rmVO.setMem_nickname(rmVO.getResult());
+				System.out.println("result : 로그인성공 nickname : " + rmVO.getMem_nickname());
 			}
 		}
 		else if(CHECK_ID.equals(command)) { //중복검사

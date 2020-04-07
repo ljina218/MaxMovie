@@ -106,7 +106,7 @@ public class AdminClient extends JFrame implements ActionListener{
 	public void connect_process() {
 		try {
 			//서버측의 ip주소 작성하기
-			socket = new Socket("192.168.0.10",5100);
+			socket = new Socket("192.168.0.37",5100);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
 			//로그인 시 현재 사영되고있는 영화정보와

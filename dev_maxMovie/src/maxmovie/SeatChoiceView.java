@@ -277,7 +277,6 @@ public class SeatChoiceView extends JPanel{
 //				}
 //			}
 //		}
-<<<<<<< HEAD
 //	}
 		//[160]석 셋팅 
 //		if(seatList.size()==160) {

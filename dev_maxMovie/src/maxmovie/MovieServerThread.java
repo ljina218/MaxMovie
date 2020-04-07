@@ -8,7 +8,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 public class MovieServerThread extends Thread{
 	
@@ -18,6 +21,9 @@ public class MovieServerThread extends Thread{
 	
 	//영화정보 셋팅할 변수
 	TicketingVO tVO = null;
+	
+	//예매 결제할때 
+	List<TicketingVO> pList = null;
 	
 	//컨트롤러 생성
 	MovieController ctrl = new MovieController();
@@ -339,7 +345,7 @@ public class MovieServerThread extends Thread{
 					TicketingVO pVO = tVO;
 					pVO.setCommand(ctrl.SELECT_SEAT);
 					/*
-					List<Map<String, Object>> seatlist = ctrl.메소드();
+					List<TicketingVO> seatlist = ctrl.control(tVOList);
 					for(int i=0; i<seatlist.size(); i++) {
 						String seatNum = seatlist.get(i).get("좌석번호");
 						String seatState = seatlist.get(i).get("예약번호");
@@ -347,25 +353,38 @@ public class MovieServerThread extends Thread{
 						this.send(seat_msg);
 					}
 					*/
+					
 				}
 				case MovieProtocol.PAY:{//결제하기
 					//아이디, 영화이름, 지역, 지점, 상영관, 날짜 , 시간, 좌석
+					pList = new Vector<TicketingVO>();
 					TicketingVO pVO = new TicketingVO();
 					pVO.setMem_id(st.nextToken());
 					pVO.setMovie_name(st.nextToken());
-					pVO.setLoc(st.nextToken());
 					pVO.setTheater(st.nextToken());
 					pVO.setMovie_screen(st.nextToken());
+					pVO.setScreen_seat(st.nextToken());
 					pVO.setMovie_date(st.nextToken());
 					pVO.setMovie_time(st.nextToken());
-					pVO.setScreen_seat(st.nextToken());
-					/*
-					pVO.setCommand(ctrl.결제);
-					TicketingVO rVO = ctrl.메소드();
-					String result = rVO.getResult();
-					*/
-				}
-				}
+					pVO.setCommand(ctrl.PAY);
+					pList.add(pVO);
+					//보냈던 리스트 그대로 반환 result값 따로 없음
+					List<TicketingVO> rList = ctrl.control(pList);
+						for(TicketingVO tvo : rList) {
+							String mem_id 		= tvo.getMem_id();
+							String movieName 	= tvo.getMovie_name();
+							String theater 		= tvo.getTheater();
+							String screen 		= tvo.getMovie_screen();
+							String seat 		= tvo.getScreen_seat();
+							String date 		= tvo.getMovie_date();
+							String time 		= tvo.getMovie_time();
+							String pay_msg 		= MovieProtocol.PAY+"#"+mem_id+"#"+movieName+"#"+theater+"#"
+												+screen+"#"+seat+"#"+date+"#"+time;
+							System.out.println(pay_msg);
+							this.send(pay_msg);
+						}
+					}
+				}//end of switch
 			} catch (ClassNotFoundException e) {
 				System.out.println(e.toString());
 				//e.printStackTrace();

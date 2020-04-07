@@ -38,6 +38,7 @@ public class MovieReserationView extends JPanel{
 		jp_scv = new SeatChoiceView(em);
 		jp_pv = new PayView(em);
 		initDisplay();
+		eventMapping();
 	}
 	public void initDisplay() {
 		this.setLayout(null);
