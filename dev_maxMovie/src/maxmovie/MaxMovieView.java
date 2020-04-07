@@ -16,6 +16,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -83,7 +84,7 @@ public class MaxMovieView extends JFrame{
 	public MaxMovieView() {
 		initDisplay();
 		eventMapping();//이벤트 맵핑 메소드
-//		connect();//클라이언트 스레드를 생성하기 위한 메소드
+		connect();//클라이언트 스레드를 생성하기 위한 메소드
 	}
 
 	public void initDisplay(){
@@ -107,11 +108,8 @@ public class MaxMovieView extends JFrame{
  		 * jbt_ticketing.setVisible(true);
 		 *****************************************************************/
 		///
-		mem_id = "cloudsky7";	
-		mem_nick = "kong";
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jl_nickInfo.setText(mem_nick);
 		jl_nickInfo.setFont(new Font("굴림체", Font.BOLD, 20));
 		jl_nickInfo.setForeground(Color.black);
 		jl_nickInfo.setHorizontalAlignment(JLabel.RIGHT);
@@ -214,17 +212,19 @@ public class MaxMovieView extends JFrame{
 	}
 	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
 		try {
-			socket = new Socket("192.168.0.244",5000);
+			movieList = new Vector<Map<String,Object>>();//클라이언트에 저장할 영화정보 리스트 생성
+			socket = new Socket("192.168.0.237",5000);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
-			ClientThread ct = new ClientThread(this);//로그인 성공시
+			oos.writeObject(MovieProtocol.SELECT+"#");//영화정보 주세여
+			ClientThread ct = new ClientThread(this);
 			ct.start();
 		} catch (UnknownHostException e) {
 			System.out.println(e.toString());
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch (IOException e) {
 			System.out.println(e.toString());
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 }

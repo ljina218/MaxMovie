@@ -77,7 +77,7 @@ public class MovieDao {
 			cstmt.setString(1, p_id);
 			cstmt.setString(2, p_pw);
 			cstmt.registerOutParameter(3, java.sql.Types.VARCHAR);
-			rs = cstmt.executeQuery();
+			cstmt.execute();
 			sth = cstmt.getString(3);
 		} catch (SQLException e) {
 			System.out.println("proc_login() Exception : " + e.toString());
@@ -116,7 +116,7 @@ public class MovieDao {
 			cstmt = con.prepareCall("{call proc_checkID(?,?)}");
 			cstmt.setString(1, p_id);
 			cstmt.registerOutParameter(2, java.sql.Types.VARCHAR);
-			rs = cstmt.executeQuery();
+			cstmt.execute();
 			result = cstmt.getString(2);
 		} catch (SQLException e) {
 			System.out.println("proc_checkID() Exception : " + e.toString());
@@ -136,13 +136,13 @@ public class MovieDao {
 		sql.append("INSERT INTO member VALUES(?, ?, ?, ?, ?, ?, ?)");
 		try {
 			pstmt = con.prepareStatement(sql.toString());
-			pstmt.setString(1, pmVO.mem_name);
-			pstmt.setString(2, pmVO.mem_id);
-			pstmt.setString(3, pmVO.mem_pw);
-			pstmt.setString(4, pmVO.mem_email);
-			pstmt.setString(5, pmVO.mem_nickname);
-			pstmt.setString(6, pmVO.mem_birth);
-			pstmt.setString(7, pmVO.mem_gender);
+			pstmt.setString(1, pmVO.getMem_name());
+			pstmt.setString(2, pmVO.getMem_id());
+			pstmt.setString(3, pmVO.getMem_pw());
+			pstmt.setString(4, pmVO.getMem_email());
+			pstmt.setString(5, pmVO.getMem_nickname());
+			pstmt.setString(6, pmVO.getMem_birth());
+			pstmt.setString(7, pmVO.getMem_gender());
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.toString());
@@ -165,7 +165,7 @@ public class MovieDao {
         sql.append(" WHERE mem_id=?                           ");
 		try {
 			pstmt = con.prepareStatement(sql.toString());
-			pstmt.setString(1, pmVO.mem_id);
+			pstmt.setString(1, pmVO.getMem_id());
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				rmVO.setMem_id(rs.getString("mem_id"));
@@ -234,18 +234,18 @@ public class MovieDao {
 		try {
 			pstmt = con.prepareStatement(sql.toString());
 			if(pmVO.getMem_pw()!=null&&pmVO.getMem_pw().length()>0) {
-				pstmt.setString(i++, pmVO.mem_pw);
-				System.out.println("수정된 mem_pw : "+pmVO.mem_pw);
+				pstmt.setString(i++, pmVO.getMem_pw());
+				System.out.println("수정된 mem_pw : "+pmVO.getMem_pw());
 			}
 			if(pmVO.getMem_email()!=null&&pmVO.getMem_email().length()>0) {
-				pstmt.setString(i++, pmVO.mem_email);
-				System.out.println("수정된 mem_email : "+pmVO.mem_email);
+				pstmt.setString(i++, pmVO.getMem_email());
+				System.out.println("수정된 mem_email : "+pmVO.getMem_email());
 			}
 			if(pmVO.getMem_nickname()!=null&&pmVO.getMem_nickname().length()>0) {
-				pstmt.setString(i++, pmVO.mem_nickname);
-				System.out.println("수정된 mem_nickname : "+pmVO.mem_nickname);
+				pstmt.setString(i++, pmVO.getMem_nickname());
+				System.out.println("수정된 mem_nickname : "+pmVO.getMem_nickname());
 			}
-			pstmt.setString(i, pmVO.mem_id);
+			pstmt.setString(i, pmVO.getMem_id());
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.toString());
