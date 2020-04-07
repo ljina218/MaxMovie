@@ -1,15 +1,15 @@
 package maxmovie;
 
 public class MemberVO {
-	String command	    = null;
-	String result		= null;
-	String mem_name     = null;
-	String mem_id       = null;
-	String mem_pw       = null;
-	String mem_email    = null;
-	String mem_nickname = null;
-	String mem_birth    = null;
-	String mem_gender   = null;
+	private String command	    = null;
+	private String result		= null;
+	private String mem_name     = null;
+	private String mem_id       = null;
+	private String mem_pw       = null;
+	private String mem_email    = null;
+	private String mem_nickname = null;
+	private String mem_birth    = null;
+	private String mem_gender   = null;
 	
 	public String getMem_name() {
 		return mem_name;

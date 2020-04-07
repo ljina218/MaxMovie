@@ -48,7 +48,7 @@ public class SendMail {
 		int smtpPort = 465;
 		final String sendId = ""; //naver ID
 		final String sendPass = ""; //naver PW
-		String sendEmailAddress =  "jhleelego@naver.com";
+		String sendEmailAddress =  "cloudsky7@naver.com";
 		Session session = Session.getDefaultInstance(props, new Authenticator(){
 			protected PasswordAuthentication getPasswordAuthentication(){
 				return new PasswordAuthentication(sendId, sendPass);

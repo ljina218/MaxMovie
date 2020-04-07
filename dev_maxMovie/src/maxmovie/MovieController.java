@@ -37,23 +37,23 @@ public class MovieController {
 		if(SELECT_LOGIN.equals(command)) { //로그인
 			temp = dao.proc_login(pmVO.getMem_id(), pmVO.getMem_pw());
 			System.out.println(temp);
-			if(temp.equals("-1") || temp.equals("2")) { //로그인실패 결과값
+			if("-1".equals(temp) || "2".equals(temp)) { //로그인실패 결과값
 				rmVO.setResult(temp);			
 			} else { //로그인성공시 닉네임 반환
 				rmVO.setMem_nickname(temp);
 			}
 		}
 		else if(CHECK_ID.equals(command)) { //중복검사
-			rmVO.result = dao.proc_checkID(pmVO.mem_id);
+			rmVO.setResult(dao.proc_checkID(pmVO.getMem_id()));
 		}
 		else if(INSERT_JOIN.equals(command)) { //회원가입
-			rmVO.result = dao.insertUser(pmVO);
+			rmVO.setResult(dao.insertUser(pmVO));
 		}
 		else if(SELECT_MY.equals(command)) { //회원정보(조회)
 			rmVO = dao.showUserInfo(pmVO);
 		}
 		else if(UPDATE.equals(command)) {//회원정보수정
-			rmVO.result = dao.insertUser(pmVO);
+			rmVO.setResult(dao.insertUser(pmVO));
 		}
 		return rmVO;
 	}
