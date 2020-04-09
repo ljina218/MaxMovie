@@ -281,18 +281,25 @@ public class MovieServerThread extends Thread{
 					pVO.setMem_id(st.nextToken());
 					pVO.setCommand(ctrl.SELECT_TICKET);
 					List<TicketingVO> ticket_list = ctrl.control(pVO);
-					for(int i=0; i<ticket_list.size(); i++) {
-						String movieName = ticket_list.get(i).getMovie_name();
-						String loc = ticket_list.get(i).getLoc();
-						String theater = ticket_list.get(i).getTheater();
-						String date = ticket_list.get(i).getMovie_date();
-						String time = ticket_list.get(i).getMovie_time();
-						String screen = ticket_list.get(i).getMovie_screen();
-						String seat = ticket_list.get(i).getScreen_seat();
-						String ticketCode = ticket_list.get(i).getTicketing_code();
-						String ticket_msg = MovieProtocol.MY_MOVIE+"#"+movieName+"#"+loc+"#"+theater+"#"+
-												date+"#"+time+"#"+screen+"#"+seat+"#"+ticketCode;
-						this.send(ticket_msg);
+					//예매내역이 있을 경우 
+					if(ticket_list.size()>0) {
+						for(int i=0; i<ticket_list.size(); i++) {
+							String movieName = ticket_list.get(i).getMovie_name();
+							String loc = ticket_list.get(i).getLoc();
+							String theater = ticket_list.get(i).getTheater();
+							String date = ticket_list.get(i).getMovie_date();
+							String time = ticket_list.get(i).getMovie_time();
+							String screen = ticket_list.get(i).getMovie_screen();
+							String seat = ticket_list.get(i).getScreen_seat();
+							String ticketCode = ticket_list.get(i).getTicketing_code();
+							String ticket_msg = MovieProtocol.MY_MOVIE+"#"+movieName+"#"+loc+"#"+theater+"#"+
+									date+"#"+time+"#"+screen+"#"+seat+"#"+ticketCode;
+							this.send(ticket_msg);
+						}
+					} else {
+						String noticket_msg = MovieProtocol.MY_MOVIE+"#";
+						System.out.println(noticket_msg);
+						this.send(noticket_msg);
 					}
 				}break;
 				//******************************************************************************
