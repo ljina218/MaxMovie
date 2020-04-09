@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -57,6 +58,9 @@ public class SeatChoiceView extends JPanel{
 	
 	//0:빈자리  1:결제 진행중  2:결제완료
 	public void seatSetting() {
+		/*************************************************************************************
+		 * 좌석선택 버튼 클릭 -> 전변에 있는 seatList에 clientThread에서 dao에서 반환된 list를 대입해주면!!!!
+		 */
 		seatList = new ArrayList<Map<String, Object>>();
 		
 		//만약 다른곳에서 온다면 이런형태로 올것이다. 임시모델↓↓↓
@@ -71,6 +75,7 @@ public class SeatChoiceView extends JPanel{
 				seatList.add(map);
 			}
 		}
+		
 		//A1~J12 셋팅 좌석 (120석)
 //		for(char i=65; i<75; i++) {
 //			Map<String, Object> map = null;

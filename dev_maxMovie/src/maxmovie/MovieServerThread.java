@@ -54,8 +54,8 @@ public class MovieServerThread extends Thread{
 //						int result = checkTime(time);
 //						if(result==1) {
 							System.out.println("상영시간 멀었음, 예약 가능");
-							this.send(MovieProtocol.SELECT+"#"+ms.movieList.get(i).get("M_TITLE")
-									+"#"+ms.movieList.get(i).get("M_CERTIF")
+							this.send(MovieProtocol.SELECT+"#"+ms.movieList.get(i).get("M_CERTIF")
+									+"#"+ms.movieList.get(i).get("M_TITLE")
 									+"#"+ms.movieList.get(i).get("T_LOC")
 									+"#"+ms.movieList.get(i).get("T_NAME")
 									+"#"+ms.movieList.get(i).get("S_DATE")
