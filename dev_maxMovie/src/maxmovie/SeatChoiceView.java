@@ -57,14 +57,16 @@ public class SeatChoiceView extends JPanel{
 	}
 	
 	//0:빈자리  1:결제 진행중  2:결제완료
+
 	public void seatSetting(List<Map<String, Object>> seatList) {
 		this.seatList = seatList;
 		for(Map<String, Object> rmap: this.seatList) {
 			System.out.println("SeatChoiceView"+rmap.get("좌석").toString() +","+ rmap.get("현황").toString());
 		}
-		
+
 		//만약 다른곳에서 온다면 이런형태로 올것이다. 임시모델↓↓↓
 		//A1~J18 셋팅 좌석 (80석)
+
 //		for(char i=65; i<75; i++) {
 //			Map<String, Object> map = null;
 //			for(int j=1; j<9; j++) {
@@ -75,6 +77,19 @@ public class SeatChoiceView extends JPanel{
 //				seatList.add(map);
 //			}
 //		}
+
+		for(char i=65; i<75; i++) {
+			Map<String, Object> map = null;
+			for(int j=1; j<9; j++) {
+				map = new HashMap<>();
+				map.put("좌석", (char)i+Integer.toString(j));
+				map.put("현황", 0);
+				System.out.println(map.get("좌석") + ", " + map.get("현황"));
+				seatList.add(map);
+			}
+		}
+		
+
 		//A1~J12 셋팅 좌석 (120석)
 //		for(char i=65; i<75; i++) {
 //			Map<String, Object> map = null;

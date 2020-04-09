@@ -1,6 +1,7 @@
 package maxmovie;
 
 import java.util.ArrayList;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,10 @@ import java.util.Vector;
 
 
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+
+import com.sun.jndi.toolkit.dir.ContainmentFilter;
 
 
 public class ClientThread extends Thread{
@@ -124,8 +129,39 @@ public class ClientThread extends Thread{
 						mmv.jbt_ticketing.setVisible(true);
 						System.out.println("ClientThread에서 받은 id, nick : "+mmv.mem_id+", "+mmv.mem_nick);
 						display(false, false, false, false, false, true, true, false,false,false);//moviechoiceView 화면전환메소드 호출
-						//dtm 설정 메소드 호출@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+						mmv.em.tVO = null;
+						mmv.em.tVO = new TicketingVO();
+						//
+						System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@사이즈: "+  mmv.movieList.size());
+						List<Map<String,Object>> list = new Vector<Map<String,Object>>();
+						Map<String, Object> map = null;
+						for(int i=0; i<mmv.movieList.size(); i++) {
+							map = new HashMap<String, Object>();
+							map.put("M_TITLE", mmv.movieList.get(i).get("M_TITLE"));
+							map.put("M_CERTIF", mmv.movieList.get(i).get("M_CERTIF"));
+							map.put("T_LOC", mmv.movieList.get(i).get("T_LOC"));
+							map.put("T_NAME", mmv.movieList.get(i).get("T_NAME"));
+							map.put("S_DATE", mmv.movieList.get(i).get("S_DATE"));
+							map.put("S_TIME", mmv.movieList.get(i).get("S_TIME"));
+							map.put("SC_NAME", mmv.movieList.get(i).get("SC_NAME"));
+							list.add(map);
+						}
+						for(int i=0; i<list.size(); i++) {
+							String time = list.get(i).get("S_TIME").toString();
+							int result = mmv.em.checkTime(time);
+							if(result==0) {//예약할 수 없는 시간이라면....
+								list.remove(i);
+							}
+						}
+						System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@시간을 고려한 리스트: "+list.size());
+						mmv.em.movieDtm(mmv.em.containMovieList(list));
+						mmv.em.locDtm(mmv.em.containLocList(list));
+						mmv.em.theaterDtm(mmv.em.containTheaterList(list), "서울");
+						mmv.em.containDateList(list);
+						mmv.em.dateDtm();
+						mmv.em.scrDtm(mmv.em.containScrNameList(list));
 					}
+					
 				}break;
 				//******************************************************************************
 				case MovieProtocol.LOGOUT:{//로그아웃
@@ -257,8 +293,6 @@ public class ClientThread extends Thread{
 						String movielist_msg = MovieProtocol.SELECT+"#"+age+"#"+title+"#"+
 							loc+"#"+theater+"#"+date+"#"+time+"#"+screen;
 					 */
-					mmv.em.tVO = null;
-					mmv.em.tVO = new TicketingVO();
 					String age = st.nextToken();
 					String title = st.nextToken();
 					String loc = st.nextToken();
@@ -275,7 +309,7 @@ public class ClientThread extends Thread{
 					map.put("S_TIME", time);
 					map.put("SC_NAME", screen);
 					mmv.movieList.add(map);
-					System.out.println("무비리스트 사이즈"+mmv.movieList.size());
+					System.out.println("무비리스트 사이즈"+mmv.movieList.size()+", 연령: "+age);
 				}break;
 				//******************************************************************************
 //				case MovieProtocol.SELECT_MOVIE:{//영화선택
