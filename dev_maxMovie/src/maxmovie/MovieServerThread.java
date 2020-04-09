@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.Calendar;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class MovieServerThread extends Thread{

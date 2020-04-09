@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+	var IMP = window.IMP;
+	IMP.init('imp72119228');
+</script>
+<script type="text/javascript">
+// 인증 토큰 발급 받기
+axios({
+  url: "https://api.iamport.kr/users/getToken",
+  method: "post", // POST method
+  headers: { "Content-Type": "application/json" }, // "Content-Type": "application/json"
+  data: {
+    imp_key: "9726247111463673", // REST API키
+    imp_secret: "B08Z7YV5FcIXEt3RCuu08ilTzy3vPfnqfwqnultayb8dEc4gGzhORDIrbLX01lqhRREmc7xKjFYYS2fy" // REST API Secret
+  }
+});
+</script>
+<script type="text/javascript">
+axios({
+    url: "https://api.iamport.kr/payments/imp_448280090638",
+    method: "get", // GET method
+    headers: {
+      "Content-Type": "application/json", // "Content-Type": "application/json"
+      "Authorization": "Bearer a9ace025c90c0da2161075da6ddd3492a2fca776" // 발행된 액세스 토큰
+    }
+  });
+</script>
+<script type="text/javascript">
+
+IMP.request_pay({
+    pg : 'inicis', // version 1.1.0부터 지원.
+    pay_method : 'payple',
+    merchant_uid : 'merchant_' + new Date().getTime(),
+    name : '주문명:결제테스트',
+  	amount : 10,
+  buyer_email : 'jhleelego@naver.com',
+    buyer_name : '이정훈',
+    buyer_tel : '',
+    buyer_addr : '',
+    buyer_postcode : '',
+    //↓↓틀렸을 수도 있음
+    m_redirect_url : 'http://192.168.0.17:8000/payments/complete'
+    //m_redirect_url : 'https://www.yourdomain.com/payments/complete'
+/*     {
+  "code": 0,
+  "message": "string",
+  "response": {
+    "imp_uid": "string",
+    "merchant_uid": "string",
+    "pay_method": "string",
+    "channel": "pc",
+    "pg_provider": "string",
+    "pg_tid": "string",
+    "pg_id": "string",
+    "escrow": true,
+    "apply_num": "string",
+    "bank_code": "string",
+    "bank_name": "string",
+    "card_code": "string",
+    "card_name": "string",
+    "card_quota": 0,
+    "card_number": "string",
+    "card_type": "null",
+    "vbank_code": "string",
+    "vbank_name": "string",
+    "vbank_num": "string",
+    "vbank_holder": "string",
+    "vbank_date": 0,
+    "vbank_issued_at": 0,
+    "name": "string",
+    "amount": 0,
+    "cancel_amount": 0,
+    "currency": "string",
+    "buyer_name": "string",
+    "buyer_email": "string",
+    "buyer_tel": "string",
+    "buyer_addr": "string",
+    "buyer_postcode": "string",
+    "custom_data": "string",
+    "user_agent": "string",
+    "status": "ready",
+    "started_at": 0,
+    "paid_at": 0,
+    "failed_at": 0,
+    "cancelled_at": 0,
+    "fail_reason": "string",
+    "cancel_reason": "string",
+    "receipt_url": "string",
+    "cancel_history": [
+      {
+        "pg_tid": "string",
+        "amount": 0,
+        "cancelled_at": 0,
+        "reason": "string",
+        "receipt_url": "string"
+      }
+    ],
+    "cancel_receipt_urls": [
+      "string"
+    ],
+    "cash_receipt_issued": true
+  }
+} */
+    
+    
+}, function(rsp) {
+    if ( rsp.success ) {
+        var msg = '결제가 완료되었습니다.';
+        /* 보안상 주석처리
+        msg += '고유ID : ' + rsp.imp_uid;
+        msg += '상점 거래ID : ' + rsp.merchant_uid;
+        msg += '결제 금액 : ' + rsp.paid_amount;
+        msg += '카드 승인번호 : ' + rsp.apply_num; */
+    } else {
+        var msg = '결제에 실패하였습니다.';
+        /* 보안상 주석처리
+        msg += '에러내용 : ' + rsp.error_msg;
+        */
+    }
+    alert(msg);
+});
+</script>
+</head>
+<body>
+</body>
+</html>
+
+  
+<!-- 가맹점 식별코드 : imp72119228
+REST API 키 : 9726247111463673
+REST API secret : B08Z7YV5FcIXEt3RCuu08ilTzy3vPfnqfwqnultayb8dEc4gGzhORDIrbLX01lqhRREmc7xKjFYYS2fy
+   -->

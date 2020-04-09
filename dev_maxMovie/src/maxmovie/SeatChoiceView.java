@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -47,6 +48,7 @@ public class SeatChoiceView extends JPanel{
 	
 	List<String> 				seatChoiceList			= new ArrayList<>();				
 	
+	
 	public SeatChoiceView(EventMapping em) {
 		//리스트 받는곳(매개변수추가?) public SeatChoiceView(EventMapping em, ArrayList<Map<String, Object>> seatList)
 		//this.seatList = seatList;
@@ -61,16 +63,16 @@ public class SeatChoiceView extends JPanel{
 		
 		//만약 다른곳에서 온다면 이런형태로 올것이다. 임시모델↓↓↓
 		//A1~J18 셋팅 좌석 (80석)
-		for(char i=65; i<75; i++) {
-			Map<String, Object> map = null;
-			for(int j=1; j<9; j++) {
-				map = new HashMap<>();
-				map.put("좌석", (char)i+Integer.toString(j));
-				map.put("현황", 0);
-				System.out.println(map.get("좌석") + ", " + map.get("현황"));
-				seatList.add(map);
-			}
-		}
+//		for(char i=65; i<75; i++) {
+//			Map<String, Object> map = null;
+//			for(int j=1; j<9; j++) {
+//				map = new HashMap<>();
+//				map.put("좌석", (char)i+Integer.toString(j));
+//				map.put("현황", 0);
+//				System.out.println(map.get("좌석") + ", " + map.get("현황"));
+//				seatList.add(map);
+//			}
+//		}
 		//A1~J12 셋팅 좌석 (120석)
 //		for(char i=65; i<75; i++) {
 //			Map<String, Object> map = null;
@@ -95,79 +97,79 @@ public class SeatChoiceView extends JPanel{
 //		}
 		
 		//A1~J16 셋팅 좌석 (160석)
-//		for(int i=65; i<75; i++) {
-//			Map<String, Object> map = null;  
-//			for(int j=1; j<17; j++) {
-//				map = new HashMap<>();
-//				map.put("좌석", (char)i+Integer.toString(j));
-//				if(j<8) {
-//					map.put("현황", 0);	
-//				} else {
-//					map.put("현황", 1);
-//				}
-//				System.out.println(map.get("좌석") + ", " + map.get("현황"));
-//				seatList.add(map);
-//			}
-//		}
-		
+		for(int i=65; i<75; i++) {
+			Map<String, Object> map = null;  
+			for(int j=1; j<17; j++) {
+				map = new HashMap<>();
+				map.put("좌석", (char)i+Integer.toString(j));
+				if(j<8) {
+					map.put("현황", 0);	
+				} else {
+					map.put("현황", 0);
+				}
+				System.out.println(map.get("좌석") + ", " + map.get("현황"));
+				seatList.add(map);
+			}
+		}
+				
 		//이런형태로 올것이다↑↑↑
 		
 		
-		//[120]석 셋팅 
-		if(seatList.size()==80) {
-			jbts_seat = new JButton[10][8];
-			int k=0;
-			for(int i=0; i<10; i++) {
-				char c_line = (char) (65+i);
-				System.out.println(c_line);
-				String line = String.valueOf(c_line);
-				jl_seatLines[i] = new JLabel();
-				jl_seatLines[i].setText(line);
-				jl_seatLines[i].setBounds(578, 350+i*25, 20, 20);
-				jl_seatLines[i].setForeground(Color.gray);
-				jl_seatLines[i].setHorizontalAlignment(JLabel.CENTER);
-				this.add(jl_seatLines[i]);
-				for(int j=0; j<8; j++) {
-					int check = (int)seatList.get(k++).get("현황");
-					int between = 0;
-					System.out.println(check);
-					jbts_seat[i][j] = new JButton();
-					jbts_seat[i][j].addActionListener(em);
-					jbts_seat[i][j].setOpaque(true);
-					if(j<2) {
-						jbts_seat[i][j].setBounds(600+j*25+between, 350+i*25, 20, 20);				
-					} else if(j>=2&&j<6) {
-						between = 70;
-						jbts_seat[i][j].setBounds(600+j*25+between, 350+i*25, 20, 20);						
-					} else if(j>=6&&j<8) {
-						between = 140;
-						jbts_seat[i][j].setBounds(600+j*25+between, 350+i*25, 20, 20);
-					}
-					jbts_seat[i][j].setMargin(new Insets(0, 0, 0, 0));
-					jbts_seat[i][j].setHorizontalAlignment(JLabel.CENTER);
-					jbts_seat[i][j].setFont(new Font("굴림체", Font.BOLD, 12));
-					
-					if(check==0) {
-						jbts_seat[i][j].setBackground(Color.green);
-						jbts_seat[i][j].setText(Integer.toString(j+1));
-						jbts_seat[i][j].setForeground(Color.white);
-						this.add(jbts_seat[i][j]);
-					} else if(check==1) {
-						jbts_seat[i][j].setBackground(Color.gray);
-						jbts_seat[i][j].setText(Integer.toString(j+1));
-						jbts_seat[i][j].setForeground(Color.white);
-						this.add(jbts_seat[i][j]);
-						
-					} else if(check==2) {
-						jbts_seat[i][j].setBackground(Color.white);
-						jbts_seat[i][j].setText("X");
-						jbts_seat[i][j].setForeground(Color.black);
-						this.add(jbts_seat[i][j]);
-					}
-				}
-			}
-		}
-	}
+//		//[120]석 셋팅 
+//		if(seatList.size()==80) {
+//			jbts_seat = new JButton[10][8];
+//			int k=0;
+//			for(int i=0; i<10; i++) {
+//				char c_line = (char) (65+i);
+//				System.out.println(c_line);
+//				String line = String.valueOf(c_line);
+//				jl_seatLines[i] = new JLabel();
+//				jl_seatLines[i].setText(line);
+//				jl_seatLines[i].setBounds(578, 350+i*25, 20, 20);
+//				jl_seatLines[i].setForeground(Color.gray);
+//				jl_seatLines[i].setHorizontalAlignment(JLabel.CENTER);
+//				this.add(jl_seatLines[i]);
+//				for(int j=0; j<8; j++) {
+//					int check = (int)seatList.get(k++).get("현황");
+//					int between = 0;
+//					System.out.println(check);
+//					jbts_seat[i][j] = new JButton();
+//					jbts_seat[i][j].addActionListener(em);
+//					jbts_seat[i][j].setOpaque(true);
+//					if(j<2) {
+//						jbts_seat[i][j].setBounds(600+j*25+between, 350+i*25, 20, 20);				
+//					} else if(j>=2&&j<6) {
+//						between = 70;
+//						jbts_seat[i][j].setBounds(600+j*25+between, 350+i*25, 20, 20);						
+//					} else if(j>=6&&j<8) {
+//						between = 140;
+//						jbts_seat[i][j].setBounds(600+j*25+between, 350+i*25, 20, 20);
+//					}
+//					jbts_seat[i][j].setMargin(new Insets(0, 0, 0, 0));
+//					jbts_seat[i][j].setHorizontalAlignment(JLabel.CENTER);
+//					jbts_seat[i][j].setFont(new Font("굴림체", Font.BOLD, 12));
+//					
+//					if(check==0) {
+//						jbts_seat[i][j].setBackground(Color.green);
+//						jbts_seat[i][j].setText(Integer.toString(j+1));
+//						jbts_seat[i][j].setForeground(Color.white);
+//						this.add(jbts_seat[i][j]);
+//					} else if(check==1) {
+//						jbts_seat[i][j].setBackground(Color.gray);
+//						jbts_seat[i][j].setText(Integer.toString(j+1));
+//						jbts_seat[i][j].setForeground(Color.white);
+//						this.add(jbts_seat[i][j]);
+//						
+//					} else if(check==2) {
+//						jbts_seat[i][j].setBackground(Color.white);
+//						jbts_seat[i][j].setText("X");
+//						jbts_seat[i][j].setForeground(Color.black);
+//						this.add(jbts_seat[i][j]);
+//					}
+//				}
+//			}
+//		}
+//	}
 		//[120]석 셋팅 
 //		if(seatList.size()==120) {
 //			jbts_seat = new JButton[10][12];
@@ -277,66 +279,67 @@ public class SeatChoiceView extends JPanel{
 //				}
 //			}
 //		}
-<<<<<<< HEAD
 //	}
+	
+	
 		//[160]석 셋팅 
-//		if(seatList.size()==160) {
-//			jbts_seat = new JButton[10][16];
-//			int k=0;
-//			for(int i=0; i<10; i++) { //0~9 a~j 
-//				//A~J까지 라벨 박는 c_line
-//				char c_line = (char) (65+i);
-////				System.out.println(c_line);
-//				String line = String.valueOf(c_line);
-//				jl_seatLines[i] = new JLabel();
-//				jl_seatLines[i].setText(line);
-//				jl_seatLines[i].setBounds(478, 350+i*25, 20, 20);
-//				jl_seatLines[i].setForeground(Color.gray);
-//				jl_seatLines[i].setHorizontalAlignment(JLabel.CENTER);
-//				this.add(jl_seatLines[i]);
-//				//알파벳 박음
-//				for(int j=0; j<16; j++) {
-//					//리스트 순서대로 160석인경우 k는 0에서 ++ 된다.
-//					int check = (int)seatList.get(k++).get("현황");
-////					System.out.println((int)seatList.get(k++).get("현황"));
-//					System.out.println("k : " + k);
-//					System.out.println("check : " + check);
-//					
-//					int between = 0;
-////					System.out.println(check);
-//					jbts_seat[i][j] = new JButton();
-//					jbts_seat[i][j].addActionListener(em);
-//					jbts_seat[i][j].setOpaque(true);
-//					if(j<3) {
-//						jbts_seat[i][j].setBounds(500+j*25+between, 350+i*25, 20, 20);				
-//					} else if(j>=3&&j<13) {
-//						between = 70;
-//						jbts_seat[i][j].setBounds(500+j*25+between, 350+i*25, 20, 20);						
-//					} else if(j>=13&&j<16) {
-//						between = 140;
-//						jbts_seat[i][j].setBounds(500+j*25+between, 350+i*25, 20, 20);
-//					}
-//					jbts_seat[i][j].setMargin(new Insets(0, 0, 0, 0));
-//					jbts_seat[i][j].setHorizontalAlignment(JLabel.CENTER);
-//					jbts_seat[i][j].setFont(new Font("굴림체", Font.BOLD, 12));
-//					if(check==0) { //좌석이 빈자리일때
-//						jbts_seat[i][j].setBackground(Color.green);
-//						jbts_seat[i][j].setText(Integer.toString(j+1));
-//						jbts_seat[i][j].setForeground(Color.white);
-//					} else if(check==1) { //좌석이 결제중일때
-//						jbts_seat[i][j].setBackground(Color.gray);
-//						jbts_seat[i][j].setText(Integer.toString(j+1));
-//						jbts_seat[i][j].setForeground(Color.white);						
-//					} else if(check==2) { //좌석이 결제완료일때
-//						jbts_seat[i][j].setBackground(Color.white);
-//						jbts_seat[i][j].setText("X");
-//						jbts_seat[i][j].setForeground(Color.black);
-//					}
-//					this.add(jbts_seat[i][j]);
-//				}
-//			}
-//		}
-//	}
+		if(seatList.size()==160) {
+			jbts_seat = new JButton[10][16];
+			int k=0;
+			for(int i=0; i<10; i++) { //0~9 a~j 
+				//A~J까지 라벨 박는 c_line
+				char c_line = (char) (65+i);
+//				System.out.println(c_line);
+				String line = String.valueOf(c_line);
+				jl_seatLines[i] = new JLabel();
+				jl_seatLines[i].setText(line);
+				jl_seatLines[i].setBounds(478, 350+i*25, 20, 20);
+				jl_seatLines[i].setForeground(Color.gray);
+				jl_seatLines[i].setHorizontalAlignment(JLabel.CENTER);
+				this.add(jl_seatLines[i]);
+				//알파벳 박음
+				for(int j=0; j<16; j++) {
+					//리스트 순서대로 160석인경우 k는 0에서 ++ 된다.
+					int check = (int)seatList.get(k++).get("현황");
+//					System.out.println((int)seatList.get(k++).get("현황"));
+					System.out.println("k : " + k);
+					System.out.println("check : " + check);
+					
+					int between = 0;
+//					System.out.println(check);
+					jbts_seat[i][j] = new JButton();
+					jbts_seat[i][j].addActionListener(em);
+					jbts_seat[i][j].setOpaque(true);
+					if(j<3) {
+						jbts_seat[i][j].setBounds(500+j*25+between, 350+i*25, 20, 20);				
+					} else if(j>=3&&j<13) {
+						between = 70;
+						jbts_seat[i][j].setBounds(500+j*25+between, 350+i*25, 20, 20);						
+					} else if(j>=13&&j<16) {
+						between = 140;
+						jbts_seat[i][j].setBounds(500+j*25+between, 350+i*25, 20, 20);
+					}
+					jbts_seat[i][j].setMargin(new Insets(0, 0, 0, 0));
+					jbts_seat[i][j].setHorizontalAlignment(JLabel.CENTER);
+					jbts_seat[i][j].setFont(new Font("굴림체", Font.BOLD, 12));
+					if(check==0) { //좌석이 빈자리일때
+						jbts_seat[i][j].setBackground(Color.green);
+						jbts_seat[i][j].setText(Integer.toString(j+1));
+						jbts_seat[i][j].setForeground(Color.white);
+					} else if(check==1) { //좌석이 결제중일때
+						jbts_seat[i][j].setBackground(Color.gray);
+						jbts_seat[i][j].setText(Integer.toString(j+1));
+						jbts_seat[i][j].setForeground(Color.white);						
+					} else if(check==2) { //좌석이 결제완료일때
+						jbts_seat[i][j].setBackground(Color.white);
+						jbts_seat[i][j].setText("X");
+						jbts_seat[i][j].setForeground(Color.black);
+					}
+					this.add(jbts_seat[i][j]);
+				}
+			}
+		}
+	}
 		
 	
 	public void initDisplay() {
@@ -497,6 +500,9 @@ public class SeatChoiceView extends JPanel{
 		this.add(jl_screen);
 		this.add(jp_center);
 	}
+
+	
+	
 	
 	public static void main(String[] args) {
 		MaxMovieView mmv = new MaxMovieView();
@@ -510,13 +516,14 @@ public class SeatChoiceView extends JPanel{
 		mmv.jp_mv.jp_miv.setVisible(false);
 		mmv.jp_mv.jp_muv.setVisible(false);
 		mmv.jp_rv.setVisible(false);
-
 		mmv.jl_logo_small.setVisible(true);
 		mmv.jl_nickInfo.setVisible(true);
 		mmv.jl_nickInfoEnd.setVisible(true);
 		mmv.jbt_logout.setVisible(true);
 		mmv.jbt_myPage.setVisible(true);
 		mmv.jbt_ticketing.setVisible(true);
-	
+		mmv.jp_mrv.jbt_goMovieChoice.setVisible(true);
+		mmv.jp_mrv.jbt_goSeatChoice.setVisible(false);
+		mmv.jp_mrv.jbt_goPayChoice.setVisible(true);
 	}
 }
