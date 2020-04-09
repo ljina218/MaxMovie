@@ -59,7 +59,7 @@ public class MovieServer extends JFrame implements Runnable{
 	public static void main(String[] args) {
 		MovieServer ms = new MovieServer();
 		ms.display();
-		Thread th = new Thread();
+		Thread th = new Thread(ms);
 		th.start();
 	}
 	
@@ -68,10 +68,10 @@ public class MovieServer extends JFrame implements Runnable{
 	public void run() {
 		globalist = new Vector<MovieServerThread>();
 		try {
-			server = new ServerSocket(5000);
+			server = new ServerSocket(5500);
 		} catch (Exception e) {
 			System.out.println(e.toString());
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		jta_log.append("서버 연결 성공.....\n");
 		while(!stop) {
@@ -82,7 +82,7 @@ public class MovieServer extends JFrame implements Runnable{
 				mst.start();
 			} catch (Exception e) {
 				System.out.println(e.toString());
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 	}

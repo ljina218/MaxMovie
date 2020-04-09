@@ -1,6 +1,7 @@
 package maxmovie;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -13,20 +14,24 @@ import java.awt.event.MouseListener;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
-
+import java.util.Vector;
 
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 
-import com.sun.mail.iap.Protocol;
 
-public class EventMapping implements ActionListener, ItemListener, KeyListener, MouseListener{
+public class EventMapping implements ActionListener, ItemListener, KeyListener, MouseListener {
 
 	
 	/* 뷰 패널들의 변수이름
@@ -52,6 +57,10 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	//String myid = null;
 	//String mynickname = null;
 	
+	//영화선택 정보 저장
+	//영화정보 셋팅할 변수
+	TicketingVO tVO = new TicketingVO();
+	
 	//필요한 주소값 선언부
 	MaxMovieView mmv = null;
 	MovieController ctrl = new MovieController();
@@ -67,9 +76,6 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	int email = 0;
 	int email_r = 0;
 	
-	
-	
-	
 	//인증메일을 위한 선언부
 	SendMail sm = null;
 	long start_millisecond = 0;//메일 보낸 시간
@@ -83,15 +89,382 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	}
 	
 	//서버스레드에게 말하기 위한 메소드 
-	private void send(String msg) {
+	public void send(String msg) {
 		try {
 			mmv.oos.writeObject(msg);
 		} catch (Exception e) {
 			System.out.println(e.toString());
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	
+	/**************************************************************************************************
+	 * 영화 선택을 위한 메소드들
+	 */
+	
+	//영화 시간 조건 메소드
+	public int checkTime (String time) {//스케줄에 있는 영화 시간 받아서
+		int result = 0;
+		StringTokenizer token = new StringTokenizer(time, ":");//시와 분으로 쪼개기
+		char[] scheduledhour = token.nextToken().toCharArray();
+		char[] scheduledmin = token.nextToken().toCharArray();
+		String sethour = null;
+		String setmin = null;
+		if(scheduledhour[0]==0){//시 앞에 붙은 0 떼어내기
+			sethour = scheduledhour[1]+"";
+		}else {
+			sethour = scheduledhour[0]+""+scheduledhour[1]; 
+		}
+		if(scheduledmin[0]==0){//분 앞에 붙은 0 떼어내기
+			setmin = scheduledmin[1]+"";
+		}else {
+			setmin = scheduledmin[0]+""+scheduledmin[1]; 
+		}
+		int hour = Integer.parseInt(sethour);//시와 분을 string에서 int 형으로 바꾸기
+		int min = Integer.parseInt(setmin);
+		Calendar now = Calendar.getInstance();//현재 시간에서 
+		now.add(Calendar.MINUTE, -30);//30분 빼기 => 30분 전까지만 예매가능
+		int nowhour = now.get(Calendar.HOUR_OF_DAY);
+		int nowmin = now.get(Calendar.MINUTE);
+		if(hour>=nowhour) {//시가 아직 안지났고
+			if(min>=nowmin) {//분이 아직 안지났다면,
+				result=1;
+			}
+		}
+		return result;
+	}
+	
+	//---------------------------------------------------------------------------------------------- 셋팅
+	//영화-연령 중복제거
+	public List<String> containMovieList(List<Map<String, Object>> userList) {
+		List<String> containList = new Vector<String>();
+		for(Map<String, Object> userMap:userList) {
+			if(!containList.contains(userMap.get("M_TITLE")+"/"+userMap.get("M_CERTIF"))) {
+				containList.add(userMap.get("M_TITLE")+"/"+userMap.get("M_CERTIF"));
+			}
+		}
+		System.out.println("영화 중복제거된 리스트: "+containList.size());
+		return containList;
+	}
+	//영화-연령 dtm 셋팅
+	public void movieDtm (List<String> containList) {
+		Vector<Object> movie = null;
+		for(int i=0; i<containList.size(); i++) {
+			movie = new Vector<Object>();
+			StringTokenizer st = new StringTokenizer(containList.get(i),"/");
+			String title = st.nextToken().toString();
+			String age = st.nextToken().toString();
+			if("15".equals(age)) {//이용등급
+				movie.add(mmv.jp_mrv.jp_mcv._15);
+			}
+			else if("19".equals(age)) {
+				movie.add(mmv.jp_mrv.jp_mcv._19);
+			}
+			else if("0".equals(age)) {
+				movie.add(mmv.jp_mrv.jp_mcv._0);	
+			}
+			else if("12".equals(age)) {
+				movie.add(mmv.jp_mrv.jp_mcv._12);	
+			}
+			movie.add(title);
+			mmv.jp_mrv.jp_mcv.dtm_movie.addRow(movie);
+		}
+	}
+	
+	//지역
+	public List<String> containLocList(List<Map<String, Object>> userList) {
+		List<String> containList = new Vector<String>();
+		for(Map<String, Object> userMap:userList) {
+			if(!containList.contains(userMap.get("T_LOC"))) {
+				containList.add(userMap.get("T_LOC").toString());
+			}
+		}
+		System.out.println("지역 중복제거된 리스트: "+containList.size());
+		return containList;
+	}
+	//지역 dtm 셋팅
+	public void locDtm(List<String> containList) {
+		Vector<Object> loc = null;
+		for(int i=0; i<containList.size(); i++) {
+			loc = new Vector<Object>();
+			loc.add(containList.get(i));
+			mmv.jp_mrv.jp_mcv.dtm_local.addRow(loc);
+		}
+	}
+	
+	//지역-지점
+	public List<String> containTheaterList(List<Map<String, Object>> userList) {
+		List<String> containList = new Vector<String>();
+		for(Map<String, Object> userMap:userList) {
+			if(!containList.contains(userMap.get("T_NAME")+"/"+userMap.get("T_LOC"))) {
+				containList.add(userMap.get("T_NAME")+"/"+userMap.get("T_LOC"));
+			}
+		}
+		System.out.println("지점 중복제거된 리스트: "+containList.size());
+		return containList;
+	}
+	//지점 dtm 셋팅
+	public void theaterDtm(List<String> containList, String sel_loc) {
+		Vector<Object> theater = null;
+		mmv.jp_mrv.jp_mcv.dtm_theater.setRowCount(0);
+		for(int i=0; i<containList.size(); i++) {
+			StringTokenizer st = new StringTokenizer(containList.get(i),"/");
+			String th = st.nextToken().toString();
+			String loc = st.nextToken().toString();
+			if(sel_loc.equals(loc)) {
+				theater = new Vector<Object>();
+				theater.add(th);
+				mmv.jp_mrv.jp_mcv.dtm_theater.addRow(theater);
+			}
+		}
+	}
+	
+	//날짜
+	public List<String> containDateList(List<Map<String, Object>> userList) {
+		List<String> containList = new Vector<String>();
+		Map<String, Object> buf_Map = null;
+		for(Map<String, Object> userMap:userList) {
+			if(!containList.contains(userMap.get("S_DATE"))) {
+				containList.add(userMap.get("S_DATE").toString());
+			}
+		}
+		System.out.println("날짜 중복제거된 리스트: "+containList.size());
+		return containList;
+	}
+	//날짜 dtm 셋팅
+	public void dateDtm () {
+		mmv.jp_mrv.jp_mcv.dtm_date.setRowCount(0);
+		Calendar today = Calendar.getInstance();//현재 날짜에서
+		today.set(Calendar.YEAR , 2020);
+		today.set(Calendar.MONTH , Calendar.MARCH);
+		today.set(Calendar.DAY_OF_MONTH , 24);
+		String before_year ="";
+		String before_month = "";
+		Vector<String> nowdate = null;
+		for(int i=0; i<20; i++) {//20일 간 정보
+			int year = today.get(Calendar.YEAR);
+			String after_year = Integer.toString(year);
+			if(!before_year.equals(after_year)) {
+				nowdate = new Vector<String>();
+				nowdate.add("******* "+year+"년 *******");
+				mmv.jp_mrv.jp_mcv.dtm_date.addRow(nowdate);
+				before_year = after_year;
+			}
+			int month = today.get(Calendar.MONTH)+1;
+			String after_month = Integer.toString(month);
+			if(!before_month.equals(after_month)) {
+				nowdate = new Vector<String>();
+				nowdate.add("===== "+after_month+"월 =====");
+				mmv.jp_mrv.jp_mcv.dtm_date.addRow(nowdate);
+				before_month = after_month;
+			}
+			String day = Integer.toString(today.get(Calendar.DAY_OF_MONTH));
+			nowdate = new Vector<String>();
+			nowdate.add(day+"일");
+			today.add(Calendar.DAY_OF_MONTH, +1);
+			mmv.jp_mrv.jp_mcv.dtm_date.addRow(nowdate);
+		}
+	}
+	
+	//관이름
+	public List<String> containScrNameList(List<Map<String, Object>> userList) {
+		List<String> containList = new Vector<String>();
+		for(Map<String, Object> userMap:userList) {
+			if(!containList.contains(userMap.get("SC_NAME")+"/"+userMap.get("S_TIME"))) {
+				containList.add(userMap.get("SC_NAME")+"/"+userMap.get("S_TIME"));
+			}
+		}
+		System.out.println("관 중복제거된 리스트: "+containList.size());
+		return containList;
+	}
+	//관 dtm 셋팅
+	public void scrDtm(List<String> containList) {
+		Vector<Object> screen = null;
+		for(int i=0; i<containList.size(); i++) {
+			StringTokenizer st = new StringTokenizer(containList.get(i),"/");
+			String scr = st.nextToken().toString();
+			String time = st.nextToken().toString();
+			screen = new Vector<Object>();
+			screen.add(scr);
+			screen.add(time);
+			mmv.jp_mrv.jp_mcv.dtm_time.addRow(screen);
+		}
+	}
+	
+	//---------------------------------------------------------------------------------------------- 선택
+	//영화 선택 메소드
+	public List<Map<String, Object>> choiceAll(TicketingVO tVO) {
+		List<Map<String, Object>> user_list = new Vector<Map<String,Object>>();
+		Map<String, Object> umap = null;
+		//상영시간표에 있는 무비리스트 
+		for(int i=0; i<mmv.movieList.size(); i++) {
+			String m_title = mmv.movieList.get(i).get("M_TITLE").toString();
+			String m_age = mmv.movieList.get(i).get("M_CERTIF").toString();
+			String m_loc = mmv.movieList.get(i).get("T_LOC").toString();
+			String m_theater = mmv.movieList.get(i).get("T_NAME").toString();
+			String m_date = mmv.movieList.get(i).get("S_DATE").toString();
+			String m_time = mmv.movieList.get(i).get("S_TIME").toString();
+			String m_screen = mmv.movieList.get(i).get("SC_NAME").toString();
+			int result = checkTime(m_time);
+			if(result==1) {//상영시간이 30분 전이고....
+				if(tVO.getMovie_name().equals(m_title)
+			     &&tVO.getLoc().equals(m_loc)
+			     &&tVO.getTheater().equals(m_theater)
+			     &&tVO.getMovie_date().equals(m_date)){
+					umap = new HashMap<String, Object>();
+					umap.put("M_TITLE", tVO.getMovie_name());
+					umap.put("M_CERTIF", tVO.getMovie_age());
+					umap.put("T_LOC", tVO.getLoc());
+					umap.put("T_NAME",tVO.getTheater());
+					umap.put("S_DATE", tVO.getMovie_date());
+					umap.put("S_TIME", tVO.getMovie_time());
+					umap.put("SC_NAME", tVO.getMovie_screen());
+					user_list.add(umap);
+				}
+			}
+		}//for문 끝
+		return user_list;
+	}
+	
+	public List<Map<String, Object>> user_choice(TicketingVO tVO) {
+		List<Map<String, Object>> user_list = new Vector<Map<String,Object>>();
+		Map<String, Object> umap = null;
+		//상영시간표에 있는 무비리스트 
+		for(int i=0; i<mmv.movieList.size(); i++) {
+			String m_title = mmv.movieList.get(i).get("M_TITLE").toString();
+			String m_age = mmv.movieList.get(i).get("M_CERTIF").toString();
+			String m_loc = mmv.movieList.get(i).get("T_LOC").toString();
+			String m_theater = mmv.movieList.get(i).get("T_NAME").toString();
+			String m_date = mmv.movieList.get(i).get("S_DATE").toString();
+			String m_time = mmv.movieList.get(i).get("S_TIME").toString();
+			String m_screen = mmv.movieList.get(i).get("SC_NAME").toString();
+			int result = checkTime(m_time);
+			if(result==1) {//상영시간이 30분 전이고....
+				if(tVO.getMovie_name().equals(m_title)
+						&&tVO.getLoc().equals(m_loc)
+						&&tVO.getTheater().equals(m_theater)
+						&&tVO.getMovie_date().equals(m_date)){
+					umap = new HashMap<String, Object>();
+					umap.put("M_TITLE", tVO.getMovie_name());
+					umap.put("M_CERTIF", tVO.getMovie_age());
+					umap.put("T_LOC", tVO.getLoc());
+					umap.put("T_NAME",tVO.getTheater());
+					umap.put("S_DATE", tVO.getMovie_date());
+					umap.put("S_TIME", tVO.getMovie_time());
+					umap.put("SC_NAME", tVO.getMovie_screen());
+					user_list.add(umap);
+				}
+			}
+		}//for문 끝
+		return user_list;
+	}
+	
+	//영화선택 -> 지점, 날짜 refresh
+	public List<Map<String, Object>> choiceMovie(TicketingVO tVO) {
+		List<Map<String, Object>> userList = new Vector<Map<String,Object>>();
+		Map<String, Object> userMap = null;
+		Map<String, Object> movieMap = null;
+		//72개의 상영시간표 중에서 
+		for (int i = 0; i < mmv.movieList.size(); i++) {
+			movieMap = mmv.movieList.get(i);
+			//영화가 선택됐을 때 지점과 날짜가 선택되었니?
+			if(tVO.getTheater()!=null && tVO.getMovie_date()!=null) {
+				//좌석정보까지 리프레쉬 
+				userList = choiceAll(tVO);
+			}
+			//영화가 선택됐을 때 지점이 선택되었니?
+			else if(tVO.getTheater()!=null) {
+				//
+				if(movieMap.get("T_NAME").equals(tVO.getTheater())
+				 &&movieMap.get("M_TITLE").equals(tVO.getMovie_name())) {
+							userMap = new HashMap<String, Object>();
+							userMap.put("지점", movieMap.get("T_NAME"));
+							userMap.put("날짜", movieMap.get("S_DATE"));
+							userList.add(userMap);
+						}
+			}
+			else {
+				if(movieMap.get("M_TITLE").equals(tVO.getMovie_name())) {
+					userMap.put("지점", movieMap.get("T_NAME"));
+					userMap.put("날짜", movieMap.get("S_DATE"));
+					userList.add(userMap);
+				}
+			}
+		}
+		return userList;
+	}
+	
+	//지점선택 -> 영화, 날짜 refresh
+	public List<Map<String, Object>> choiceTheater(TicketingVO tVO) {
+		List<Map<String, Object>> userList = new Vector<Map<String,Object>>();
+		Map<String, Object> movieMap = null;
+		Map<String, Object> userMap = null;
+		//72개의 상영시간표 중에서 
+		for (int i = 0; i < mmv.movieList.size(); i++) {
+			movieMap = mmv.movieList.get(i);
+			//지점이 선택됐을 때 영화랑 날짜가 선택되었니?
+			if(tVO.getMovie_name()!=null && tVO.getMovie_date()!=null) {
+				//좌석정보까지 리프레쉬 
+				userList = choiceAll(tVO);
+			}
+			//지점이 선택됐을 때 영화가 선택되었니?
+			else if(tVO.getMovie_name()!=null) {
+				//
+				if(movieMap.get("T_NAME").equals(tVO.getTheater())
+				 &&movieMap.get("M_TITLE").equals(tVO.getMovie_name())) {
+							userMap = new HashMap<String, Object>();
+							userMap.put("영화", movieMap.get("M_TITLE"));
+							userMap.put("날짜", movieMap.get("S_DATE"));
+							userList.add(userMap);
+						}
+			}
+			else {
+				if(movieMap.get("T_NAME").equals(tVO.getTheater())) {
+					userMap.put("영화", movieMap.get("M_TITLE"));
+					userMap.put("날짜", movieMap.get("S_DATE"));
+					userList.add(userMap);
+				}
+			}
+		}
+		return userList;
+	}
+	
+	//날짜선택 -> 영화, 지점 refresh
+	public List<Map<String, Object>> choiceDate(TicketingVO tVO) {
+		List<Map<String, Object>> userList = new Vector<Map<String,Object>>();
+		Map<String, Object> userMap = null;
+		Map<String, Object> movieMap = null;
+		//72개의 상영시간표 중에서 
+		for (int i = 0; i < mmv.movieList.size(); i++) {
+			movieMap = mmv.movieList.get(i);
+			//날짜가 선택됐을 때 지점과 영화가 선택되었니?
+			if(tVO.getTheater()!=null && tVO.getMovie_name()!=null) {
+				//좌석정보까지 리프레쉬 
+				userList = choiceAll(tVO);
+			}
+			//날짜가 선택됐을 때 지점이 선택되었니?
+			else if(tVO.getTheater()!=null) {
+				//
+				if(movieMap.get("T_NAME").equals(tVO.getTheater())
+				 &&movieMap.get("M_TITLE").equals(tVO.getMovie_name())) {
+							userMap = new HashMap<String, Object>();
+							userMap.put("영화", movieMap.get("M_TITLE"));
+							userMap.put("지점", movieMap.get("T_NAME"));
+							userList.add(userMap);
+						}
+			}
+			else {
+				if(movieMap.get("S_DATE").equals(tVO.getMovie_date())) {
+					userMap.put("영화", movieMap.get("M_TITLE"));
+					userMap.put("지점", movieMap.get("T_NAME"));
+					userList.add(userMap);
+				}
+			}
+		}
+		return userList;
+	}
+	
+		
 	/**************************************************************************************************
 	 * 회원가입 기준체크를 위한 메소드들.....
 	 */
@@ -233,6 +606,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			}
 		}
 	}
+	
 	//이메일 기준 체크 메소드
 	/*
 	 * 로컬부분:대문자A~Z,소문자a~z,숫자0~9,특수문자!#$%&'*+-/=?^_{|}~,(.은사용가능하나첫번째, 마지막아니어야됨) 
@@ -338,139 +712,139 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			String login_pw = pwToString(mmv.jp_lv.jpf_pw.getPassword());
 			String login_msg = MovieProtocol.LOGIN+"#"+login_id+"#"+login_pw;
 			send(login_msg);//아이디,비번 검사해주세요
-			
 		}
-//		//회원가입 ----------------------------------------------------------------------------------------
-//		else if(obj==mmv.jp_lv.jbt_join) {//회원가입하고 싶니?
-//			jv = new JoinView(this);//화면띄워줄게
-//		}
-//		else if(obj==jv.jbt_joingo) {//드디어 회원가입 버튼을 눌렀군
-//			//회원가입을 위한 기준들 마지막 체크 
-//			afterEmail = jv.jtf_email.getText();
-//			if(afterEmail!=null) {
-//				if(afterEmail.equals(beforeEmail)) {
-//					email_r = 1;								
-//				}
-//			}
-//			int sum = id + pw + name + nickName + birth + email + email_r + gender;
-//			if(sum==8) {//모든 기준 통과시, 모든 값들 가져와서
-//				String name = jv.jtf_name.getText();
-//				String id = jv.jtf_id.getText();
-//				String pw = pwToString(jv.jpf_pw.getPassword());
-//				String email = jv.jtf_email.getText();
-//				String nickName = jv.jtf_nick.getText();
-//				if(jv.choiceMonth.length()==1) {//생년월일 - "월,일" 1자리면 앞에 0 붙여주기
-//					jv.choiceMonth = "0"+jv.choiceMonth;
-//				}
-//				if(jv.choiceDay.length()==1) {
-//					jv.choiceDay = "0"+jv.choiceMonth;
-//				}
-//				String birth = jv.choiceYear+""+jv.choiceMonth+""+jv.choiceDay;//[형식]19960218
-//				String gender = jv.jcb_genderChoice;
-//				//서버스레드로 메세지 전송
-//				String join_msg = MovieProtocol.JOIN+"#"+name+"#"+id+"#"+pw+"#"+email+"#"+nickName+"#"+birth+"#"+gender;
-//				send(join_msg);//db에 넣어주세요
-//				//refreshCheck();//기준모두초기화@@@@@@@
-//				//jv.dispose();//가입화면 닫기
-//
-//			}else {
-//				JOptionPane.showMessageDialog(jv, "입력한 정보가 부적합합니다. 다시 확인해주세요.");
-//			}
-//		}
-//		else if(obj==jv.jbt_back) {//회원가입 화면을 나가고 싶니?
-//			jv.dispose();//okay bye...
-//		}
-//		//아이디 -----------------------------------------------------------------------------------------
-//		/*
-//		 * jl_id_warning.setText(" 동일한 아이디가 존재합니다.");
-//		jl_id_success.setText(" 사용 가능한 아이디입니다.");
-//		jl_id_warning2.setText(" 7~12자이어야하고 특수문자는 입력할 수 없습니다.");
-//		 */
-//		else if(obj==jv.jbt_id_check) {//아이디 중복 체크하고 싶니?
-//			jv.jl_id_warning.setVisible(false);
-//			jv.jl_id_warning2.setVisible(false);
-//			jv.jl_id_success.setVisible(false);
-//			//일단 기준 체크좀 할게
-//			String inputId = jv.jtf_id.getText();
-//			int result = checkId(inputId);
-//			if(result>0) {//기준이 안맞네
-//				jv.jl_id_warning2.setVisible(true);
-//				id = 0;
-//			}else {//기준통과했다면, 이제 중복 체크 해줄게
-//				String chektid_msg = MovieProtocol.CHECK_ID+"#"+inputId;
-//				send(chektid_msg);//중복체크해주세요
-//			}
-//		}
-//		
-//		//이메일 -----------------------------------------------------------------------------------------
-//		/*
-//		 * jl_email_warning.setText(" 이메일주소 형식에 맞지 않습니다.");
-//		jl_email_warning2.setText(" 인증번호 입력시간은 2분입니다.");
-//		jl_email_r_success.setText(" 인증성공");
-//		jl_email_r_warning.setText(" 인증번호가 일치하지 않습니다.");
-//		jl_email_r_warning2.setText(" 입력시간이 초과했습니다.");
-//		 */
-//		else if(obj==jv.jbt_email) {//이메일 입력버튼 눌렀니?
-//			String inputemail = jv.jtf_email.getText();
-//			if(inputemail!=null) {
-//				beforeEmail = inputemail;
-//				jv.jl_email_warning.setVisible(false);
-//				jv.jl_email_r_warning.setVisible(false);
-//				jv.jl_email_r_warning2.setVisible(false);
-//				jv.jl_email_r_success.setVisible(false);
-//				//기준 검사를 먼저 할게
-//				int result = checkEmail(inputemail);
-//				if(result>0) {//이메일 형식에 안맞다면
-//					jv.jl_email_warning.setVisible(true);
-//					email = 0;
-//				}else {//이메일형식이 맞다면
-//					jv.jl_email_warning.setVisible(false);
-//					email = 1;
-//					try {//메일 발송
-//						sm = new SendMail(inputemail);
-//						jv.jl_email_warning2.setVisible(true);//입력시간 2분이라는 알림
-//						start_millisecond = System.currentTimeMillis();//메일 보낸시간 저장
-//					} catch (UnsupportedEncodingException ee) {
-//						System.out.println(ee.toString());
-//						//e.printStackTrace();
-//					}
-//				}
-//			}else {
-//				jv.jl_email_warning.setVisible(true);
-//				email = 0;
-//			}
-//		}
-//		else if(obj==jv.jbt_email_r) {//인증번호 버튼을 눌렀니?
-//			
-//			end_millisecond = System.currentTimeMillis();//인증번호 입력시간 저장
-//			long term = end_millisecond - start_millisecond;//전송~입력 시간 계산
-//			if(term<120000) {//2분안에 입력한다면
-//				String inputNum = jv.jtf_email_r.getText();
-//				if(sm.rnum!=null) {
-//					if(sm.rnum.equals(inputNum)) {//인증번호가 일치시
-//						jv.jl_email_r_success.setVisible(true);
-//						jv.jl_email_r_warning.setVisible(false);
-//						jv.jl_email_warning2.setVisible(false);
-//						
-//					}
-//					else {//인증번호가 일치하지 않다면
-//						jv.jl_email_r_warning.setVisible(true);
-//						jv.jtf_email_r.setText("");
-//						email_r = 0;
-//					}
-//				}
-//			}
-//			else {//입력시간이 초과했다면
-//				jv.jl_email_r_warning2.setVisible(true);
-//				jv.jtf_email_r.setText("");
-//				email_r = 0;
-//				sm.rnum = null;
-//			}
-//		}
-		/**********************************************************************************************************
-		 * MyPageView 마이페이지 이벤트 처리 시작
-		 **********************************************************************************************************/
-		else if(obj==mmv.jp_mv.jp_miv.jbt_modified) {//회원정보 조회하고 싶어요
+		
+		//회원가입 ----------------------------------------------------------------------------------------
+		else if(obj==mmv.jp_lv.jbt_join) {//회원가입하고 싶니?
+			jv = new JoinView(this);//화면띄워줄게
+		}
+		else if(jv!=null&&obj==jv.jbt_joingo) {//드디어 회원가입 버튼을 눌렀군
+			//회원가입을 위한 기준들 마지막 체크 
+			afterEmail = jv.jtf_email.getText();
+			if(afterEmail!=null) {
+				if(afterEmail.equals(beforeEmail)) {
+					email_r = 1;								
+				}
+			}
+			int sum = id + pw + name + nickName + birth + email + email_r + gender;
+			if(sum==8) {//모든 기준 통과시, 모든 값들 가져와서
+				String name = jv.jtf_name.getText();
+				String id = jv.jtf_id.getText();
+				String pw = pwToString(jv.jpf_pw.getPassword());
+				String email = jv.jtf_email.getText();
+				String nickName = jv.jtf_nick.getText();
+				if(jv.choiceMonth.length()==1) {//생년월일 - "월,일" 1자리면 앞에 0 붙여주기
+					System.out.println("월 "+jv.choiceMonth);
+					jv.choiceMonth = "0"+jv.choiceMonth;
+				}
+				if(jv.choiceDay.length()==1) {
+					System.out.println("일"+jv.choiceDay);
+					jv.choiceDay = "0"+jv.choiceDay;
+				}
+				String birth = jv.choiceYear+""+jv.choiceMonth+""+jv.choiceDay;//[형식]19960218
+				String gender = jv.jcb_genderChoice;
+				//서버스레드로 메세지 전송
+				String join_msg = MovieProtocol.JOIN+"#"+name+"#"+id+"#"+pw+"#"+email+"#"+nickName+"#"+birth+"#"+gender;
+				send(join_msg);//db에 넣어주세요
+				System.out.println(join_msg);
+			}else {
+				JOptionPane.showMessageDialog(jv, "입력한 정보가 부적합합니다. 다시 확인해주세요.");
+			}
+		}
+		else if(jv!=null&&obj==jv.jbt_back) {//회원가입 화면을 나가고 싶니?
+			jv.dispose();//okay bye...
+		}
+		//아이디 -----------------------------------------------------------------------------------------
+		/*
+		 * jl_id_warning.setText(" 동일한 아이디가 존재합니다.");
+		jl_id_success.setText(" 사용 가능한 아이디입니다.");
+		jl_id_warning2.setText(" 7~12자이어야하고 특수문자는 입력할 수 없습니다.");
+		 */
+		else if(jv!=null&&obj==jv.jbt_id_check) {//아이디 중복 체크하고 싶니?
+			jv.jl_id_warning.setVisible(false);
+			jv.jl_id_warning2.setVisible(false);
+			jv.jl_id_success.setVisible(false);
+			//일단 기준 체크좀 할게
+			String inputId = jv.jtf_id.getText();
+			int result = checkId(inputId);
+			if(result>0) {//기준이 안맞네
+				jv.jl_id_warning2.setVisible(true);
+				id = 0;
+			}else {//기준통과했다면, 이제 중복 체크 해줄게
+				String chektid_msg = MovieProtocol.CHECK_ID+"#"+inputId;
+				send(chektid_msg);//중복체크해주세요
+			}
+		}
+		
+		//이메일 -----------------------------------------------------------------------------------------
+		/*
+		 * jl_email_warning.setText(" 이메일주소 형식에 맞지 않습니다.");
+		jl_email_warning2.setText(" 인증번호 입력시간은 2분입니다.");
+		jl_email_r_success.setText(" 인증성공");
+		jl_email_r_warning.setText(" 인증번호가 일치하지 않습니다.");
+		jl_email_r_warning2.setText(" 입력시간이 초과했습니다.");
+		 */
+		else if(jv!=null&&obj==jv.jbt_email) {//이메일 입력버튼 눌렀니?
+			String inputemail = jv.jtf_email.getText();
+			if(inputemail!=null) {
+				beforeEmail = inputemail;
+				jv.jl_email_warning.setVisible(false);
+				jv.jl_email_r_warning.setVisible(false);
+				jv.jl_email_r_warning2.setVisible(false);
+				jv.jl_email_r_success.setVisible(false);
+				//기준 검사를 먼저 할게
+				int result = checkEmail(inputemail);
+				if(result>0) {//이메일 형식에 안맞다면
+					jv.jl_email_warning.setVisible(true);
+					email = 0;
+				}else {//이메일형식이 맞다면
+					jv.jl_email_warning.setVisible(false);
+					email = 1;
+					try {//메일 발송
+						sm = new SendMail(inputemail);
+						jv.jl_email_warning2.setVisible(true);//입력시간 2분이라는 알림
+						start_millisecond = System.currentTimeMillis();//메일 보낸시간 저장
+					} catch (UnsupportedEncodingException ee) {
+						System.out.println(ee.toString());
+						//e.printStackTrace();
+					}
+				}
+			}else {
+				jv.jl_email_warning.setVisible(true);
+				email = 0;
+			}
+		}
+		else if(jv!=null&&obj==jv.jbt_email_r) {//인증번호 버튼을 눌렀니?
+			
+			end_millisecond = System.currentTimeMillis();//인증번호 입력시간 저장
+			long term = end_millisecond - start_millisecond;//전송~입력 시간 계산
+			if(term<120000) {//2분안에 입력한다면
+				String inputNum = jv.jtf_email_r.getText();
+				if(sm.rnum!=null) {
+					if(sm.rnum.equals(inputNum)) {//인증번호가 일치시
+						jv.jl_email_r_success.setVisible(true);
+						jv.jl_email_r_warning.setVisible(false);
+						jv.jl_email_warning2.setVisible(false);
+						
+					}
+					else {//인증번호가 일치하지 않다면
+						jv.jl_email_r_warning.setVisible(true);
+						jv.jtf_email_r.setText("");
+						email_r = 0;
+					}
+				}
+			}
+			else {//입력시간이 초과했다면
+				jv.jl_email_r_warning2.setVisible(true);
+				jv.jtf_email_r.setText("");
+				email_r = 0;
+				sm.rnum = null;
+			}
+		}
+		/************************************************************************************************
+		 * 마이페이지뷰
+		 */
+		else if(obj==mmv.jp_mv.jp_miv.jbt_modified) {//회원정보 수정버튼 => 일단 회원정보 조회가 됨
 			String pw = pwToString(mmv.jp_mv.jp_miv.jpf_pw.getPassword());//비번을 입력했어요
 			if(pw.length()>0) {
 				String info_msg = MovieProtocol.MY_INFO+"#"+pw; //DAO 구현필요
@@ -523,7 +897,6 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 						mmv.jp_mv.jp_muv.jl_email_r_success.setVisible(true);
 						mmv.jp_mv.jp_muv.jl_email_r_warning.setVisible(false);
 						mmv.jp_mv.jp_muv.jl_email_warning2.setVisible(false);
-						
 					}
 					else {//인증번호가 일치하지 않다면
 						mmv.jp_mv.jp_muv.jl_email_r_warning.setVisible(true);
@@ -539,8 +912,8 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				sm.rnum = null;
 			}
 		}
-		else if(obj==mmv.jp_mv.jp_muv.jbt_modifiedGo) {//회원가입 수정하고 싶어요
-			//회원가입을 위한 기준들 마지막 체크 
+		else if(obj==mmv.jp_mv.jp_muv.jbt_modifiedGo) {//정보수정버튼 클릭
+			//회원정보 수정을 위한 기준들 마지막 체크 
 			afterEmail = mmv.jp_mv.jp_muv.jtf_email.getText();
 			if(afterEmail!=null) {
 				if(afterEmail.equals(beforeEmail)) {
@@ -548,6 +921,11 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				}
 			}
 			int sum = pw + nickName + email + email_r;
+			System.out.println("pw "+pw);
+			System.out.println("nickName "+nickName);
+			System.out.println("email"+email);
+			System.out.println("email_r "+email_r);
+			System.out.println(sum);
 			if(sum==4) {//모든 기준 통과시, 모든 값들 가져와서
 				String id = mmv.mem_id;
 				String pw = pwToString(mmv.jp_mv.jp_muv.jpf_pw.getPassword());
@@ -555,27 +933,74 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				String nickName = mmv.jp_mv.jp_muv.jtf_nick.getText();
 				//서버스레드로 메세지 전송
 				String update_msg = MovieProtocol.INFO_UPDATE+"#"+id+"#"+pw+"#"+email+"#"+nickName;
-				send(update_msg);//db에 넣어주세요
+				this.send(update_msg);//db에 넣어주세요
 				//refreshCheck();//기준모두초기화@@@@@@@
 				//jv.dispose();//가입화면 닫기
 			}else {
 				JOptionPane.showMessageDialog(mmv.jp_mv.jp_muv, "입력한 정보가 부적합합니다. 다시 확인해주세요.");
 			}
 		}
-		//화면전환 ---------------------------------------------------------------------------------------
+		
+		/************************************************************************************************
+		 * 화면전환
+		 */
 		else if(obj==mmv.jbt_logout) {//로그아웃 하려고?
+			System.out.println("로그아웃 호출");
 			String logout_msg = MovieProtocol.LOGOUT+"#"+mmv.mem_id;
 			this.send(logout_msg);
 		}
 		else if(obj==mmv.jbt_myPage||obj==mmv.jp_mv.jbt_thv) {//마이페이지로 가보자 => 영화예매내역
+			if (mmv.jp_mv.jp_thv.dtm_history.getRowCount() > 0) {
+			    for (int i = mmv.jp_mv.jp_thv.dtm_history.getRowCount() - 1; i > -1; i--) {
+			    	mmv.jp_mv.jp_thv.dtm_history.removeRow(i);
+			    }
+			}
 			String mypageView_msg = MovieProtocol.MY_MOVIE+"#"+mmv.mem_id;
 			this.send(mypageView_msg);
 		}
 		else if(obj==mmv.jbt_ticketing) {//예매를 하고 싶구나
-			String moviechoiceView_msg = MovieProtocol.SELECT+"#";
-			this.send(moviechoiceView_msg);
+			tVO = null;
+			tVO = new TicketingVO();
+			//
+			mmv.jp_lv.setVisible(false);//로그인
+			mmv.jp_mv.setVisible(false);//마이페이지-틀뷰
+			mmv.jp_mv.jp_miv.setVisible(false);//마이페이지-비밀번호입력뷰
+			mmv.jp_mv.jp_muv.setVisible(false);//마이페이지-회원정보수정뷰
+			mmv.jp_mv.jp_thv.setVisible(false);//마이페이지-영화내역뷰
+			mmv.jp_mrv.setVisible(true);//영화예매-틀뷰
+			mmv.jp_mrv.jp_mcv.setVisible(true);//영화예매-영화선택뷰
+			mmv.jp_mrv.jp_scv.setVisible(false);//영화예매-좌석선택뷰
+			mmv.jp_mrv.jp_pv.setVisible(false);//영화예매-결제뷰
+			mmv.jp_rv.setVisible(false);//결과화면
+			//
+			tVO.setMovie_name(mmv.jp_mrv.jl_south_movie.getText());
+			tVO.setMovie_age(mmv.jp_mrv.jl_south_ctf.getText());
+			tVO.setLoc(mmv.jp_mrv.jl_south_loc.getText());
+			tVO.setTheater(mmv.jp_mrv.jl_south_theater.getText());
+			tVO.setMovie_date(mmv.jp_mrv.jl_south_date.getText());
+			tVO.setMovie_time(mmv.jp_mrv.jl_south_time.getText());
+			tVO.setMovie_screen(mmv.jp_mrv.jl_south_screen.getText());
+			//
+			List<Map<String,Object>> list = mmv.movieList;
+			for(int i=0; i<list.size(); i++) {
+				String time = list.get(i).get("S_TIME").toString();
+				int result = mmv.em.checkTime(time);
+				if(result==0) {//예약할 수 없는 시간이라면....
+					list.remove(i);
+				}
+			}
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@시간을 고려한 리스트: "+list.size());
+			mmv.em.movieDtm(mmv.em.containMovieList(list));
+			//mmv.em.locDtm(mmv.em.containLocList(list));
+			mmv.em.theaterDtm(mmv.em.containTheaterList(list), "서울");
+			mmv.em.containDateList(list);
+			mmv.em.dateDtm();
+			mmv.em.containScrNameList(list);
 		}
+
 		else if(obj==mmv.jp_mv.jbt_miv) {//마이페이지에서 회원정보조회버튼
+			System.out.println("회원정보버튼 클릭");
+			mmv.jp_mv.jp_miv.jl_mem_id.setText(mmv.mem_id);
 			mmv.jp_lv.setVisible(false);
 			mmv.jp_mv.setVisible(true);//마이페이지-틀뷰
 			mmv.jp_mv.jp_miv.setVisible(true);//마이페이지-비밀번호입력뷰
@@ -585,7 +1010,92 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			mmv.jp_mrv.jp_mcv.setVisible(false);
 			mmv.jp_mrv.jp_pv.setVisible(false);
 			mmv.jp_mrv.jp_scv.setVisible(false);
-		} else {
+
+		}
+		/*************************************************************************************************
+		 * 좌석 선택이 끝나고 결제 버튼을 눌렀을때 
+
+
+
+		/************************************************************************************************
+		 * 좌석 선택
+		 */
+		else if(obj==mmv.jp_mrv.jbt_goPayChoice) {
+			System.out.println(mmv.jp_mrv.jp_scv.seatChoiceList.size());
+			for(String seatCode : mmv.jp_mrv.jp_scv.seatChoiceList) {
+				String mem_id 		= mmv.mem_id;
+				String movieName 	= mmv.jp_mrv.jl_south_movie.getText();
+				String temptheater 		= mmv.jp_mrv.jl_south_theater.getText();
+				StringTokenizer st = new StringTokenizer(temptheater, "/");
+				st.nextToken();
+				String theater = st.nextToken();
+				String screen 		= mmv.jp_mrv.jl_south_screen.getText();
+				String seat 		= seatCode;
+				String tempdate 		= mmv.jp_mrv.jl_south_date.getText();
+				System.out.println("tempdate"+ tempdate);
+				//년월일 제외하여 20200408 형식 맞추기
+//				jl_south_date.setText("2020년 03월 28일") -> 20200328
+				String date = (tempdate.substring(0, 4)+tempdate.substring(6, 8)+tempdate.substring(10, 12));
+				//시간 형식 24:00 라면 그냥 집어넣어
+				String time 		= mmv.jp_mrv.jl_south_time.getText();
+				String pay_msg 	= MovieProtocol.PAY+"#"+mem_id+"#"+movieName+"#"+theater+"#"
+									+screen+"#"+seat+"#"+date+"#"+time;
+				this.send(pay_msg);
+			}
+
+		} 
+		
+		/**************************************************************************************************
+		 * 좌석선택 버튼 클릭했을때
+		 */
+		else if(obj==mmv.jp_mrv.jbt_goSeatChoice) {
+			/*********단위테스트하기위해 잠시 주석처리*************/
+//			String temptheater 		= mmv.jp_mrv.jl_south_theater.getText();
+//			StringTokenizer st = new StringTokenizer(temptheater, "/");
+//			st.nextToken();
+//			String theater = st.nextToken();
+//			String screen 		= mmv.jp_mrv.jl_south_screen.getText();
+//			String tempdate 		= mmv.jp_mrv.jl_south_date.getText();
+//			System.out.println("tempdate"+ tempdate);
+//			String date = (tempdate.substring(0, 4)+tempdate.substring(6, 8)+tempdate.substring(10, 12));
+//			String time = mmv.jp_mrv.jl_south_time.getText();
+//			String seatstatus_msg 	= MovieProtocol.GET_SEATSTATUS+"#"+theater+"#"+screen+"#"+date+"#"+time;
+			//단위테스트용
+			String seatstatus_msg = MovieProtocol.GET_SEATSTATUS+"#"+"해운대점"+"#"+"2관"+"#"+"20200411"+"#"+"19:40";
+			this.send(seatstatus_msg);
+		}
+		else if(jv!=null&&obj==jv.jbt_email_r) {//인증번호 버튼을 눌렀니?
+			
+			end_millisecond = System.currentTimeMillis();//인증번호 입력시간 저장
+			long term = end_millisecond - start_millisecond;//전송~입력 시간 계산
+			if(term<120000) {//2분안에 입력한다면
+				String inputNum = jv.jtf_email_r.getText();
+				if(sm.rnum!=null) {
+					if(sm.rnum.equals(inputNum)) {//인증번호가 일치시
+						jv.jl_email_r_success.setVisible(true);
+						jv.jl_email_r_warning.setVisible(false);
+						jv.jl_email_warning2.setVisible(false);
+						
+					}
+					else {//인증번호가 일치하지 않다면
+						jv.jl_email_r_warning.setVisible(true);
+						jv.jtf_email_r.setText("");
+						email_r = 0;
+					}
+				}
+			}
+			else {//입력시간이 초과했다면
+				jv.jl_email_r_warning2.setVisible(true);
+				jv.jtf_email_r.setText("");
+				email_r = 0;
+				sm.rnum = null;
+			}
+		}
+		/**************************************************************************************************
+		 * 좌석 선택화면에서 adult, teen 인원 선택 - 선택한 인원만큼 좌석 선택	
+		 */
+
+		else {
 			//고를 수 있는 총 좌석 개수
 			int maxChoiceCount = (mmv.jp_mrv.jp_scv.teenChoice+mmv.jp_mrv.jp_scv.adultChoice);
 			//고른 좌석 개수
@@ -685,6 +1195,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				mmv.jp_mrv.jbt_goPayChoice.setEnabled(false);
 			}
 		}
+		
 	}
 	/**************************************************************************************************
 	 * ItemListener(회원가입-생년월일, 회원가입-성별)
@@ -806,9 +1317,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	 * KeyListener(회원가입-이름, 회원가입-pw, 회원가입-닉네임)
 	 */
 	@Override
-	public void keyPressed(KeyEvent e) {}
-	@Override
-	public void keyReleased(KeyEvent e) {
+	public void keyReleased(KeyEvent e)   {
 		Object obj = e.getSource();
 		//회원가입 ---------------------------------------------------------------------------------------
 		/*
@@ -816,7 +1325,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 		jl_name_warning.setText(" 2~8자이어야 하고 특수문자는 사용할 수 없습니다");
 		jl_nick_warning.setText(" 2~8자이이어야 하고 특수문자는 사용할 수 없습니다.")
 		 */
-		if(obj==jv.jtf_name) {//이름 검사
+		if(jv!=null&&obj==jv.jtf_name) {//이름 검사
 			String inputname = jv.jtf_name.getText();
 			int result = checkNames(inputname, 2, 8);
 			if(result>0) {//기준미통과
@@ -827,7 +1336,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				name = 1;
 			}
 		}
-		else if(obj==jv.jtf_nick) {//닉네임 검사
+		else if(jv!=null&&obj==jv.jtf_nick) {//닉네임 검사
 			String inputnick = jv.jtf_nick.getText();
 			int result = checkNames(inputnick, 2, 8);
 			if(result>0) {//기준미통과
@@ -838,7 +1347,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				nickName = 1;
 			}
 		}
-		else if(obj==jv.jpf_pw) {//비밀번호 검사
+		else if(jv!=null&&obj==jv.jpf_pw) {//비밀번호 검사
 			String inputpw = pwToString(jv.jpf_pw.getPassword());
 			int result = checkPw(inputpw, 7 ,12);
 			if(result>0) {//기준미통과
@@ -854,6 +1363,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 		jl_nick_warning	    	= new JLabel(" 2~8자이이어야 하고 특수문자는 사용할 수 없습니다.");
 		 */
 		else if(obj==mmv.jp_mv.jp_muv.jpf_pw) {//비밀번호 검사
+			System.out.println("비번검사");
 			String inputpw = pwToString(mmv.jp_mv.jp_muv.jpf_pw.getPassword());
 			int result = checkPw(inputpw, 7 ,12);
 			if(result>0) {//기준미통과
@@ -865,6 +1375,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			}
 		}
 		else if(obj==mmv.jp_mv.jp_muv.jtf_nick) {//닉네임 검사
+			System.out.println("닉검사");
 			String inputnick = mmv.jp_mv.jp_muv.jtf_nick.getText();
 			int result = checkNames(inputnick, 2, 8);
 			if(result>0) {//기준미통과
@@ -878,6 +1389,15 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	}
 	@Override
 	public void keyTyped(KeyEvent e) {}
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+	
+	/**************************************************************************************************
+	 * MouseListener(영화선택)
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {}
 	@Override
@@ -887,5 +1407,110 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	@Override
 	public void mousePressed(MouseEvent e) {}
 	@Override
-	public void mouseReleased(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {
+		Object obj = e.getSource();
+		/************************************************************************************************
+		 * 영화선택
+		 */
+		if(obj==mmv.jp_mrv.jp_mcv.jt_movie) {//영화선택
+			
+		}
+		else if(obj==mmv.jp_mrv.jp_mcv.jt_local) {//지역선택
+			System.out.println("지역 클릭");
+			//선택되면 색 바꾸는
+			//mmv.jp_mrv.jp_mcv.result = 2;
+			int localIndex = mmv.jp_mrv.jp_mcv.jt_local.getSelectedRow(); 
+			String localChoice =mmv.jp_mrv.jp_mcv.jt_local.getValueAt(localIndex, 0).toString();
+			System.out.println("지역: "+ localChoice);
+//			mmv.jp_mrv.jp_mcv.localChoiceName = localChoice;
+//			mmv.jp_mrv.jp_mcv.jt_local.setSelectionBackground(Color.white);
+			TableCellRenderer tcr = mmv.jp_mrv.jp_mcv.jt_local.getCellRenderer(localIndex, 0);
+//			Component cell = mmv.jp_mrv.jp_mcv.dtcr_local.getTableCellRendererComponent(mmv.jp_mrv.jp_mcv.jt_local, mmv.jp_mrv.jp_mcv.jt_local.getValueAt(localIndex, 0), true, true, localIndex, 0, 0);
+			//
+			 
+			
+			//Component cell = tcr.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			//시간 조건이 안맞는 값들 리스트에서 제거
+			System.out.println("기존 리스트 사이즈: "+mmv.movieList.size());
+			List<Map<String,Object>> list = new Vector<Map<String,Object>>();
+			Map<String, Object> map = null;
+			for(int i=0; i<mmv.movieList.size(); i++) {
+				map = new HashMap<String, Object>();
+				map.put("M_TITLE", mmv.movieList.get(i).get("M_TITLE"));
+				map.put("M_CERTIF", mmv.movieList.get(i).get("M_CERTIF"));
+				map.put("T_LOC", mmv.movieList.get(i).get("T_LOC"));
+				map.put("T_NAME", mmv.movieList.get(i).get("T_NAME"));
+				map.put("S_DATE", mmv.movieList.get(i).get("S_DATE"));
+				map.put("S_TIME", mmv.movieList.get(i).get("S_TIME"));
+				map.put("SC_NAME", mmv.movieList.get(i).get("SC_NAME"));
+				list.add(map);
+			}
+			for(int i=0; i<list.size(); i++) {
+				String time = list.get(i).get("S_TIME").toString();
+				int result = mmv.em.checkTime(time);
+				if(result==0) {//예약할 수 없는 시간이라면....
+					list.remove(i);
+				}
+			}
+			System.out.println("시간 조건 안맞는 값 제거: "+list.size()); 
+//			//선택된 지역이 아닌 값들 리스트에서 제거
+//			int selectRow = mmv.jp_mrv.jp_mcv.jt_local.getSelectedRow();
+//			String sel_loc = mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString();
+//			for(int i=0; i<list.size(); i++) {
+//				String loc = list.get(i).get("T_LOC").toString();
+//				if(!loc.equals(sel_loc)) {
+//					list.remove(i);
+//				}
+//			}
+//			System.out.println("선택한 지역이 아닌 값 제거: "+list.size()); 
+//			//중복제거
+//			List<String> movielist = containMovieList(list);//"영화/연령"
+//			for(int j=0; j<movielist.size(); j++) {
+//				String check_movie = movielist.get(j);
+//				for(int i=0; i<mmv.jp_mrv.jp_mcv.dtm_movie.getRowCount(); i++) {
+//					String check_movie2 = mmv.jp_mrv.jp_mcv.dtm_movie.getValueAt(i, 1).toString();
+//					if(!check_movie2.equals(check_movie)) {
+//						//mmv.jp_mrv.jp_mcv.
+//					}
+//				}
+//			}
+			List<String> theaterlist = containTheaterList(list);//"지역/지점"
+			theaterDtm(theaterlist, localChoice);
+			List<String> datelist = containDateList(list);//날짜
+			List<String> timelist = containScrNameList(list);//"관/시간"
+			
+			
+			/*
+			 * 	String m_title = mmv.movieList.get(i).get("M_TITLE").toString();
+			String m_age = mmv.movieList.get(i).get("M_CERTIF").toString();
+			String m_loc = mmv.movieList.get(i).get("T_LOC").toString();
+			String m_theater = mmv.movieList.get(i).get("T_NAME").toString();
+			String m_date = mmv.movieList.get(i).get("S_DATE").toString();
+			String m_time = mmv.movieList.get(i).get("S_TIME").toString();
+			String m_screen = mmv.movieList.get(i).get("SC_NAME").toString();
+			 */
+//			List<String> containList = mmv.em.containList(mmv.movieList);
+//			List<Map<String, Object>> th_list = theaterTrim(containList, mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString());
+//			System.out.println( "여기!!!!!! "+mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString());
+//			mmv.jp_mrv.jp_mcv.jt_local.setSelectionBackground(Color.white);
+//			String select = mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString();
+//			System.out.println("select : " +select);
+//			//thCountTrim(th_list, null);
+		}
+		else if(obj==mmv.jp_mrv.jp_mcv.jt_theater) {//지점선택
+			
+		}
+		else if(obj==mmv.jp_mrv.jp_mcv.jt_date) {//날짜선택
+			
+		}
+		else if(obj==mmv.jp_mrv.jp_mcv.jt_time) {//관-시간선택
+			
+		}
+	}
+	
+	
+	/**************************************************************************************************
+	 * 
+	 */
+	
 }

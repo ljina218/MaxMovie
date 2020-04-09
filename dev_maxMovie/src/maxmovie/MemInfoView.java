@@ -26,6 +26,7 @@ public class MemInfoView extends JPanel {
 	
 	public MemInfoView(EventMapping em) {
 		this.em = em;
+		eventMapping();
 		initDisplay();
 	}
 	public void initDisplay() {

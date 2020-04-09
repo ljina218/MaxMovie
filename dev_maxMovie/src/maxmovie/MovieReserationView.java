@@ -21,8 +21,8 @@ public class MovieReserationView extends JPanel{
 	JLabel						jl_south_movie			= new JLabel("영화선택");
 	JLabel						jl_south_ctf			= new JLabel("");
 	JLabel						jl_south_loc			= new JLabel("극장선택");
-	JLabel						jl_south_theater		= new JLabel("");
-	JLabel						jl_south_date			= new JLabel("날짜선택");
+	JLabel						jl_south_theater		= new JLabel(""); //서울/강남점
+	JLabel						jl_south_date			= new JLabel("날짜선택"); 
 	JLabel						jl_south_screen			= new JLabel("시간선택");
 	JLabel						jl_south_time			= new JLabel("");
 	JLabel						jl_south_seat			= new JLabel("좌석");
@@ -43,6 +43,7 @@ public class MovieReserationView extends JPanel{
 		jp_scv = new SeatChoiceView(em);
 		jp_pv = new PayView(em);
 		initDisplay();
+		eventMapping();
 	}
 	public void initDisplay() {
 		this.setLayout(null);
@@ -90,6 +91,9 @@ public class MovieReserationView extends JPanel{
 		jbt_goSeatChoice.setBackground(new Color(230, 230, 230));
 		jbt_goSeatChoice.setForeground(Color.gray);
 		jbt_goSeatChoice.setEnabled(false);
+		//jbt_goSeatChoice.setBackground(new Color(230, 230, 230));
+		//jbt_goSeatChoice.setForeground(Color.gray);
+		//jbt_goSeatChoice.setEnabled(false);
 		jbt_goPayChoice.setBackground(new Color(230, 230, 230));
 		jbt_goPayChoice.setForeground(Color.gray);
 		jbt_goPayChoice.setEnabled(false);
@@ -97,6 +101,13 @@ public class MovieReserationView extends JPanel{
 		jbt_goPayInfo.setBackground(new Color(230, 230, 230));
 		jbt_goPayInfo.setForeground(Color.gray);
 		jbt_goPayInfo.setEnabled(false);
+		
+		jbt_goSeatChoice.setForeground(Color.white);
+		jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
+		jbt_goSeatChoice.setEnabled(true);
+		//
+		
+		//
 		
 		jl_south_movie.setHorizontalAlignment(JLabel.CENTER);
 		jl_south_ctf.setHorizontalAlignment(JLabel.CENTER);
@@ -134,7 +145,7 @@ public class MovieReserationView extends JPanel{
 		 * jl_south_theater.setText("");
 		 * 
 		 * //날짜 선택시
-		 * jl_south_date.setText("2020년 03월 28일 (금)");
+		 * jl_south_date.setText("2020년 03월 28일");
 		 * //날짜미 미선택시
 		 * jl_south_date.setText("날짜선택");
 		 * 

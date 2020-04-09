@@ -2,22 +2,23 @@ package hjho;
 
 public class AdminShowtimeVO {
 	//현재 접속한 상영관의 정보를 담기 위한 VO
-	private String id = null;
-	private String name = null;
-	private String theaterloc = null;
-	private String theatername = null;
+	//처음 로그인 성공할때 한번 객체 생성 이후 지우지 않는다.
+	private String id = null;           //지점아이디 
+	private String name = null;			//사용자이름 
+	private String theaterloc = null;   //지점의 지역
+	private String theatername = null;  //지점이름 
 	
 	//상영 시간표를 넘기기위한 VO
-	private String msg = null;
-	private String movieTitle = null;
-	private String scrName = null;
-	private String date = null;
-	private String yy = null;
-	private String mm = null;
-	private String dd = null;
-	private String time = null;
-	private String hh24 = null;
-	private String mi = null;
+	private String msg = null;        //메세지 전달을 위한 변수
+	private String movieTitle = null; //영화제목
+	private String scrName = null;    //상영관 이름
+	private String date = null;       //날짜 "20200324"
+	private String yy = null;         //연도 "2020"
+	private String mm = null;         //월 "03"
+	private String dd = null;         //일 "24"
+	private String time = null;       //시간 "09:00"
+	private String hh24 = null;       //시 "09"
+	private String mi = null;         //분 "00"
 	
 	public String getId() {
 		return id;

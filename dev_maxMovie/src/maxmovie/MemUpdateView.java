@@ -51,6 +51,7 @@ public class MemUpdateView extends JPanel  {
 	public MemUpdateView(EventMapping em) {
 		this.em = em;
 		initDisplay();
+		eventMapping();
 	}
 
 	public void initDisplay() {
@@ -202,8 +203,10 @@ public class MemUpdateView extends JPanel  {
 	}
 	
 	public void eventMapping() {
+		jpf_pw.addKeyListener(em);
 		jpf_pw.addActionListener(em);
 		jtf_nick.addActionListener(em);
+		jtf_nick.addKeyListener(em);
 		jbt_email.addActionListener(em);
 		jbt_email_r.addActionListener(em);
 		jbt_back.addActionListener(em);
