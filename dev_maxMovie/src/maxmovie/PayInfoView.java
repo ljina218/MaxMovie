@@ -54,7 +54,7 @@ public class PayInfoView extends JDialog{
 	JLabel                          jl_payWay                      	= new JLabel("결제수단");
 	JLabel                          jl_totalPay                     = new JLabel("결제금액");
 	                            
-	JLabel                          jl_choice_payWay               	= new JLabel("카카오페이");
+	JLabel                          jl_choice_payWay               	= new JLabel("계좌이체");
 	JLabel                          jl_choice_totalPay              = new JLabel("18,000원");
 	
 	                                
