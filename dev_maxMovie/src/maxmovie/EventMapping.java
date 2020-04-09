@@ -11,6 +11,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -822,7 +823,17 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 		/**************************************************************************************************
 		 * 좌석 선택화면에서 adult, teen 인원 선택 - 선택한 인원만큼 좌석 선택	
 		 */
+		
 		else {
+			//고를 수 있는 총 좌석 개수
+			int maxChoiceCount = (mmv.jp_mrv.jp_scv.teenChoice+mmv.jp_mrv.jp_scv.adultChoice);
+			//고른 좌석 개수
+			int nowChoiceCount = mmv.jp_mrv.jp_scv.seatChoiceList.size();
+			//좌석 이름
+			String seatChoice = "";
+			//이미 고른좌석인지 안고른 좌석인지 존재여부
+			Boolean	exist = false;
+			String totalPrice = Integer.toString(mmv.jp_mrv.jp_scv.adultChoice * 10000 + mmv.jp_mrv.jp_scv.teenChoice * 8000);
 			for(int i=0; i<mmv.jp_mrv.jp_scv.jbts_adult.length; i++) {
 				if(obj==mmv.jp_mrv.jp_scv.jbts_adult[i]) {
 					mmv.jp_mrv.jp_scv.jbts_adult[mmv.jp_mrv.jp_scv.adultChoice].setBackground(new Color(230, 230, 230));
@@ -843,39 +854,80 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 					break;
 				}					
 			}
-			
+			maxChoiceCount = (mmv.jp_mrv.jp_scv.teenChoice+mmv.jp_mrv.jp_scv.adultChoice);
+			totalPrice = Integer.toString(mmv.jp_mrv.jp_scv.adultChoice * 10000 + mmv.jp_mrv.jp_scv.teenChoice * 8000);
+			if(nowChoiceCount>maxChoiceCount) {
+				for(int k=0; k<mmv.jp_mrv.jp_scv.jbts_seat.length; k++) {
+					for(int l=0; l<mmv.jp_mrv.jp_scv.jbts_seat[k].length; l++) {
+						mmv.jp_mrv.jp_scv.jbts_seat[k][l].setBackground(Color.green);
+						mmv.jp_mrv.jp_scv.jbts_seat[k][l].setForeground(Color.white);
+					}
+				}
+				mmv.jp_mrv.jp_scv.seatChoiceList = null;
+				mmv.jp_mrv.jp_scv.seatChoiceList = new ArrayList<>();
+				mmv.jp_mrv.jl_south_seat.setBounds(900, 698, 150, 20);	
+				mmv.jp_mrv.jl_south_pay.setBounds(1040, 698, 150, 20);
+				mmv.jp_mrv.jta_south_Allseat.setText("");
+				mmv.jp_mrv.jl_south_totalPay.setText("");
+			}
+			if(maxChoiceCount==0){
+				mmv.jp_mrv.jbt_goPayChoice.setBackground(new Color(230, 230, 230));
+				mmv.jp_mrv.jbt_goPayChoice.setForeground(Color.gray);
+				mmv.jp_mrv.jbt_goPayChoice.setEnabled(false);
+				mmv.jp_mrv.jl_south_pay.setBounds(1040, 698, 150, 20);
+				mmv.jp_mrv.jl_south_totalPay.setText("");
+			} else {
+				mmv.jp_mrv.jl_south_pay.setBounds(1040, 690, 150, 20);
+				mmv.jp_mrv.jl_south_totalPay.setText("총 금액 " + totalPrice + "원");
+			}
 			for(int i=0; i<mmv.jp_mrv.jp_scv.jbts_seat.length; i++) {
 				for(int j=0; j<mmv.jp_mrv.jp_scv.jbts_seat[i].length;  j++) {
 					if(obj==mmv.jp_mrv.jp_scv.jbts_seat[i][j]) {
-//						for(int k =0; k<mmv.jp_mrv.jp_scv.seatChoiceList.size(); k++) {
-//							System.out.println(seatChoice);
-//							if(seatChoice.equals(mmv.jp_mrv.jp_scv.seatChoiceList.get(k))) {
-//								mmv.jp_mrv.jp_scv.seatChoiceList.remove(k);
-//							}
-//						}
-						if(mmv.jp_mrv.jp_scv.seatChoiceList.size() < mmv.jp_mrv.jp_scv.teenChoice + mmv.jp_mrv.jp_scv.adultChoice) {
-							String seatChoice = (char)(i+65) + Integer.toString(j+1);
-							//(행) : (char)(i+65)   (열) : Integer.toString(j+1) 행과열 : (char)(i+65) + Integer.toString(j+1)					
+						//(행) : (char)(i+65)   (열) : Integer.toString(j+1) 행과열 : (char)(i+65) + Integer.toString(j+1)
+						seatChoice = (char)(i+65) + Integer.toString(j+1);
+						if(nowChoiceCount<=maxChoiceCount) {
+							for(int k=0; k<mmv.jp_mrv.jp_scv.seatChoiceList.size();k++) {
+								if(seatChoice.equals(mmv.jp_mrv.jp_scv.seatChoiceList.get(k))){
+									mmv.jp_mrv.jp_scv.jbts_seat[i][j].setBackground(Color.green);
+									mmv.jp_mrv.jp_scv.jbts_seat[i][j].setForeground(Color.white);
+									mmv.jp_mrv.jp_scv.seatChoiceList.remove(k);
+									if(mmv.jp_mrv.jp_scv.seatChoiceList.size()==0) {
+										mmv.jp_mrv.jl_south_seat.setBounds(900, 698, 150, 20);
+										mmv.jp_mrv.jta_south_Allseat.setText("");
+									}
+									exist = true;
+									break;
+								}
+							}
+						}
+						if(exist==false&&!(nowChoiceCount==maxChoiceCount)){
 							mmv.jp_mrv.jp_scv.jbts_seat[i][j].setBackground(Color.white);
 							mmv.jp_mrv.jp_scv.jbts_seat[i][j].setForeground(Color.black);
-							System.out.println("seatChoice : " + seatChoice);
+							mmv.jp_mrv.jl_south_seat.setBounds(922, 656, 110, 50);	
+							mmv.jp_mrv.jl_south_pay.setBounds(1040, 690, 150, 20);
 							mmv.jp_mrv.jp_scv.seatChoiceList.add(seatChoice);
 							
 						} else {
 							return;
 						}
+						for(int l=0; l<mmv.jp_mrv.jp_scv.seatChoiceList.size(); l++) {					
+							mmv.jp_mrv.sb_seatChoiceList.append(mmv.jp_mrv.jp_scv.seatChoiceList.get(l) + " ");
+							mmv.jp_mrv.jta_south_Allseat.setText(mmv.jp_mrv.sb_seatChoiceList.toString());
+						}
+						mmv.jp_mrv.sb_seatChoiceList = new StringBuilder();
 					}
 				}
 			}
 			//선택한 인원수에 맞게 좌석수를 선택한 경우에 좌석버튼이 활성화됨
-			if(mmv.jp_mrv.jp_scv.teenChoice!=0 && mmv.jp_mrv.jp_scv.teenChoice==mmv.jp_mrv.jp_scv.seatChoiceList.size()) {
-				mmv.jp_mrv.jbt_goSeatChoice.setForeground(Color.white);
-				mmv.jp_mrv.jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
-				mmv.jp_mrv.jbt_goSeatChoice.setEnabled(true);
-			} else if(mmv.jp_mrv.jp_scv.adultChoice!=0 && mmv.jp_mrv.jp_scv.adultChoice==mmv.jp_mrv.jp_scv.seatChoiceList.size()) {
-				mmv.jp_mrv.jbt_goSeatChoice.setForeground(Color.white);
-				mmv.jp_mrv.jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
-				mmv.jp_mrv.jbt_goSeatChoice.setEnabled(true);
+			if(mmv.jp_mrv.jp_scv.seatChoiceList.size()==(mmv.jp_mrv.jp_scv.teenChoice+mmv.jp_mrv.jp_scv.adultChoice)
+			 &&!(maxChoiceCount==0)) {
+				mmv.jp_mrv.jbt_goPayChoice.setBackground(new Color(52, 152, 219));
+				mmv.jp_mrv.jbt_goPayChoice.setForeground(Color.white);
+				mmv.jp_mrv.jbt_goPayChoice.setEnabled(true);
+			} else {
+				mmv.jp_mrv.jbt_goPayChoice.setBackground(new Color(230, 230, 230));
+				mmv.jp_mrv.jbt_goPayChoice.setForeground(Color.gray);
+				mmv.jp_mrv.jbt_goPayChoice.setEnabled(false);
 			}
 		}
 		

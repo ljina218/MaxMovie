@@ -13,8 +13,6 @@ import javax.swing.JOptionPane;
 
 
 public class ClientThread extends Thread{
-	
-
 	MaxMovieView mmv = null;
 	
 	boolean stop = false;
