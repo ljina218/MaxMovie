@@ -76,7 +76,7 @@ public class SeatChoiceView extends JPanel{
 				jl_seatLines[i].setHorizontalAlignment(JLabel.CENTER);
 				this.add(jl_seatLines[i]);
 				for(int j=0; j<8; j++) {
-					int check = (int)seatList.get(k++).get("현황");
+					int check = Integer.parseInt(seatList.get(k++).get("현황").toString());
 					int between = 0;
 					System.out.println(check);
 					jbts_seat[i][j] = new JButton();

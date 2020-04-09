@@ -307,12 +307,13 @@ public class ClientThread extends Thread{
 					rmap.put("현황", status);
 					seatList.add(rmap);
 					mmv.jp_mrv.jp_scv.seatSetting(seatList);
+					mmv.jp_mrv.jbt_backMovieChoice.setVisible(true);
 					mmv.jp_mrv.jbt_goSeatChoice.setVisible(false);
 					mmv.jp_mrv.jbt_goPayChoice.setVisible(true);
 					display(false, false, false, false, false, true, false, false, true, false);
 				}break;
 				case MovieProtocol.PAY:{//결제하기
-					
+					System.out.println("이제 결제가 진행되어야해 ~~~~~~~~~~~~~~~~~~");
 				}break;
 				}//end of switch
 			}//end of while
