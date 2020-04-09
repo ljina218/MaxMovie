@@ -14,7 +14,8 @@ public class MovieProtocol {
 	//회원정보수정
 	public final static int INFO_UPDATE	= 320; 
 	//MovieChoiceView 호출하는 프로토콜 
-	public final static int SELECT = 400;//다른 페이지에서 영화예매화면으로 가고 싶을 때
+	//화면이 켜지면 서버에 있는 상영시간표 정보를 받아온다.
+	public final static int SELECT = 400;
 	//영화 선택
 	public final static int SELECT_MOVIE = 410;
 	//지역 선택
@@ -23,8 +24,8 @@ public class MovieProtocol {
 	public final static int SELECT_SCR 	= 430;
 	//시간 선택
 	public final static int SELECT_DATE = 440;
-	//좌석 선택 버튼
-	public final static int SELECT_SEAT = 450;
+	//좌석 선택 버튼 - 좌석 현황 조회
+	public final static int GET_SEATSTATUS = 450;
 	//결제하기 버튼
 	public final static int PAY = 500;
 	

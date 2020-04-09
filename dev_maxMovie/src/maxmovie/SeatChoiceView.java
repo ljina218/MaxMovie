@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -40,7 +41,7 @@ public class SeatChoiceView extends JPanel{
 	
 	JLabel						jl_screen				= new JLabel("/////////////////////////////////////////////////SCREEN/////////////////////////////////////////////////");
 	
-	List<Map<String, Object>>	seatList				= new ArrayList<>();
+	List<Map<String, Object>>	seatList				= new Vector<>();
 	
 	int							adultChoice				= 0;
 	int							teenChoice				= 0;
@@ -51,26 +52,29 @@ public class SeatChoiceView extends JPanel{
 		//리스트 받는곳(매개변수추가?) public SeatChoiceView(EventMapping em, ArrayList<Map<String, Object>> seatList)
 		//this.seatList = seatList;
 		this.em = em;
-		seatSetting();
+//		seatSetting();
 		initDisplay();
 	}
 	
 	//0:빈자리  1:결제 진행중  2:결제완료
-	public void seatSetting() {
-		seatList = new ArrayList<Map<String, Object>>();
+	public void seatSetting(List<Map<String, Object>> seatList) {
+		this.seatList = seatList;
+		for(Map<String, Object> rmap: this.seatList) {
+			System.out.println("SeatChoiceView"+rmap.get("좌석").toString() +","+ rmap.get("현황").toString());
+		}
 		
 		//만약 다른곳에서 온다면 이런형태로 올것이다. 임시모델↓↓↓
 		//A1~J18 셋팅 좌석 (80석)
-		for(char i=65; i<75; i++) {
-			Map<String, Object> map = null;
-			for(int j=1; j<9; j++) {
-				map = new HashMap<>();
-				map.put("좌석", (char)i+Integer.toString(j));
-				map.put("현황", 0);
-				System.out.println(map.get("좌석") + ", " + map.get("현황"));
-				seatList.add(map);
-			}
-		}
+//		for(char i=65; i<75; i++) {
+//			Map<String, Object> map = null;
+//			for(int j=1; j<9; j++) {
+//				map = new HashMap<>();
+//				map.put("좌석", (char)i+Integer.toString(j));
+//				map.put("현황", 0);
+//				System.out.println(map.get("좌석") + ", " + map.get("현황"));
+//				seatList.add(map);
+//			}
+//		}
 		//A1~J12 셋팅 좌석 (120석)
 //		for(char i=65; i<75; i++) {
 //			Map<String, Object> map = null;
@@ -128,7 +132,7 @@ public class SeatChoiceView extends JPanel{
 				jl_seatLines[i].setHorizontalAlignment(JLabel.CENTER);
 				this.add(jl_seatLines[i]);
 				for(int j=0; j<8; j++) {
-					int check = (int)seatList.get(k++).get("현황");
+					int check = Integer.parseInt(seatList.get(k++).get("현황").toString());
 					int between = 0;
 					System.out.println(check);
 					jbts_seat[i][j] = new JButton();
@@ -479,6 +483,7 @@ public class SeatChoiceView extends JPanel{
 		jl_info2.setOpaque(true);
 		jl_info3.setOpaque(true);
 		jl_screen.setOpaque(true);
+		jp_center.setOpaque(true);
 		jp_center.setBackground(new Color(225, 225, 225));
 		this.add(jl_seatHeader);
 		this.add(jl_adult);

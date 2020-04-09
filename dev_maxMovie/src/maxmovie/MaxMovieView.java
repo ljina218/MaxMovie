@@ -14,6 +14,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -25,6 +28,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 public class MaxMovieView extends JFrame{
+	
+	List<Map<String, Object>> movieList = null;
+	
 	//로고들에 사용한 폰트    : Futura XBlk BT
 	//텍스트들에 사용한 폰트 : 굴림체
 	//기본 메인 규격 res.width = 모니터해상도 가로길이,  res.height = 모니터해상도 세로길이
@@ -78,7 +84,7 @@ public class MaxMovieView extends JFrame{
 	public MaxMovieView() {
 		initDisplay();
 		eventMapping();//이벤트 맵핑 메소드
-//		connect();//클라이언트 스레드를 생성하기 위한 메소드
+		connect();//클라이언트 스레드를 생성하기 위한 메소드
 	}
 
 	public void initDisplay(){
@@ -102,11 +108,8 @@ public class MaxMovieView extends JFrame{
  		 * jbt_ticketing.setVisible(true);
 		 *****************************************************************/
 		///
-		mem_id = "cloudsky7";	
-		mem_nick = "kong";
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jl_nickInfo.setText(mem_nick);
 		jl_nickInfo.setFont(new Font("굴림체", Font.BOLD, 20));
 		jl_nickInfo.setForeground(Color.black);
 		jl_nickInfo.setHorizontalAlignment(JLabel.RIGHT);
@@ -199,7 +202,6 @@ public class MaxMovieView extends JFrame{
 
 	}
 	public void eventMapping() {
-
 		jbt_logout.addActionListener(em);
 		jbt_myPage.addActionListener(em);
 		jbt_ticketing.addActionListener(em);
@@ -208,19 +210,21 @@ public class MaxMovieView extends JFrame{
 	public static void main(String[] args) {
 		new MaxMovieView();
 	}
-//	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
-//		try {
-//			socket = new Socket("192.168.0.244",5000);
-//			oos = new ObjectOutputStream(socket.getOutputStream());
-//			ois = new ObjectInputStream(socket.getInputStream());
-//			ClientThread ct = new ClientThread(this);//로그인 성공시
-//			ct.start();
-//		} catch (UnknownHostException e) {
-//			System.out.println(e.toString());
-//			//e.printStackTrace();
-//		} catch (IOException e) {
-//			System.out.println(e.toString());
-//			//e.printStackTrace();
-//		}
-//	}
+	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
+		try {
+			movieList = new Vector<Map<String,Object>>();//클라이언트에 저장할 영화정보 리스트 생성
+			socket = new Socket("192.168.0.37",5000);
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
+			oos.writeObject(MovieProtocol.SELECT+"#");//영화정보 주세여
+			ClientThread ct = new ClientThread(this);
+			ct.start();
+		} catch (UnknownHostException e) {
+			System.out.println(e.toString());
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println(e.toString());
+			e.printStackTrace();
+		}
+	}
 }

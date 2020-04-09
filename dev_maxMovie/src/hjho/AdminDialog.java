@@ -1,11 +1,10 @@
 package hjho;
 
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -14,12 +13,13 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 public class AdminDialog extends JDialog implements ActionListener{
 	AdminClient ac = null;
 	//화면을 위한 그리기 코드
 	JPanel jp = new JPanel();
+	
+	Font font = new Font("맑은 고딕", Font.BOLD, 13);
 	
 	JLabel jl_movieTitle = new JLabel("영화제목 : ",JLabel.RIGHT);
 	JLabel jl_scrName = new JLabel("상영관이름  : ",JLabel.RIGHT);
@@ -30,6 +30,7 @@ public class AdminDialog extends JDialog implements ActionListener{
 	JLabel jl_dd = new JLabel(" 일",JLabel.RIGHT);
 	JLabel jl_hh24 = new JLabel(" 시",JLabel.RIGHT);
 	JLabel jl_mi = new JLabel(" 분",JLabel.RIGHT);
+	
 	JComboBox jcb_movieTitle = null;
 	JComboBox jcb_scrName = null;
 	JComboBox jcb_yy   = null;
@@ -37,7 +38,6 @@ public class AdminDialog extends JDialog implements ActionListener{
 	JComboBox jcb_dd   = null;
 	JComboBox jcb_hh24 = null;
 	JComboBox jcb_mi   = null;
-	
 	Calendar cal = null;
 	
 	//JButton jbtn_sel = new JButton("영화정보 가져오기");	
@@ -62,6 +62,15 @@ public class AdminDialog extends JDialog implements ActionListener{
 		jbtn_exit.addActionListener(this);
 		setJcomboBox();
 	}
+	public AdminDialog() {
+		jcb_movieTitle = new JComboBox();
+		jcb_scrName = new JComboBox();
+		jcb_yy = new JComboBox();
+		jcb_mm = new JComboBox();
+		jcb_dd = new JComboBox();
+		jcb_hh24 = new JComboBox();
+		jcb_mi = new JComboBox();
+	}
 /**************************************************************************************
  * setJcomboBox() : 처음 Dialog를 띄울 때 JComboBox의 내용으 초기화 시켜주는 함수 
  */
@@ -79,11 +88,13 @@ public class AdminDialog extends JDialog implements ActionListener{
 				scrName.add(ac.second.get(i));
 			}
 		}
+		//연도 셋팅
 		cal = Calendar.getInstance();
 		yy[0] = "연";
 		yy[1] = Integer.toString(cal.get(Calendar.YEAR));
 		yy[2] = Integer.toString(cal.get(Calendar.YEAR)+1);
 		
+		//영화제목, 상영관명, 연도, 월, 일(내용없음), 시, 분
 		jcb_movieTitle = new JComboBox(movieTitle);
 		jcb_scrName = new JComboBox(scrName);
 		jcb_yy = new JComboBox(yy);
@@ -100,8 +111,9 @@ public class AdminDialog extends JDialog implements ActionListener{
 		jcb_mi.addActionListener(this);
 	}
 	
-	
-	
+/********************************************************************************************
+ *    						initDisplay()
+ */
 	public void initDisplay() {
 		this.setLayout(null);
 		//jl_movieTitle.setBounds(x, y, width, height);
@@ -109,7 +121,6 @@ public class AdminDialog extends JDialog implements ActionListener{
 		jcb_movieTitle.setBounds(125, 20, 300, 20);
 		jl_scrName.setBounds(20, 45, 100, 20);
 		jcb_scrName.setBounds(125, 45, 100, 20);
-		
 		jl_date.setBounds(20, 70, 100, 20);
 		jcb_yy.setBounds(125, 70, 60, 20);
 		jl_yy.setBounds(160, 70, 40, 20);
@@ -127,6 +138,20 @@ public class AdminDialog extends JDialog implements ActionListener{
 		//jbtn_sel.setBounds(20, 130, 150, 20);
 		jbtn_ins.setBounds(150, 130, 100, 20);
 		jbtn_exit.setBounds(260, 130, 100, 20);
+		
+		jl_movieTitle.setFont(font);
+		jl_movieTitle.setFont(font);
+		jl_scrName.setFont(font);
+		jl_date.setFont(font);
+		jl_time.setFont(font);
+		jl_yy.setFont(font);
+		jl_mm.setFont(font);
+		jl_dd.setFont(font);
+		jl_hh24.setFont(font);
+		jl_mi.setFont(font);
+		jbtn_ins.setFont(font);
+		jbtn_exit.setFont(font);
+		
 		this.add(jl_movieTitle);
 		this.add(jcb_movieTitle);
 		this.add(jl_scrName);
@@ -156,6 +181,7 @@ public class AdminDialog extends JDialog implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
+	//*********************************************************
 		//반영하기를 눌렀니?
 		if(obj==jbtn_ins) {
 			//예 : 0 , 아니오 : 1
@@ -165,14 +191,18 @@ public class AdminDialog extends JDialog implements ActionListener{
 					, JOptionPane.INFORMATION_MESSAGE);
 			//System.out.println(Confirm);
 			if(confirm==0) {
+				//반영하기를 누르면 날짜 및 시간을 유효한지 확인한다.
 				AdminShowtimeVO astVO = confirmShowtime();
 				//System.out.println(astVO.getMsg());
-				if(!(astVO.getMsg().equals("확인 완료"))) {
+				//유효하지않은 날짜와 시간이라면 
+				if(!(astVO.getMsg().equals("확인 완료"))) { 
 					JOptionPane.showMessageDialog(this
 					, astVO.getMsg()
 				    , "경고" , JOptionPane.ERROR_MESSAGE);
 				}
+				//날짜와 시간이 유효하면 
 				else {
+					//입력한 상영정보를 보여준다.
 					int reconfirm = JOptionPane.showConfirmDialog(this
 							, "영화제목 : "+astVO.getMovieTitle()+" \n"
 							 +"상영관명 : "+astVO.getScrName()+" \n" 
@@ -182,6 +212,7 @@ public class AdminDialog extends JDialog implements ActionListener{
 							, JOptionPane.INFORMATION_MESSAGE);
 					if(reconfirm==0) {
 						try {
+							//서버에 입력한 상영시간표 추가 요청
 							ac.oos.writeObject(AdminProtocol._INS
 									+"#"+ac.astVO.getId()
 									+"#"+astVO.getMovieTitle()
@@ -200,6 +231,7 @@ public class AdminDialog extends JDialog implements ActionListener{
 				}
 			}
 		}
+	//*********************************************************
 		//나가기를 눌렀니?
 		else if(obj==jbtn_exit) {
 			int confirm = JOptionPane.showConfirmDialog(
@@ -211,7 +243,8 @@ public class AdminDialog extends JDialog implements ActionListener{
 				ac.ad = null;
 			}
 		}
-		//콤보박스에서 월을 설정 했니?
+	//*********************************************************
+		//콤보박스에서 월을 누르면 일자 JComboBox 내용 생성
 		else if(obj==jcb_mm) {
 			String mm = (String)(jcb_mm.getSelectedItem());
 			//System.out.println(mm);//확인용
@@ -281,13 +314,11 @@ public class AdminDialog extends JDialog implements ActionListener{
 		}
 		return rDD; //해당하는 일자 반환 
 	}
-	/*
-	public static void main(String[] args) {
-		AdminDialog ad = new AdminDialog();
-		ad.initDisplay();
-	}
-	*/
 	
+/******************************************************************************************
+ * confirmShowtime() : 상영시간표 추가하기를 누르면 현 시점의 날짜와 시간이 지난 시점인지 확인한다.
+ * @return
+ */
 	public AdminShowtimeVO confirmShowtime() {
 		//사용자가 입력한 정보를 가져온다.
 		AdminShowtimeVO astVO = new AdminShowtimeVO();
@@ -346,6 +377,12 @@ public class AdminDialog extends JDialog implements ActionListener{
 		}//날짜 및 시간 적합성 검사
 		return astVO;
 	}//end of confirmShowtime
+	/**/
+	public static void main(String[] args) {
+		AdminDialog ad = new AdminDialog();
+		ad.initDisplay();
+	}
+	
 }
 
 

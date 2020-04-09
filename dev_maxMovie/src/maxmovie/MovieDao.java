@@ -19,11 +19,84 @@ public class MovieDao {
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	CallableStatement cstmt = null;
+	/************************************************************************
+	 * 단위 테스트용
+	 */
+	public static void main(String[] args) {
+		/* 허준호 : refreshMovieAll() : 함수 단위 테스트 코드입니다.
+		MovieDao md = new MovieDao();
+		List<Map<String, Object>> movieList = md.refreshMovieAll(new Vector<>());
+		for(Map<String, Object> showtime : movieList) {
+			System.out.print(showtime.get("M_TITLE").toString()
+							+" "+showtime.get("M_CERTIF").toString()
+							+" "+showtime.get("T_LOC").toString()
+							+" "+showtime.get("T_NAME").toString()
+							+" "+showtime.get("S_DATE").toString()
+							+" "+showtime.get("S_TIME").toString()
+							+" "+showtime.get("SC_NAME").toString()
+							+"\n");
+		}
+		*/
+		MovieDao dao = new MovieDao();
+		
+		TicketingVO ptVO = new TicketingVO();
+		ptVO.setTheater("해운대점");
+		ptVO.setMovie_screen("2관");
+		ptVO.setMovie_date("20200411");
+		ptVO.setMovie_time("19:40");
+		List<Map<String, Object>> seatList = dao.get_SeatStatus(ptVO);
+		for(Map<String, Object> rmap:seatList) {
+			System.out.println(rmap.get("좌석").toString() + rmap.get("현황").toString());
+		}
+	}
+	/*************************************************************************************************************************
+	 * 좌석현황 조회하는 오라클 함수 처리 메소드 
+	 * @param TicketingVO
+	 * @return 좌석현황 예)A1, 0 을 담은 List<Map<String, Object>> 반환
+	 *************************************************************************************************************************/
+	public List<Map<String, Object>> get_SeatStatus(TicketingVO ptVO) {
+		List<Map<String, Object>> seatList = new ArrayList<Map<String,Object>>();
+		Map<String, Object> seatmap = null;
+		String tablename = null;
+		con = dbMgr.getConnection();
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT func_SeatStatus(?,?,?,?) seattable FROM dual");
+		try {
+			pstmt = con.prepareStatement(sql.toString());
+			pstmt.setString(1, ptVO.getTheater());
+			pstmt.setString(2, ptVO.getMovie_screen());
+			pstmt.setString(3, ptVO.getMovie_date());
+			pstmt.setString(4, ptVO.getMovie_time());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				tablename = rs.getString("seattable");
+				System.out.println(tablename);
+			}
+			pstmt = null;
+			rs = null;
+			sql = new StringBuilder();
+			sql.append("SELECT seat_code, pay_status FROM ");
+			sql.append(tablename);
+			pstmt = con.prepareStatement(sql.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				seatmap = new HashMap<String, Object>();
+				seatmap.put("좌석", rs.getString("seat_code"));
+				seatmap.put("현황", rs.getString("pay_status"));
+				seatList.add(seatmap);
+			}
+		} catch (SQLException e) {
+			System.out.println("proc_login() Exception : " + e.toString());
+			e.printStackTrace();
+		}
+		return seatList;
+	}
+	
 	
 	/*************************************************************************************************************************
 	 * 결제-예매완료 정보 DB저장
 	 * + seat테이블의 pay_status UPDATE 프로시저 처리 메소드 
-	 * @param 결제버튼 클릭시 예매정보 담은 ticketingVO (pay_status : "결제완료")
+	 * @param 결제버튼 클릭시 예매정보 담은 ticketingVO (pay_status : "1" 일단 결제 중 으로 ..)
 	 * @return 
 	 *************************************************************************************************************************/
 	public void proc_payTicket(List<TicketingVO> ptList) {
@@ -31,7 +104,7 @@ public class MovieDao {
 		con = dbMgr.getConnection();
 		for(TicketingVO tvo: tList) {
 			try {
-				cstmt = con.prepareCall("{call proc_payTicket(?,?,?,?,?,?,?,?,?,?)}");
+				cstmt = con.prepareCall("{call proc_payTicket1(?,?,?,?,?,?,?,?,?,?)}");
 				cstmt.setString(1, tvo.getMem_id());
 				cstmt.setString(2, tvo.getMovie_name());
 				cstmt.setString(3, tvo.getTheater());
@@ -71,19 +144,19 @@ public class MovieDao {
 	 *************************************************************************************************************************/
 	public MemberVO proc_login(String p_id, String p_pw) {
 		MemberVO rmVO = new MemberVO();
-		String member_id = null;
-		String nickORstatus = null;
 		con = dbMgr.getConnection();
 		try {
 			cstmt = con.prepareCall("{call proc_logintest(?,?,?,?)}");
 			cstmt.setString(1, p_id);
 			cstmt.setString(2, p_pw);
 			cstmt.registerOutParameter(3, java.sql.Types.VARCHAR);
-			rs = cstmt.executeQuery();
+			cstmt.registerOutParameter(4, java.sql.Types.VARCHAR);
+			cstmt.execute();
 			//사용자가 입력한 아이디 (존재 유무에 상관없이 입력한 아이디가 그대로 저장됨)
 			rmVO.setMem_id(cstmt.getString(3));
 			//사용자가 입력한 아이디가 존재하고 로그인 성공이면 닉네임이 세팅되고 그렇지 않으면 -1이나 2가 저장됨
 			rmVO.setResult(cstmt.getString(4));
+			System.out.println("dao "+rmVO.getMem_id() + rmVO.getResult());
 		} catch (SQLException e) {
 			System.out.println("proc_login() Exception : " + e.toString());
 			e.printStackTrace();
@@ -121,7 +194,7 @@ public class MovieDao {
 			cstmt = con.prepareCall("{call proc_checkID(?,?)}");
 			cstmt.setString(1, p_id);
 			cstmt.registerOutParameter(2, java.sql.Types.VARCHAR);
-			rs = cstmt.executeQuery();
+			cstmt.execute();
 			result = cstmt.getString(2);
 		} catch (SQLException e) {
 			System.out.println("proc_checkID() Exception : " + e.toString());
@@ -141,13 +214,13 @@ public class MovieDao {
 		sql.append("INSERT INTO member VALUES(?, ?, ?, ?, ?, ?, ?)");
 		try {
 			pstmt = con.prepareStatement(sql.toString());
-			pstmt.setString(1, pmVO.mem_name);
-			pstmt.setString(2, pmVO.mem_id);
-			pstmt.setString(3, pmVO.mem_pw);
-			pstmt.setString(4, pmVO.mem_email);
-			pstmt.setString(5, pmVO.mem_nickname);
-			pstmt.setString(6, pmVO.mem_birth);
-			pstmt.setString(7, pmVO.mem_gender);
+			pstmt.setString(1, pmVO.getMem_name());
+			pstmt.setString(2, pmVO.getMem_id());
+			pstmt.setString(3, pmVO.getMem_pw());
+			pstmt.setString(4, pmVO.getMem_email());
+			pstmt.setString(5, pmVO.getMem_nickname());
+			pstmt.setString(6, pmVO.getMem_birth());
+			pstmt.setString(7, pmVO.getMem_gender());
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.toString());
@@ -168,17 +241,19 @@ public class MovieDao {
         sql.append(" , mem_nickname, mem_birth, mem_gender    ");
         sql.append(" FROM member                              ");
         sql.append(" WHERE mem_id=?                           ");
+        sql.append(" AND mem_pw=?                           ");
 		try {
 			pstmt = con.prepareStatement(sql.toString());
-			pstmt.setString(1, pmVO.mem_id);
+			pstmt.setString(1, pmVO.getMem_id());
+			pstmt.setString(2, pmVO.getMem_pw());
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				rmVO.setMem_id(rs.getString("mem_id"));
-				rmVO.setMem_pw("mem_pw");
+				rmVO.setMem_pw(rs.getString("mem_pw"));
 				rmVO.setMem_name(rs.getString("mem_name"));
-				rmVO.setMem_nickname("mem_nickname");
-				rmVO.setMem_birth("mem_birth");
-				rmVO.setMem_gender("mem_gender");
+				rmVO.setMem_nickname(rs.getString("mem_nickname"));
+				rmVO.setMem_birth(rs.getString("mem_birth"));
+				rmVO.setMem_gender(rs.getString("mem_gender"));
 				rmVO.setMem_email(rs.getString("mem_email"));
 			}
 		} catch (SQLException e) {
@@ -239,18 +314,18 @@ public class MovieDao {
 		try {
 			pstmt = con.prepareStatement(sql.toString());
 			if(pmVO.getMem_pw()!=null&&pmVO.getMem_pw().length()>0) {
-				pstmt.setString(i++, pmVO.mem_pw);
-				System.out.println("수정된 mem_pw : "+pmVO.mem_pw);
+				pstmt.setString(i++, pmVO.getMem_pw());
+				System.out.println("수정된 mem_pw : "+pmVO.getMem_pw());
 			}
 			if(pmVO.getMem_email()!=null&&pmVO.getMem_email().length()>0) {
-				pstmt.setString(i++, pmVO.mem_email);
-				System.out.println("수정된 mem_email : "+pmVO.mem_email);
+				pstmt.setString(i++, pmVO.getMem_email());
+				System.out.println("수정된 mem_email : "+pmVO.getMem_email());
 			}
 			if(pmVO.getMem_nickname()!=null&&pmVO.getMem_nickname().length()>0) {
-				pstmt.setString(i++, pmVO.mem_nickname);
-				System.out.println("수정된 mem_nickname : "+pmVO.mem_nickname);
+				pstmt.setString(i++, pmVO.getMem_nickname());
+				System.out.println("수정된 mem_nickname : "+pmVO.getMem_nickname());
 			}
-			pstmt.setString(i, pmVO.mem_id);
+			pstmt.setString(i, pmVO.getMem_id());
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.toString());
@@ -270,7 +345,7 @@ public class MovieDao {
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT mem_id, movie_title, theater_name");
 	        sql.append(" , theater_loc, scr_name, show_date     ");
-	        sql.append(" , show_time, ticketing_code            ");
+	        sql.append(" , show_time, ticketing_code, seat_code ");
 	        sql.append(" FROM v_myticket                        ");
 	        sql.append(" WHERE mem_id=?			                ");
 			try {
@@ -287,6 +362,7 @@ public class MovieDao {
 					rtVO.setMovie_date(rs.getString("show_date"));
 					rtVO.setMovie_time(rs.getString("show_time"));
 					rtVO.setTicketing_code(rs.getString("ticketing_code"));
+					rtVO.setScreen_seat(rs.getString("seat_code"));
 					ticket_List.add(rtVO);
 				}
 			} catch (SQLException e) {
@@ -356,33 +432,7 @@ public class MovieDao {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	/************************************************************************
-	 * 허준호 : 단위 테스트 용으로 만든 메인입니다.
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		/* 허준호 : refreshMovieAll() : 함수 단위 테스트 코드입니다.
-		MovieDao md = new MovieDao();
-		List<Map<String, Object>> movieList = md.refreshMovieAll(new Vector<>());
-		for(Map<String, Object> showtime : movieList) {
-			System.out.print(showtime.get("M_TITLE").toString()
-							+" "+showtime.get("M_CERTIF").toString()
-							+" "+showtime.get("T_LOC").toString()
-							+" "+showtime.get("T_NAME").toString()
-							+" "+showtime.get("S_DATE").toString()
-							+" "+showtime.get("S_TIME").toString()
-							+" "+showtime.get("SC_NAME").toString()
-							+"\n");
-		}
-		*/
-		String temp = "2020년 03월 28일";
-		String date = (temp.substring(0, 4)+temp.substring(6, 8)+temp.substring(10, 12));
-		System.out.println(date);
-		
-		String ttime = "12:00 ~ 13:45";
-		String time = (ttime.substring(0, 5));
-		System.out.println(time);
-	}
+
 	
 }
 
