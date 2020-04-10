@@ -17,7 +17,7 @@ public class TicketHistoryView extends JPanel  {
 	JLabel					jl_pageInfoRight		= new JLabel("님의 회원정보");
 	JLabel					jl_pageInfo				= new JLabel("님의 예매 내역");
 	String 					col_history[] 			= {"영화이름", "지점/지역", "상영날짜/시간", "상영관/좌석", "예매번호"};
-	String 					data_history[][] 		= {{"이보다 더 좋을 순 없다.", "서울/강남", "2020-04-01  18:00:00", "1관/A2", "9303-2048-5189615"},{"좋은 아씨들", "부산/해운대", "2020-04-02  18:00:00", "2관/F4", "9303-2048-5189616"}};
+	String 					data_history[][] 		= new String[0][5]; 
 	DefaultTableModel 		dtm_history				= new DefaultTableModel(data_history, col_history);
 	JTable 					jt_history				= new JTable(dtm_history);
 	JScrollPane 			jsp_history				= new JScrollPane(jt_history);

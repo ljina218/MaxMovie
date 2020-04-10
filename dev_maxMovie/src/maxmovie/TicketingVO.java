@@ -4,6 +4,7 @@ package maxmovie;
  * @author kosmo_06
  ********************************************************************************/
 public class TicketingVO {
+	private int    protocol 		= 0;
 	private String command      	= null;
 	private String mem_id 			= null;//아이디
 	private String movie_name		= null;//영화 이름
@@ -101,6 +102,12 @@ public class TicketingVO {
 	}
 	public void setSeat_tablename(String seat_tablename) {
 		this.seat_tablename = seat_tablename;
+	}
+	public int getProtocol() {
+		return protocol;
+	}
+	public void setProtocol(int protocol) {
+		this.protocol = protocol;
 	}
 	
 	

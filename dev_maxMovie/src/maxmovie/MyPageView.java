@@ -26,6 +26,7 @@ public class MyPageView extends JPanel{
 		jp_thv				= new TicketHistoryView(em);
 		jp_miv				= new MemInfoView(em);
 		jp_muv				= new MemUpdateView(em);
+		eventMapping();
 		initDisplay();
 	}
 	public void initDisplay() {
