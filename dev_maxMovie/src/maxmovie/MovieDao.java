@@ -13,12 +13,17 @@ import java.util.Vector;
 
 import com.util.DBConnectionMgr;
 
+import oracle.jdbc.OracleCallableStatement;
+import oracle.jdbc.OracleTypes;
+
+
 public class MovieDao {
 	DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	CallableStatement cstmt = null;
+	OracleCallableStatement ocstmt = null;
 	/************************************************************************
 	 * 단위 테스트용
 	 */
@@ -41,44 +46,36 @@ public class MovieDao {
 		
 		TicketingVO ptVO = new TicketingVO();
 		ptVO.setTheater("해운대점");
-		ptVO.setMovie_screen("2관");
-		ptVO.setMovie_date("20200411");
-		ptVO.setMovie_time("19:40");
-		List<Map<String, Object>> seatList = dao.get_SeatStatus(ptVO);
+		ptVO.setMovie_screen("1관");
+		ptVO.setMovie_date("20200409");
+		ptVO.setMovie_time("23:10");
+		List<Map<String, Object>> seatList = dao.proc_SeatStatus(ptVO);
 		for(Map<String, Object> rmap:seatList) {
-			System.out.println(rmap.get("좌석").toString() + rmap.get("현황").toString());
+			System.out.println(rmap.get("좌석").toString() +", "+ rmap.get("현황").toString());
 		}
 	}
+	
 	/*************************************************************************************************************************
-	 * 좌석현황 조회하는 오라클 함수 처리 메소드 
+	 * 좌석현황 조회하는 오라클 프로시저 처리 메소드 
 	 * @param TicketingVO
 	 * @return 좌석현황 예)A1, 0 을 담은 List<Map<String, Object>> 반환
 	 *************************************************************************************************************************/
-	public List<Map<String, Object>> get_SeatStatus(TicketingVO ptVO) {
-		List<Map<String, Object>> seatList = new ArrayList<Map<String,Object>>();
+	public List<Map<String, Object>> proc_SeatStatus(TicketingVO ptVO) {
+		List<Map<String, Object>> seatList = new Vector<Map<String,Object>>();
 		Map<String, Object> seatmap = null;
-		String tablename = null;
+		boolean what; //cstmt.execute(); 결과값 확인용
 		con = dbMgr.getConnection();
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT func_SeatStatus(?,?,?,?) seattable FROM dual");
 		try {
-			pstmt = con.prepareStatement(sql.toString());
-			pstmt.setString(1, ptVO.getTheater());
-			pstmt.setString(2, ptVO.getMovie_screen());
-			pstmt.setString(3, ptVO.getMovie_date());
-			pstmt.setString(4, ptVO.getMovie_time());
-			rs = pstmt.executeQuery();
-			while(rs.next()) {
-				tablename = rs.getString("seattable");
-				System.out.println(tablename);
-			}
-			pstmt = null;
-			rs = null;
-			sql = new StringBuilder();
-			sql.append("SELECT seat_code, pay_status FROM ");
-			sql.append(tablename);
-			pstmt = con.prepareStatement(sql.toString());
-			rs = pstmt.executeQuery();
+			cstmt = con.prepareCall("{call get_SeatStatus(?,?,?,?,?) } ");
+			cstmt.setString(1, ptVO.getTheater());
+			cstmt.setString(2, ptVO.getMovie_screen());
+			cstmt.setString(3, ptVO.getMovie_date());
+			cstmt.setString(4, ptVO.getMovie_time());
+			cstmt.registerOutParameter(5, OracleTypes.CURSOR);
+			what = cstmt.execute();
+			System.out.println("cstmt.execute() 결과값 : "+ what);
+			ocstmt = (OracleCallableStatement)cstmt;
+			rs = ocstmt.getCursor(5);
 			while(rs.next()) {
 				seatmap = new HashMap<String, Object>();
 				seatmap.put("좌석", rs.getString("seat_code"));
@@ -86,12 +83,10 @@ public class MovieDao {
 				seatList.add(seatmap);
 			}
 		} catch (SQLException e) {
-			System.out.println("proc_login() Exception : " + e.toString());
 			e.printStackTrace();
 		}
 		return seatList;
 	}
-	
 	
 	/*************************************************************************************************************************
 	 * 결제-예매완료 정보 DB저장
