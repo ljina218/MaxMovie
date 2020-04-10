@@ -18,8 +18,6 @@ import com.sun.jndi.toolkit.dir.ContainmentFilter;
 
 
 public class ClientThread extends Thread{
-	
-
 	MaxMovieView mmv = null;
 	
 	boolean stop = false;
@@ -209,31 +207,41 @@ public class ClientThread extends Thread{
 				}break;
 				//******************************************************************************
 				case MovieProtocol.MY_MOVIE:{//회원 예매내역 조회
-					//영화이름, 지역, 지점, 상영날짜 시간, 상영관, 좌석, 예매번호
-					Vector<String> v = new Vector<String>();
-					TicketingVO pVO = new TicketingVO();
-					String movie = st.nextToken();
-					String locThe = st.nextToken()+"/"+st.nextToken();
-					String dateTime = st.nextToken()+"/"+st.nextToken();
-					String screenSeat = st.nextToken()+"/"+st.nextToken();
-					String ticketcode = st.nextToken();
-					v.add(movie);
-					v.add(locThe);
-					v.add(dateTime);
-					v.add(screenSeat);
-					v.add(ticketcode);
-					mmv.jp_mv.jp_thv.dtm_history.addRow(v);
-					display(false, true, false, false, true, false, false, false, false, false);
-//					for(int i=0; i<ticket_list.size(); i++) {
-//						String movieName = ticket_list.get(i).getMovie_name();
-//						String loc = ticket_list.get(i).getLoc();
-//						String theater = ticket_list.get(i).getTheater();
-//						String date = ticket_list.get(i).getMovie_date();
-//						String time = ticket_list.get(i).getMovie_time();
-//						String screen = ticket_list.get(i).getMovie_screen();
-//						String seat = ticket_list.get(i).getScreen_seat();
-//						String ticketCode = ticket_list.get(i).getTicketing_code();
-//					}
+					if(st.hasMoreTokens()) { //토큰이 더 있니 
+						System.out.println("mymovie 호출 클라이언트스레드");
+						mmv.jp_mv.jp_thv.jl_curtain.setVisible(false);
+						Vector<String> v = new Vector<String>();
+						TicketingVO pVO = new TicketingVO();
+						String movie = st.nextToken();
+						
+						String locThe = st.nextToken()+"/"+st.nextToken();
+						String dateTime = st.nextToken()+"/"+st.nextToken();
+						String screenSeat = st.nextToken()+"/"+st.nextToken();
+						String ticketcode = st.nextToken();
+						v.add(movie);
+						v.add(locThe);
+						v.add(dateTime);
+						v.add(screenSeat);
+						v.add(ticketcode);
+						mmv.jp_mv.jp_thv.dtm_history.addRow(v);
+						display(false, true, false, false, true, false, false, false, false, false);
+	//					for(int i=0; i<ticket_list.size(); i++) {
+	//						String movieName = ticket_list.get(i).getMovie_name();
+	//						String loc = ticket_list.get(i).getLoc();
+	//						String theater = ticket_list.get(i).getTheater();
+	//						String date = ticket_list.get(i).getMovie_date();
+	//						String time = ticket_list.get(i).getMovie_time();
+	//						String screen = ticket_list.get(i).getMovie_screen();
+	//						String seat = ticket_list.get(i).getScreen_seat();
+	//						String ticketCode = ticket_list.get(i).getTicketing_code();
+	//					}
+					} else {
+						System.out.println("예매내역 없엉 호출 클라이언트스레드");
+						mmv.jp_mv.jp_thv.jl_curtain.setVisible(true);
+						display(false, true, false, false, true, false, false, false, false, false);
+					}
+						
+					
 				}break;
 				//******************************************************************************
 				case MovieProtocol.MY_INFO:{//회원 정보조회(PW)
@@ -333,10 +341,13 @@ public class ClientThread extends Thread{
 					rmap.put("현황", status);
 					seatList.add(rmap);
 					mmv.jp_mrv.jp_scv.seatSetting(seatList);
+					mmv.jp_mrv.jbt_backMovieChoice.setVisible(true);
+					mmv.jp_mrv.jbt_goSeatChoice.setVisible(false);
+					mmv.jp_mrv.jbt_goPayChoice.setVisible(true);
 					display(false, false, false, false, false, true, false, false, true, false);
 				}break;
 				case MovieProtocol.PAY:{//결제하기
-					
+					System.out.println("이제 결제가 진행되어야해 ~~~~~~~~~~~~~~~~~~");
 				}break;
 				}//end of switch
 			}//end of while

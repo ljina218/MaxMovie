@@ -12,6 +12,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -1010,6 +1011,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			mmv.jp_mrv.jp_pv.setVisible(false);
 			mmv.jp_mrv.jp_scv.setVisible(false);
 		}
+<<<<<<< HEAD
 		/*************************************************************************************************
 		 * 좌석 선택이 끝나고 결제 버튼을 눌렀을때 
 
@@ -1042,27 +1044,30 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			}
 
 		} 
+=======
+>>>>>>> refs/remotes/origin/master
 		
 		/**************************************************************************************************
 		 * 좌석선택 버튼 클릭했을때
 		 */
 		else if(obj==mmv.jp_mrv.jbt_goSeatChoice) {
 			/*********단위테스트하기위해 잠시 주석처리*************/
-//			String temptheater 		= mmv.jp_mrv.jl_south_theater.getText();
-//			StringTokenizer st = new StringTokenizer(temptheater, "/");
-//			st.nextToken();
-//			String theater = st.nextToken();
-//			String screen 		= mmv.jp_mrv.jl_south_screen.getText();
-//			String tempdate 		= mmv.jp_mrv.jl_south_date.getText();
-//			System.out.println("tempdate"+ tempdate);
-//			String date = (tempdate.substring(0, 4)+tempdate.substring(6, 8)+tempdate.substring(10, 12));
-//			String time = mmv.jp_mrv.jl_south_time.getText();
-//			String seatstatus_msg 	= MovieProtocol.GET_SEATSTATUS+"#"+theater+"#"+screen+"#"+date+"#"+time;
+			String temptheater 		= mmv.jp_mrv.jl_south_theater.getText();
+			StringTokenizer st = new StringTokenizer(temptheater, "/");
+			st.nextToken();
+			String theater = st.nextToken();
+			String screen 		= mmv.jp_mrv.jl_south_screen.getText();
+			String tempdate 		= mmv.jp_mrv.jl_south_date.getText();
+			System.out.println("tempdate"+ tempdate);
+			String date = (tempdate.substring(0, 4)+tempdate.substring(6, 8)+tempdate.substring(10, 12));
+			String time = mmv.jp_mrv.jl_south_time.getText();
+			String seatstatus_msg 	= MovieProtocol.GET_SEATSTATUS+"#"+theater+"#"+screen+"#"+date+"#"+time;
+			
 			//단위테스트용
-			String seatstatus_msg = MovieProtocol.GET_SEATSTATUS+"#"+"해운대점"+"#"+"2관"+"#"+"20200411"+"#"+"19:40";
-			this.send(seatstatus_msg);
+//			String seatstatus_msg = MovieProtocol.GET_SEATSTATUS+"#"+"해운대점"+"#"+"2관"+"#"+"20200411"+"#"+"19:40";
+//			this.send(seatstatus_msg);
 		}
-		else if(obj==jv.jbt_email_r) {//인증번호 버튼을 눌렀니?
+		else if(jv!=null&&obj==jv.jbt_email_r) {//인증번호 버튼을 눌렀니?
 			
 			end_millisecond = System.currentTimeMillis();//인증번호 입력시간 저장
 			long term = end_millisecond - start_millisecond;//전송~입력 시간 계산
@@ -1089,11 +1094,54 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				sm.rnum = null;
 			}
 		}
-		/**************************************************************************************************
-		 * 좌석 선택화면에서 adult, teen 인원 선택 - 선택한 인원만큼 좌석 선택	
+		/*************************************************************************************************
+		 * 좌석 선택이 끝나고 결제 버튼을 눌렀을때 
 		 */
+<<<<<<< HEAD
 
+=======
+		else if(obj==mmv.jp_mrv.jbt_goPayChoice) {
+			System.out.println("결제버튼 클릭 : "+mmv.jp_mrv.jp_scv.seatChoiceList.size());
+			for(String seatCode : mmv.jp_mrv.jp_scv.seatChoiceList) {
+				String mem_id 		= mmv.mem_id;
+				String movieName 	= mmv.jp_mrv.jl_south_movie.getText();
+				String temptheater 		= mmv.jp_mrv.jl_south_theater.getText();
+				StringTokenizer st = new StringTokenizer(temptheater, "/");
+				st.nextToken();
+				String theater = st.nextToken();
+				String screen 		= mmv.jp_mrv.jl_south_screen.getText();
+				String seat 		= seatCode;
+				String tempdate 		= mmv.jp_mrv.jl_south_date.getText();
+				System.out.println("tempdate"+ tempdate);
+				//년월일 제외하여 20200408 형식 맞추기
+//			jl_south_date.setText("2020년 03월 28일") -> 20200328
+				String date = (tempdate.substring(0, 4)+tempdate.substring(6, 8)+tempdate.substring(10, 12));
+				//시간 형식 24:00 라면 그냥 집어넣어
+				String time 		= mmv.jp_mrv.jl_south_time.getText();
+				String pay_msg 	= MovieProtocol.PAY+"#"+mem_id+"#"+movieName+"#"+theater+"#"
+						+screen+"#"+seat+"#"+date+"#"+time;
+				this.send(pay_msg);
+				
+				//단위테스트용
+//				String seatstatus_msg = MovieProtocol.PAY+"#"+"cloudsky7"+"#"+"작은아씨들"+"#"+"해운대점"+"#"
+//						+"2관"+"#"+"A1"+"#"+"20200411"+"#"+"19:40";
+//				this.send(seatstatus_msg);
+				
+			}
+		}//end of obj==mmv.jp_mrv.jbt_goPayChoice
+		
+		/* 좌석 선택화면에서 adult, teen 인원 선택 - 선택한 인원만큼 좌석 선택	 */
+>>>>>>> refs/remotes/origin/master
 		else {
+			//고를 수 있는 총 좌석 개수
+			int maxChoiceCount = (mmv.jp_mrv.jp_scv.teenChoice+mmv.jp_mrv.jp_scv.adultChoice);
+			//고른 좌석 개수
+			int nowChoiceCount = mmv.jp_mrv.jp_scv.seatChoiceList.size();
+			//좌석 이름
+			String seatChoice = "";
+			//이미 고른좌석인지 안고른 좌석인지 존재여부
+			Boolean	exist = false;
+			String totalPrice = Integer.toString(mmv.jp_mrv.jp_scv.adultChoice * 10000 + mmv.jp_mrv.jp_scv.teenChoice * 8000);
 			for(int i=0; i<mmv.jp_mrv.jp_scv.jbts_adult.length; i++) {
 				if(obj==mmv.jp_mrv.jp_scv.jbts_adult[i]) {
 					mmv.jp_mrv.jp_scv.jbts_adult[mmv.jp_mrv.jp_scv.adultChoice].setBackground(new Color(230, 230, 230));
@@ -1114,39 +1162,80 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 					break;
 				}					
 			}
-			
+			maxChoiceCount = (mmv.jp_mrv.jp_scv.teenChoice+mmv.jp_mrv.jp_scv.adultChoice);
+			totalPrice = Integer.toString(mmv.jp_mrv.jp_scv.adultChoice * 10000 + mmv.jp_mrv.jp_scv.teenChoice * 8000);
+			if(nowChoiceCount>maxChoiceCount) {
+				for(int k=0; k<mmv.jp_mrv.jp_scv.jbts_seat.length; k++) {
+					for(int l=0; l<mmv.jp_mrv.jp_scv.jbts_seat[k].length; l++) {
+						mmv.jp_mrv.jp_scv.jbts_seat[k][l].setBackground(Color.green);
+						mmv.jp_mrv.jp_scv.jbts_seat[k][l].setForeground(Color.white);
+					}
+				}
+				mmv.jp_mrv.jp_scv.seatChoiceList = null;
+				mmv.jp_mrv.jp_scv.seatChoiceList = new ArrayList<>();
+				mmv.jp_mrv.jl_south_seat.setBounds(900, 698, 150, 20);	
+				mmv.jp_mrv.jl_south_pay.setBounds(1040, 698, 150, 20);
+				mmv.jp_mrv.jta_south_Allseat.setText("");
+				mmv.jp_mrv.jl_south_totalPay.setText("");
+			}
+			if(maxChoiceCount==0){
+				mmv.jp_mrv.jbt_goPayChoice.setBackground(new Color(230, 230, 230));
+				mmv.jp_mrv.jbt_goPayChoice.setForeground(Color.gray);
+				mmv.jp_mrv.jbt_goPayChoice.setEnabled(false);
+				mmv.jp_mrv.jl_south_pay.setBounds(1040, 698, 150, 20);
+				mmv.jp_mrv.jl_south_totalPay.setText("");
+			} else {
+				mmv.jp_mrv.jl_south_pay.setBounds(1040, 690, 150, 20);
+				mmv.jp_mrv.jl_south_totalPay.setText("총 금액 " + totalPrice + "원");
+			}
 			for(int i=0; i<mmv.jp_mrv.jp_scv.jbts_seat.length; i++) {
 				for(int j=0; j<mmv.jp_mrv.jp_scv.jbts_seat[i].length;  j++) {
 					if(obj==mmv.jp_mrv.jp_scv.jbts_seat[i][j]) {
-//						for(int k =0; k<mmv.jp_mrv.jp_scv.seatChoiceList.size(); k++) {
-//							System.out.println(seatChoice);
-//							if(seatChoice.equals(mmv.jp_mrv.jp_scv.seatChoiceList.get(k))) {
-//								mmv.jp_mrv.jp_scv.seatChoiceList.remove(k);
-//							}
-//						}
-						if(mmv.jp_mrv.jp_scv.seatChoiceList.size() < mmv.jp_mrv.jp_scv.teenChoice + mmv.jp_mrv.jp_scv.adultChoice) {
-							String seatChoice = (char)(i+65) + Integer.toString(j+1);
-							//(행) : (char)(i+65)   (열) : Integer.toString(j+1) 행과열 : (char)(i+65) + Integer.toString(j+1)					
+						//(행) : (char)(i+65)   (열) : Integer.toString(j+1) 행과열 : (char)(i+65) + Integer.toString(j+1)
+						seatChoice = (char)(i+65) + Integer.toString(j+1);
+						if(nowChoiceCount<=maxChoiceCount) {
+							for(int k=0; k<mmv.jp_mrv.jp_scv.seatChoiceList.size();k++) {
+								if(seatChoice.equals(mmv.jp_mrv.jp_scv.seatChoiceList.get(k))){
+									mmv.jp_mrv.jp_scv.jbts_seat[i][j].setBackground(Color.green);
+									mmv.jp_mrv.jp_scv.jbts_seat[i][j].setForeground(Color.white);
+									mmv.jp_mrv.jp_scv.seatChoiceList.remove(k);
+									if(mmv.jp_mrv.jp_scv.seatChoiceList.size()==0) {
+										mmv.jp_mrv.jl_south_seat.setBounds(900, 698, 150, 20);
+										mmv.jp_mrv.jta_south_Allseat.setText("");
+									}
+									exist = true;
+									break;
+								}
+							}
+						}
+						if(exist==false&&!(nowChoiceCount==maxChoiceCount)){
 							mmv.jp_mrv.jp_scv.jbts_seat[i][j].setBackground(Color.white);
 							mmv.jp_mrv.jp_scv.jbts_seat[i][j].setForeground(Color.black);
-							System.out.println("seatChoice : " + seatChoice);
+							mmv.jp_mrv.jl_south_seat.setBounds(922, 656, 110, 50);	
+							mmv.jp_mrv.jl_south_pay.setBounds(1040, 690, 150, 20);
 							mmv.jp_mrv.jp_scv.seatChoiceList.add(seatChoice);
 							
 						} else {
 							return;
 						}
+						for(int l=0; l<mmv.jp_mrv.jp_scv.seatChoiceList.size(); l++) {					
+							mmv.jp_mrv.sb_seatChoiceList.append(mmv.jp_mrv.jp_scv.seatChoiceList.get(l) + " ");
+							mmv.jp_mrv.jta_south_Allseat.setText(mmv.jp_mrv.sb_seatChoiceList.toString());
+						}
+						mmv.jp_mrv.sb_seatChoiceList = new StringBuilder();
 					}
 				}
 			}
 			//선택한 인원수에 맞게 좌석수를 선택한 경우에 좌석버튼이 활성화됨
-			if(mmv.jp_mrv.jp_scv.teenChoice!=0 && mmv.jp_mrv.jp_scv.teenChoice==mmv.jp_mrv.jp_scv.seatChoiceList.size()) {
-				mmv.jp_mrv.jbt_goSeatChoice.setForeground(Color.white);
-				mmv.jp_mrv.jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
-				mmv.jp_mrv.jbt_goSeatChoice.setEnabled(true);
-			} else if(mmv.jp_mrv.jp_scv.adultChoice!=0 && mmv.jp_mrv.jp_scv.adultChoice==mmv.jp_mrv.jp_scv.seatChoiceList.size()) {
-				mmv.jp_mrv.jbt_goSeatChoice.setForeground(Color.white);
-				mmv.jp_mrv.jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
-				mmv.jp_mrv.jbt_goSeatChoice.setEnabled(true);
+			if(mmv.jp_mrv.jp_scv.seatChoiceList.size()==(mmv.jp_mrv.jp_scv.teenChoice+mmv.jp_mrv.jp_scv.adultChoice)
+			 &&!(maxChoiceCount==0)) {
+				mmv.jp_mrv.jbt_goPayChoice.setBackground(new Color(52, 152, 219));
+				mmv.jp_mrv.jbt_goPayChoice.setForeground(Color.white);
+				mmv.jp_mrv.jbt_goPayChoice.setEnabled(true);
+			} else {
+				mmv.jp_mrv.jbt_goPayChoice.setBackground(new Color(230, 230, 230));
+				mmv.jp_mrv.jbt_goPayChoice.setForeground(Color.gray);
+				mmv.jp_mrv.jbt_goPayChoice.setEnabled(false);
 			}
 		}
 		

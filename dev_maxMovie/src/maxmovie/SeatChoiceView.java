@@ -3,10 +3,7 @@ package maxmovie;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -48,6 +45,7 @@ public class SeatChoiceView extends JPanel{
 	
 	List<String> 				seatChoiceList			= new ArrayList<>();				
 	
+	
 	public SeatChoiceView(EventMapping em) {
 		//리스트 받는곳(매개변수추가?) public SeatChoiceView(EventMapping em, ArrayList<Map<String, Object>> seatList)
 		//this.seatList = seatList;
@@ -63,6 +61,7 @@ public class SeatChoiceView extends JPanel{
 		for(Map<String, Object> rmap: this.seatList) {
 			System.out.println("SeatChoiceView"+rmap.get("좌석").toString() +","+ rmap.get("현황").toString());
 		}
+<<<<<<< HEAD
 
 		//만약 다른곳에서 온다면 이런형태로 올것이다. 임시모델↓↓↓
 		//A1~J18 셋팅 좌석 (80석)
@@ -133,6 +132,10 @@ public class SeatChoiceView extends JPanel{
 		
 		
 		//[120]석 셋팅 
+=======
+		
+		//[80]석 셋팅 
+>>>>>>> refs/remotes/origin/master
 		if(seatList.size()==80) {
 			jbts_seat = new JButton[10][8];
 			int k=0;
@@ -297,6 +300,8 @@ public class SeatChoiceView extends JPanel{
 //			}
 //		}
 //	}
+	
+	
 		//[160]석 셋팅 
 //		if(seatList.size()==160) {
 //			jbts_seat = new JButton[10][16];
@@ -516,6 +521,9 @@ public class SeatChoiceView extends JPanel{
 		this.add(jl_screen);
 		this.add(jp_center);
 	}
+
+	
+	
 	
 	public static void main(String[] args) {
 		MaxMovieView mmv = new MaxMovieView();
@@ -529,13 +537,14 @@ public class SeatChoiceView extends JPanel{
 		mmv.jp_mv.jp_miv.setVisible(false);
 		mmv.jp_mv.jp_muv.setVisible(false);
 		mmv.jp_rv.setVisible(false);
-
 		mmv.jl_logo_small.setVisible(true);
 		mmv.jl_nickInfo.setVisible(true);
 		mmv.jl_nickInfoEnd.setVisible(true);
 		mmv.jbt_logout.setVisible(true);
 		mmv.jbt_myPage.setVisible(true);
 		mmv.jbt_ticketing.setVisible(true);
-	
+		mmv.jp_mrv.jbt_backMovieChoice.setVisible(true);
+		mmv.jp_mrv.jbt_goSeatChoice.setVisible(false);
+		mmv.jp_mrv.jbt_goPayChoice.setVisible(true);
 	}
 }
