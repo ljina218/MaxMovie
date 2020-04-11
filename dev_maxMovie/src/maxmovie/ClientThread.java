@@ -46,34 +46,39 @@ public class ClientThread extends Thread{
 	}
 	
 	//영화 시간 조건 메소드
-	public int checkTime (String time) {//스케줄에 있는 영화 시간 받아서
+	public int checkTime (String date, String time) {//스케줄에 있는 영화 시간 받아서
 		int result = 0;
-		StringTokenizer token = new StringTokenizer(time, ":");//시와 분으로 쪼개기
-		char[] scheduledhour = token.nextToken().toCharArray();
-		char[] scheduledmin = token.nextToken().toCharArray();
-		String sethour = null;
-		String setmin = null;
-		if(scheduledhour[0]==0){//시 앞에 붙은 0 떼어내기
-			sethour = scheduledhour[1]+"";
-		}else {
-			sethour = scheduledhour[0]+""+scheduledhour[1]; 
-		}
+		StringTokenizer st = new StringTokenizer(time, ":");
+		String si = st.nextToken();
+		String bun = st.nextToken();
+		time = si+bun;
 		
-		if(scheduledmin[0]==0){//분 앞에 붙은 0 떼어내기
-			setmin = scheduledmin[1]+"";
-		}else {
-			setmin = scheduledmin[0]+""+scheduledmin[1]; 
+		String c_Date = setYMD(); //현재날짜
+		String c_Time = setHMS(); //현재시간
+		//선택한 날짜가 이미 지났니? 
+		if(Integer.parseInt(c_Date)
+				> Integer.parseInt(date)) {
+			//astVO.setMsg("이미 지난 날짜입니다.");
+			result = -1;
 		}
-		int hour = Integer.parseInt(sethour);//시와 분을 string에서 int 형으로 바꾸기
-		int min = Integer.parseInt(setmin);
-		Calendar now = Calendar.getInstance();//현재 시간에서 
-		now.add(Calendar.MINUTE, -30);//30분 빼기 => 30분 전까지만 예매가능
-		int nowhour = now.get(Calendar.HOUR_OF_DAY);
-		int nowmin = now.get(Calendar.MINUTE);
-		if(hour>=nowhour) {//시가 아직 안지났고
-			if(min>=nowmin) {//분이 아직 안지났다면,
-				result=1;
+		//선택한 날짜가 오늘 날짜야?
+		else if(c_Date.equals(date)){
+			//그러면 시간은 이미 지났니?
+			if(Integer.parseInt(c_Time)
+					> Integer.parseInt(time)) {
+				//astVO.setMsg("이미 지난 시간입니다.");
+				result = -1;
 			}
+			else { //시간 안지났으면
+				//날짜 저장 및 시간형식으로 저장
+				//astVO.setMsg("확인 완료");
+				result = 1;
+			}
+		}
+		//선택한 날짜가 현재날짜보다 미래라면 
+		else { 
+			//astVO.setMsg("확인 완료");
+			result = 1;
 		}
 		return result;
 	}
@@ -146,8 +151,9 @@ public class ClientThread extends Thread{
 						}
 						for(int i=0; i<list.size(); i++) {
 							String time = list.get(i).get("S_TIME").toString();
-							int result = mmv.em.checkTime(time);
-							if(result==0) {//예약할 수 없는 시간이라면....
+							String date = list.get(i).get("S_DATE").toString();
+							int result = checkTime(date, time);
+							if(result==-1) {//예약할 수 없는 시간이라면....
 								list.remove(i);
 							}
 						}
@@ -240,8 +246,6 @@ public class ClientThread extends Thread{
 						mmv.jp_mv.jp_thv.jl_curtain.setVisible(true);
 						display(false, true, false, false, true, false, false, false, false, false);
 					}
-						
-					
 				}break;
 				//******************************************************************************
 				case MovieProtocol.MY_INFO:{//회원 정보조회(PW)
@@ -257,6 +261,7 @@ public class ClientThread extends Thread{
 						String pw = st.nextToken();
 						mmv.jp_mv.jp_muv.jl_mem_name.setText(st.nextToken());
 						String nickname = st.nextToken();
+						mmv.jp_mv.jp_muv.jl_pageInfoLeft.setText(mmv.mem_nick);
 						String tempDate = st.nextToken();
 						System.out.println("ClientThread tempDate: "+ tempDate);
 						mmv.jp_mv.jp_muv.jl_mem_year.setText(tempDate.substring(0, 4));
@@ -333,6 +338,7 @@ public class ClientThread extends Thread{
 //					
 //				}break;
 				case MovieProtocol.GET_SEATSTATUS:{//좌석선택
+					int seatlistSize = Integer.parseInt(st.nextToken());
 					String seatcode = st.nextToken();
 					String status = st.nextToken();
 					System.out.println("seatcode, status : "+seatcode+", "+status);
@@ -340,11 +346,13 @@ public class ClientThread extends Thread{
 					rmap.put("좌석", seatcode);
 					rmap.put("현황", status);
 					seatList.add(rmap);
-					mmv.jp_mrv.jp_scv.seatSetting(seatList);
-					mmv.jp_mrv.jbt_backMovieChoice.setVisible(true);
-					mmv.jp_mrv.jbt_goSeatChoice.setVisible(false);
-					mmv.jp_mrv.jbt_goPayChoice.setVisible(true);
-					display(false, false, false, false, false, true, false, false, true, false);
+					if(seatlistSize==seatList.size()) {
+						mmv.jp_mrv.jp_scv.seatSetting(seatList);
+						mmv.jp_mrv.jbt_backMovieChoice.setVisible(true);
+						mmv.jp_mrv.jbt_goSeatChoice.setVisible(false);
+						mmv.jp_mrv.jbt_goPayChoice.setVisible(true);
+						display(false, false, false, false, false, true, false, false, true, false);
+					}
 				}break;
 				case MovieProtocol.PAY:{//결제하기
 					System.out.println("이제 결제가 진행되어야해 ~~~~~~~~~~~~~~~~~~");
@@ -357,5 +365,28 @@ public class ClientThread extends Thread{
 			e.printStackTrace();
 		}
 	}
+	public String setYMD() {
+		Calendar cal = Calendar.getInstance();
+		int yyyy = cal.get(Calendar.YEAR);
+		int mm = cal.get(Calendar.MONTH)+1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		
+		return yyyy
+			+(mm < 10 ? "0"+mm:""+mm)
+			+(day < 10 ? "0"+day:""+day);
+	}//end of setTimer
+/********************************************************************
+ * 상영시간표를 추가하거나 삭제 할 때 현재 시간 정보를 받아온다.
+ * 사용자가 입력한 시간를 비교 할 때 사용한다.  
+ * @return
+ */
+	public String setHMS() {
+		Calendar cal = Calendar.getInstance();
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int min = cal.get(Calendar.MINUTE);
+		
+		return (hour < 10 ? "0"+hour:""+hour)
+			   +(min < 10 ? "0"+min:""+min);
+	}//end of setTimer
 	
 }

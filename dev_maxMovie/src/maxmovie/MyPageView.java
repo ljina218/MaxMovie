@@ -12,7 +12,7 @@ import javax.swing.border.TitledBorder;
 
 public class MyPageView extends JPanel{
 
-	JButton						jbt_thv				= new JButton("예매화면");
+	JButton						jbt_thv				= new JButton("예매내역");
 	JButton						jbt_miv				= new JButton("회원정보");
 	
 	EventMapping				em					= null;

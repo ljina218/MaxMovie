@@ -1,7 +1,5 @@
  package maxmovie;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -34,7 +32,7 @@ public class MovieController {
 		List<Map<String, Object>> seatList = null;
 		String command = ptVO.getCommand();
 		if(GET_SEATSTATUS.equals(command)) {
-			seatList = dao.get_SeatStatus(ptVO);
+			seatList = dao.proc_SeatStatus(ptVO);
 		}
 		return seatList;
 	}

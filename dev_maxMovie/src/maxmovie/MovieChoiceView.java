@@ -27,9 +27,6 @@ import javax.swing.table.TableCellRenderer;
 import javafx.scene.shape.Line;
 
 
-
-	
-
 public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	Vector<String> arealist = null;//지역정보 저장
 	Vector<String> loclist = null;//지점정보 저장
@@ -80,10 +77,6 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	String 				data_theater[][] 		= new String[0][1];
 
 	DefaultTableModel 	dtm_theater  			= new DefaultTableModel(data_theater, col_theater);
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/master
 	JTable 				jt_theater 				= new JTable(dtm_theater);
 	JScrollPane 		jsp_theater 			= new JScrollPane(jt_theater);
 	
@@ -94,13 +87,8 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	JTable 				jt_date 				= new JTable(dtm_date);
 	JScrollPane 		jsp_date 				= new JScrollPane(jt_date);
 	
-<<<<<<< HEAD
 	String 				col_time[] 				= {"상영관","시간"};
 	String 				data_time[][] 			= new String[0][2];
-=======
-	String 				col_time[] 				= {"상영관", "시간"};
-	String 				data_time[][] 			= {{"1관", "09:00"}, {"","12:00"}, {"", "15:00"},{"", "18:00"}, {"", "21:00"}, {"2관", "09:00"}, {"","12:00"}, {"", "15:00"},{"", "18:00"}, {"", "21:00"}};
->>>>>>> refs/remotes/origin/master
 	DefaultTableModel 	dtm_time  				= new DefaultTableModel(data_time, col_time);
 	JTable 				jt_time 				= new JTable(dtm_time);
 	JScrollPane 		jsp_time 				= new JScrollPane(jt_time);
@@ -117,7 +105,7 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	int timeIndex = 0;
 	String timeChoice = "";
 	
-<<<<<<< HEAD
+	boolean goOneRow = false;
 	DefaultTableCellRenderer dtcr_local = null;
 	
 //	DefaultTableCellRenderer dtcr_local = new DefaultTableCellRenderer() {
@@ -156,11 +144,6 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 //			return this;  
 //		}
 //	};
-=======
-	int result = 0;
-	boolean goOneRow = false;
->>>>>>> refs/remotes/origin/master
-	
 	public MovieChoiceView(EventMapping em) {
 		this.em = em;
 		initDisplay();
@@ -199,7 +182,6 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 				Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				String localName = (String)value;
-<<<<<<< HEAD
 				//System.out.println("value : " + value);
 				//System.out.println("localName : " + localName);
 				StringTokenizer st = new StringTokenizer(localName, "(");
@@ -229,44 +211,13 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 						cell.setBackground(Color.white);
 						System.out.println("result22 : " + result);
 					}
-=======
-				StringTokenizer st = new StringTokenizer(localName, "(");
-				localName = (String)st.nextToken();
-				((JComponent)cell).setBorder(new LineBorder(Color.black,0));
-				cell.setBackground(Color.lightGray);
-				if (!isSelected) {
-					System.out.println("row : " + row);
-					if(result==0) {
-						if (row==0) {
-							localChoice = localName;
-							((JComponent)cell).setBorder(new LineBorder(Color.black,3));
-							cell.setBackground(Color.white);
-							result = 1;
-						} else {
-							localChoice = localName;
-							((JComponent)cell).setBorder(new LineBorder(Color.black,0));
-							cell.setBackground(Color.lightGray);
-						}
-					}      	
-				} else {
-					((JComponent)cell).setBorder(new LineBorder(Color.black,3));
-					cell.setBackground(Color.white);
->>>>>>> refs/remotes/origin/master
 				}
-<<<<<<< HEAD
 				System.out.println("result3 : " + result);
 				return this;  
-		}
-=======
-				return this;
-			}
->>>>>>> refs/remotes/origin/master
+				}
 		};
-<<<<<<< HEAD
 		
 		//DefaultTableCellRenderer dtcr_local = new DefaultTableCellRenderer();
-=======
->>>>>>> refs/remotes/origin/master
 		dtcr_local.setHorizontalAlignment(JLabel.CENTER);
 		jt_local.getColumn("지역").setCellRenderer(dtcr_local);
 		jt_local.setRowHeight(35);
@@ -310,18 +261,9 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		jl_locThe.setOpaque(true);
 		jl_date.setOpaque(true);
 		jl_time.setOpaque(true);
-<<<<<<< HEAD
 		jl_timeLock.setOpaque(true);
 
 		jsp_time.setVisible(true);////////////////////////////////////////
-=======
-		//jl_timeLock.setOpaque(true);
-		//jsp_time.setVisible(false);//
-		
-		//테스트용
-		jl_timeLock.setOpaque(false);
-		jsp_time.setVisible(true);//
->>>>>>> refs/remotes/origin/master
 		
 		jl_movie.setBackground(new Color(190, 190, 190));
 		jl_locThe.setBackground(new Color(190, 190, 190));

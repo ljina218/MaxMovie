@@ -13,12 +13,17 @@ import java.util.Vector;
 
 import com.util.DBConnectionMgr;
 
+import oracle.jdbc.OracleCallableStatement;
+import oracle.jdbc.OracleTypes;
+
+
 public class MovieDao {
 	DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	CallableStatement cstmt = null;
+	OracleCallableStatement ocstmt = null;
 	/************************************************************************
 	 * 단위 테스트용
 	 */
@@ -41,44 +46,36 @@ public class MovieDao {
 		
 		TicketingVO ptVO = new TicketingVO();
 		ptVO.setTheater("해운대점");
-		ptVO.setMovie_screen("2관");
-		ptVO.setMovie_date("20200411");
-		ptVO.setMovie_time("19:40");
-		List<Map<String, Object>> seatList = dao.get_SeatStatus(ptVO);
+		ptVO.setMovie_screen("1관");
+		ptVO.setMovie_date("20200409");
+		ptVO.setMovie_time("23:10");
+		List<Map<String, Object>> seatList = dao.proc_SeatStatus(ptVO);
 		for(Map<String, Object> rmap:seatList) {
-			System.out.println(rmap.get("좌석").toString() + rmap.get("현황").toString());
+			System.out.println(rmap.get("좌석").toString() +", "+ rmap.get("현황").toString());
 		}
 	}
+	
 	/*************************************************************************************************************************
-	 * 좌석현황 조회하는 오라클 함수 처리 메소드 
+	 * 좌석현황 조회하는 오라클 프로시저 처리 메소드 
 	 * @param TicketingVO
 	 * @return 좌석현황 예)A1, 0 을 담은 List<Map<String, Object>> 반환
 	 *************************************************************************************************************************/
-	public List<Map<String, Object>> get_SeatStatus(TicketingVO ptVO) {
-		List<Map<String, Object>> seatList = new ArrayList<Map<String,Object>>();
+	public List<Map<String, Object>> proc_SeatStatus(TicketingVO ptVO) {
+		List<Map<String, Object>> seatList = new Vector<Map<String,Object>>();
 		Map<String, Object> seatmap = null;
-		String tablename = null;
+		boolean what; //cstmt.execute(); 결과값 확인용
 		con = dbMgr.getConnection();
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT func_SeatStatus(?,?,?,?) seattable FROM dual");
 		try {
-			pstmt = con.prepareStatement(sql.toString());
-			pstmt.setString(1, ptVO.getTheater());
-			pstmt.setString(2, ptVO.getMovie_screen());
-			pstmt.setString(3, ptVO.getMovie_date());
-			pstmt.setString(4, ptVO.getMovie_time());
-			rs = pstmt.executeQuery();
-			while(rs.next()) {
-				tablename = rs.getString("seattable");
-				System.out.println(tablename);
-			}
-			pstmt = null;
-			rs = null;
-			sql = new StringBuilder();
-			sql.append("SELECT seat_code, pay_status FROM ");
-			sql.append(tablename);
-			pstmt = con.prepareStatement(sql.toString());
-			rs = pstmt.executeQuery();
+			cstmt = con.prepareCall("{call get_SeatStatus(?,?,?,?,?) } ");
+			cstmt.setString(1, ptVO.getTheater());
+			cstmt.setString(2, ptVO.getMovie_screen());
+			cstmt.setString(3, ptVO.getMovie_date());
+			cstmt.setString(4, ptVO.getMovie_time());
+			cstmt.registerOutParameter(5, OracleTypes.CURSOR);
+			what = cstmt.execute();
+			System.out.println("cstmt.execute() 결과값 : "+ what);
+			ocstmt = (OracleCallableStatement)cstmt;
+			rs = ocstmt.getCursor(5);
 			while(rs.next()) {
 				seatmap = new HashMap<String, Object>();
 				seatmap.put("좌석", rs.getString("seat_code"));
@@ -86,12 +83,10 @@ public class MovieDao {
 				seatList.add(seatmap);
 			}
 		} catch (SQLException e) {
-			System.out.println("proc_login() Exception : " + e.toString());
 			e.printStackTrace();
 		}
 		return seatList;
 	}
-	
 	
 	/*************************************************************************************************************************
 	 * 결제-예매완료 정보 DB저장
@@ -386,8 +381,10 @@ public class MovieDao {
 		sql.append("  WHERE 1=1                                             ");
 		//서버에 있는 상영시간표(p_movieList)가 없으면 오라클에서 3일치의 상영시간표를 가져다줘
 		if(p_movieList ==null) { 
-			sql.append("   and to_date(s_date) >= to_date('20200324')       ");
-			sql.append("   and to_date(s_date) < (to_date('20200324')+3)    ");
+			sql.append("   and to_date(s_date) >= to_date(to_char(sysdate,'YYYYMMDD'))       ");
+			sql.append("   and to_date(s_date) < to_date(to_char(sysdate,'YYYYMMDD')+3)    ");
+//			sql.append("   and to_date(s_date) >= to_date('20200324')       ");
+//			sql.append("   and to_date(s_date) < (to_date('20200324')+3)    ");
 			sql.append("  ORDER BY SC_NAME, S_TIME asc             ");
 			//실제로 오라클에 들어가야 하는 데이터 
 			//WHERE to_date(s_date) >= to_date(to_char(sysdate,'YYYYMMDD'))
@@ -396,8 +393,10 @@ public class MovieDao {
 		}
 		//서버에 있는 상영시간표(p_movieList)가 있으면 오라클에서 2일 뒤 의 상영시간표를 가져다줘
 		else {
-			sql.append("   and to_date(s_date) = (to_date('20200325')+2)    ");
+			sql.append("  and to_date(s_date) = to_date(to_char(sysdate,'YYYYMMDD')+2)    ");
 			sql.append("  ORDER BY SC_NAME, S_TIME asc            ");
+//			sql.append("   and to_date(s_date) = (to_date('20200325')+2)    ");
+//			sql.append("  ORDER BY SC_NAME, S_TIME asc            ");
 			//sql.append("  ORDER BY T_NAME, S_DATE, SC_NAME, S_TIME asc            ");
 			//실제로 오라클에 들어가야 하는 데이터 
 			//WHERE to_date(s_date) = to_date(to_char(sysdate,'YYYYMMDD')+2)
@@ -436,6 +435,7 @@ public class MovieDao {
 		return null;
 	}
 
+	
 	
 }
 
