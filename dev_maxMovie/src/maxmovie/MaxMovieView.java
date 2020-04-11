@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -22,6 +23,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.border.LineBorder;
@@ -225,6 +227,14 @@ public class MaxMovieView extends JFrame{
 			oos.writeObject(MovieProtocol.SELECT+"#");//영화정보 주세여
 			ClientThread ct = new ClientThread(this);
 			ct.start();
+		}  catch (ConnectException ce) {
+			//서버가 켜져있지 않으면 자동으로 꺼진다.
+			JOptionPane.showMessageDialog(this
+					, "서버와의 연결이 끊어졌습니다."
+					, "에러"
+					, JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+			ce.printStackTrace();
 		} catch (UnknownHostException e) {
 			System.out.println(e.toString());
 			e.printStackTrace();

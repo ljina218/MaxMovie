@@ -386,8 +386,10 @@ public class MovieDao {
 		sql.append("  WHERE 1=1                                             ");
 		//서버에 있는 상영시간표(p_movieList)가 없으면 오라클에서 3일치의 상영시간표를 가져다줘
 		if(p_movieList ==null) { 
-			sql.append("   and to_date(s_date) >= to_date('20200324')       ");
-			sql.append("   and to_date(s_date) < (to_date('20200324')+3)    ");
+			sql.append("   and to_date(s_date) >= to_date(to_char(sysdate,'YYYYMMDD'))       ");
+			sql.append("   and to_date(s_date) < to_date(to_char(sysdate,'YYYYMMDD')+3)    ");
+//			sql.append("   and to_date(s_date) >= to_date('20200324')       ");
+//			sql.append("   and to_date(s_date) < (to_date('20200324')+3)    ");
 			sql.append("  ORDER BY SC_NAME, S_TIME asc             ");
 			//실제로 오라클에 들어가야 하는 데이터 
 			//WHERE to_date(s_date) >= to_date(to_char(sysdate,'YYYYMMDD'))
@@ -396,8 +398,10 @@ public class MovieDao {
 		}
 		//서버에 있는 상영시간표(p_movieList)가 있으면 오라클에서 2일 뒤 의 상영시간표를 가져다줘
 		else {
-			sql.append("   and to_date(s_date) = (to_date('20200325')+2)    ");
+			sql.append("  and to_date(s_date) = to_date(to_char(sysdate,'YYYYMMDD')+2)    ");
 			sql.append("  ORDER BY SC_NAME, S_TIME asc            ");
+//			sql.append("   and to_date(s_date) = (to_date('20200325')+2)    ");
+//			sql.append("  ORDER BY SC_NAME, S_TIME asc            ");
 			//sql.append("  ORDER BY T_NAME, S_DATE, SC_NAME, S_TIME asc            ");
 			//실제로 오라클에 들어가야 하는 데이터 
 			//WHERE to_date(s_date) = to_date(to_char(sysdate,'YYYYMMDD')+2)
@@ -436,6 +440,7 @@ public class MovieDao {
 		return null;
 	}
 
+	
 	
 }
 

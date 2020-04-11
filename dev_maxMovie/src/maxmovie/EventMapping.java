@@ -12,6 +12,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,6 @@ import javax.swing.table.TableCellRenderer;
 
 public class EventMapping implements ActionListener, ItemListener, KeyListener, MouseListener {
 
-	
 	/* 뷰 패널들의 변수이름
 	//로그인뷰
 	JPanel 					jp_lv 			= new LoginView(this);
@@ -97,41 +97,102 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 		}
 	}
 	
+	//시간 체크를 위한 메소드
+	public List<Map<String, Object>> timeCheck() {
+		//시간 조건이 안맞는 값들 리스트에서 제거
+		List<Map<String,Object>> bufList = new Vector<Map<String,Object>>();
+		Map<String, Object> map = null;
+		//원본인 movieList를 나두고 buffer(bufList) 역할
+		for(int i=0; i<mmv.movieList.size(); i++) {
+			map = new HashMap<String, Object>();
+			map.put("M_TITLE", mmv.movieList.get(i).get("M_TITLE"));
+			map.put("M_CERTIF", mmv.movieList.get(i).get("M_CERTIF"));
+			map.put("T_LOC", mmv.movieList.get(i).get("T_LOC"));
+			map.put("T_NAME", mmv.movieList.get(i).get("T_NAME"));
+			map.put("S_DATE", mmv.movieList.get(i).get("S_DATE"));
+			map.put("S_TIME", mmv.movieList.get(i).get("S_TIME"));
+			map.put("SC_NAME", mmv.movieList.get(i).get("SC_NAME"));
+			bufList.add(map);
+		}
+		//시간체크 for
+		for(int i=0; i<bufList.size(); i++) {
+			String time = bufList.get(i).get("S_TIME").toString();
+			String date = bufList.get(i).get("S_DATE").toString();
+			int result = checkTime(date, time);
+			if(result==-1) {//예약할 수 없는 시간이라면....
+				bufList.remove(i);
+			}
+		}
+		System.out.println("시간 조건 안맞는 값 제거 후 사이즈 : "+bufList.size()); 
+		return bufList;
+		
+	}
+	
+	
 	/**************************************************************************************************
 	 * 영화 선택을 위한 메소드들
 	 */
-	
 	//영화 시간 조건 메소드
-	public int checkTime (String time) {//스케줄에 있는 영화 시간 받아서
-		int result = 0;
-		StringTokenizer token = new StringTokenizer(time, ":");//시와 분으로 쪼개기
-		char[] scheduledhour = token.nextToken().toCharArray();
-		char[] scheduledmin = token.nextToken().toCharArray();
-		String sethour = null;
-		String setmin = null;
-		if(scheduledhour[0]==0){//시 앞에 붙은 0 떼어내기
-			sethour = scheduledhour[1]+"";
-		}else {
-			sethour = scheduledhour[0]+""+scheduledhour[1]; 
-		}
-		if(scheduledmin[0]==0){//분 앞에 붙은 0 떼어내기
-			setmin = scheduledmin[1]+"";
-		}else {
-			setmin = scheduledmin[0]+""+scheduledmin[1]; 
-		}
-		int hour = Integer.parseInt(sethour);//시와 분을 string에서 int 형으로 바꾸기
-		int min = Integer.parseInt(setmin);
-		Calendar now = Calendar.getInstance();//현재 시간에서 
-		now.add(Calendar.MINUTE, -30);//30분 빼기 => 30분 전까지만 예매가능
-		int nowhour = now.get(Calendar.HOUR_OF_DAY);
-		int nowmin = now.get(Calendar.MINUTE);
-		if(hour>=nowhour) {//시가 아직 안지났고
-			if(min>=nowmin) {//분이 아직 안지났다면,
-				result=1;
+		public int checkTime (String date, String time) {//스케줄에 있는 영화 시간 받아서
+			int result = 0;
+			StringTokenizer st = new StringTokenizer(time, ":");
+			String si = st.nextToken();
+			String bun = st.nextToken();
+			time = si+bun;
+			
+			String c_Date = setYMD(); //현재날짜
+			String c_Time = setHMS(); //현재시간
+			//선택한 날짜가 이미 지났니? 
+			if(Integer.parseInt(c_Date)
+					> Integer.parseInt(date)) {
+				//astVO.setMsg("이미 지난 날짜입니다.");
+				result = -1;
 			}
+			//선택한 날짜가 오늘 날짜야?
+			else if(c_Date.equals(date)){
+				//그러면 시간은 이미 지났니?
+				if(Integer.parseInt(c_Time)
+						> Integer.parseInt(time)) {
+					//astVO.setMsg("이미 지난 시간입니다.");
+					result = -1;
+				}
+				else { //시간 안지났으면
+					//날짜 저장 및 시간형식으로 저장
+					//astVO.setMsg("확인 완료");
+					result = 1;
+				}
+			}
+			//선택한 날짜가 현재날짜보다 미래라면 
+			else { 
+				//astVO.setMsg("확인 완료");
+				result = 1;
+			}
+			return result;
 		}
-		return result;
-	}
+		
+		public String setYMD() {
+			Calendar cal = Calendar.getInstance();
+			int yyyy = cal.get(Calendar.YEAR);
+			int mm = cal.get(Calendar.MONTH)+1;
+			int day = cal.get(Calendar.DAY_OF_MONTH);
+			
+			return yyyy
+				+(mm < 10 ? "0"+mm:""+mm)
+				+(day < 10 ? "0"+day:""+day);
+		}//end of setTimer
+	/********************************************************************
+	 * 상영시간표를 추가하거나 삭제 할 때 현재 시간 정보를 받아온다.
+	 * 사용자가 입력한 시간를 비교 할 때 사용한다.  
+	 * @return
+	 */
+		public String setHMS() {
+			Calendar cal = Calendar.getInstance();
+			int hour = cal.get(Calendar.HOUR_OF_DAY);
+			int min = cal.get(Calendar.MINUTE);
+			
+			return (hour < 10 ? "0"+hour:""+hour)
+				   +(min < 10 ? "0"+min:""+min);
+		}//end of setTimer
 	
 	//---------------------------------------------------------------------------------------------- 셋팅
 	//영화-연령 중복제거
@@ -147,6 +208,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	}
 	//영화-연령 dtm 셋팅
 	public void movieDtm (List<String> containList) {
+		mmv.jp_mrv.jp_mcv.dtm_movie.setRowCount(0);
 		Vector<Object> movie = null;
 		for(int i=0; i<containList.size(); i++) {
 			movie = new Vector<Object>();
@@ -183,6 +245,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	}
 	//지역 dtm 셋팅
 	public void locDtm(List<String> containList) {
+		mmv.jp_mrv.jp_mcv.dtm_local.setRowCount(0);
 		Vector<Object> loc = null;
 		for(int i=0; i<containList.size(); i++) {
 			loc = new Vector<Object>();
@@ -195,8 +258,8 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	public List<String> containTheaterList(List<Map<String, Object>> userList) {
 		List<String> containList = new Vector<String>();
 		for(Map<String, Object> userMap:userList) {
-			if(!containList.contains(userMap.get("T_NAME")+"/"+userMap.get("T_LOC"))) {
-				containList.add(userMap.get("T_NAME")+"/"+userMap.get("T_LOC"));
+			if(!containList.contains(userMap.get("T_LOC")+"/"+userMap.get("T_NAME"))) {
+				containList.add(userMap.get("T_LOC")+"/"+userMap.get("T_NAME"));
 			}
 		}
 		System.out.println("지점 중복제거된 리스트: "+containList.size());
@@ -204,12 +267,12 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	}
 	//지점 dtm 셋팅
 	public void theaterDtm(List<String> containList, String sel_loc) {
-		Vector<Object> theater = null;
 		mmv.jp_mrv.jp_mcv.dtm_theater.setRowCount(0);
+		Vector<Object> theater = null;
 		for(int i=0; i<containList.size(); i++) {
 			StringTokenizer st = new StringTokenizer(containList.get(i),"/");
-			String th = st.nextToken().toString();
 			String loc = st.nextToken().toString();
+			String th = st.nextToken().toString();
 			if(sel_loc.equals(loc)) {
 				theater = new Vector<Object>();
 				theater.add(th);
@@ -221,7 +284,6 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	//날짜
 	public List<String> containDateList(List<Map<String, Object>> userList) {
 		List<String> containList = new Vector<String>();
-		Map<String, Object> buf_Map = null;
 		for(Map<String, Object> userMap:userList) {
 			if(!containList.contains(userMap.get("S_DATE"))) {
 				containList.add(userMap.get("S_DATE").toString());
@@ -230,17 +292,25 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 		System.out.println("날짜 중복제거된 리스트: "+containList.size());
 		return containList;
 	}
+	
+	public void dateDtm2(List<String> containList) {
+		mmv.jp_mrv.jp_mcv.dtm_date.setRowCount(0);
+		Vector<Object> date = null;
+		for(int i=0; i<containList.size(); i++) {
+			date = new Vector<Object>();
+			date.add(containList.get(i));
+			mmv.jp_mrv.jp_mcv.dtm_date.addRow(date);
+		}
+	}
+	
 	//날짜 dtm 셋팅
 	public void dateDtm () {
 		mmv.jp_mrv.jp_mcv.dtm_date.setRowCount(0);
 		Calendar today = Calendar.getInstance();//현재 날짜에서
-		today.set(Calendar.YEAR , 2020);
-		today.set(Calendar.MONTH , Calendar.MARCH);
-		today.set(Calendar.DAY_OF_MONTH , 24);
 		String before_year ="";
 		String before_month = "";
 		Vector<String> nowdate = null;
-		for(int i=0; i<20; i++) {//20일 간 정보
+		for(int i=0; i<3; i++) {//20일 간 정보
 			int year = today.get(Calendar.YEAR);
 			String after_year = Integer.toString(year);
 			if(!before_year.equals(after_year)) {
@@ -278,6 +348,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	}
 	//관 dtm 셋팅
 	public void scrDtm(List<String> containList) {
+		mmv.jp_mrv.jp_mcv.dtm_time.setRowCount(0);
 		Vector<Object> screen = null;
 		for(int i=0; i<containList.size(); i++) {
 			StringTokenizer st = new StringTokenizer(containList.get(i),"/");
@@ -291,7 +362,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	}
 	
 	//---------------------------------------------------------------------------------------------- 선택
-	//영화 선택 메소드
+	//영화, 지점, 날짜 선택 메소드
 	public List<Map<String, Object>> choiceAll(TicketingVO tVO) {
 		List<Map<String, Object>> user_list = new Vector<Map<String,Object>>();
 		Map<String, Object> umap = null;
@@ -304,8 +375,8 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			String m_date = mmv.movieList.get(i).get("S_DATE").toString();
 			String m_time = mmv.movieList.get(i).get("S_TIME").toString();
 			String m_screen = mmv.movieList.get(i).get("SC_NAME").toString();
-			int result = checkTime(m_time);
-			if(result==1) {//상영시간이 30분 전이고....
+			int result = checkTime(m_date, m_time);
+			if(result!=-1) {//상영시간이 30분 전이고....
 				if(tVO.getMovie_name().equals(m_title)
 			     &&tVO.getLoc().equals(m_loc)
 			     &&tVO.getTheater().equals(m_theater)
@@ -325,47 +396,14 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 		return user_list;
 	}
 	
-	public List<Map<String, Object>> user_choice(TicketingVO tVO) {
-		List<Map<String, Object>> user_list = new Vector<Map<String,Object>>();
-		Map<String, Object> umap = null;
-		//상영시간표에 있는 무비리스트 
-		for(int i=0; i<mmv.movieList.size(); i++) {
-			String m_title = mmv.movieList.get(i).get("M_TITLE").toString();
-			String m_age = mmv.movieList.get(i).get("M_CERTIF").toString();
-			String m_loc = mmv.movieList.get(i).get("T_LOC").toString();
-			String m_theater = mmv.movieList.get(i).get("T_NAME").toString();
-			String m_date = mmv.movieList.get(i).get("S_DATE").toString();
-			String m_time = mmv.movieList.get(i).get("S_TIME").toString();
-			String m_screen = mmv.movieList.get(i).get("SC_NAME").toString();
-			int result = checkTime(m_time);
-			if(result==1) {//상영시간이 30분 전이고....
-				if(tVO.getMovie_name().equals(m_title)
-						&&tVO.getLoc().equals(m_loc)
-						&&tVO.getTheater().equals(m_theater)
-						&&tVO.getMovie_date().equals(m_date)){
-					umap = new HashMap<String, Object>();
-					umap.put("M_TITLE", tVO.getMovie_name());
-					umap.put("M_CERTIF", tVO.getMovie_age());
-					umap.put("T_LOC", tVO.getLoc());
-					umap.put("T_NAME",tVO.getTheater());
-					umap.put("S_DATE", tVO.getMovie_date());
-					umap.put("S_TIME", tVO.getMovie_time());
-					umap.put("SC_NAME", tVO.getMovie_screen());
-					user_list.add(umap);
-				}
-			}
-		}//for문 끝
-		return user_list;
-	}
-	
 	//영화선택 -> 지점, 날짜 refresh
-	public List<Map<String, Object>> choiceMovie(TicketingVO tVO) {
+	public List<Map<String, Object>> choiceMovie(List<Map<String, Object>> bufList, TicketingVO tVO) {
 		List<Map<String, Object>> userList = new Vector<Map<String,Object>>();
 		Map<String, Object> userMap = null;
 		Map<String, Object> movieMap = null;
 		//72개의 상영시간표 중에서 
-		for (int i = 0; i < mmv.movieList.size(); i++) {
-			movieMap = mmv.movieList.get(i);
+		for (int i = 0; i < bufList.size(); i++) {
+			movieMap = bufList.get(i);
 			//영화가 선택됐을 때 지점과 날짜가 선택되었니?
 			if(tVO.getTheater()!=null && tVO.getMovie_date()!=null) {
 				//좌석정보까지 리프레쉬 
@@ -373,19 +411,51 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			}
 			//영화가 선택됐을 때 지점이 선택되었니?
 			else if(tVO.getTheater()!=null) {
-				//
-				if(movieMap.get("T_NAME").equals(tVO.getTheater())
-				 &&movieMap.get("M_TITLE").equals(tVO.getMovie_name())) {
-							userMap = new HashMap<String, Object>();
-							userMap.put("지점", movieMap.get("T_NAME"));
-							userMap.put("날짜", movieMap.get("S_DATE"));
-							userList.add(userMap);
-						}
+				//@@
+				if(movieMap.get("M_TITLE").equals(tVO.getMovie_name())
+						||movieMap.get("T_NAME").equals(tVO.getTheater())) {
+					userMap = new HashMap<String, Object>();
+					userMap.put("M_TITLE",movieMap.get( "M_TITLE"));
+					userMap.put("M_CERTIF",movieMap.get( "M_CERTIF"));
+					userMap.put("T_LOC",movieMap.get( "T_LOC"));
+					userMap.put("T_NAME", movieMap.get("T_NAME"));
+					userMap.put("S_DATE", " ");
+					//or조건일 때는 날짜는 null;
+					if(movieMap.get("M_TITLE").equals(tVO.getMovie_name())
+							&&movieMap.get("T_NAME").equals(tVO.getTheater())) {
+						userMap.put("S_DATE", movieMap.get("S_DATE"));
+					}
+					userList.add(userMap);
+				}
 			}
-			else {
+			//영화가 선택됐을 때 날짜가 선택되었니?
+			else if(tVO.getMovie_date()!=null) {
+				if(movieMap.get("M_TITLE").equals(tVO.getMovie_name())
+						||movieMap.get("S_DATE").equals(tVO.getMovie_date())) {
+					userMap = new HashMap<String, Object>();
+					userMap.put("M_TITLE",movieMap.get( "M_TITLE"));
+					userMap.put("M_CERTIF",movieMap.get( "M_CERTIF")); 
+					userMap.put("S_DATE", movieMap.get("S_DATE"));
+					userMap.put("T_LOC", " ");
+					userMap.put("T_NAME", " ");
+					//or조건일 때는 날짜는 null;
+					if(movieMap.get("M_TITLE").equals(tVO.getMovie_name())
+							&&movieMap.get("S_DATE").equals(tVO.getMovie_date())) {
+						userMap.put("T_LOC",movieMap.get( "T_LOC"));
+						userMap.put("T_NAME", movieMap.get("T_NAME"));
+					}
+					userList.add(userMap);
+				}
+			}
+			//영화가 선택됐을 때 선택된게 아무것도 없니?
+			else {//@@
 				if(movieMap.get("M_TITLE").equals(tVO.getMovie_name())) {
-					userMap.put("지점", movieMap.get("T_NAME"));
-					userMap.put("날짜", movieMap.get("S_DATE"));
+					userMap = new HashMap<String, Object>();
+					userMap.put("M_TITLE", " ");
+					userMap.put("M_CERTIF", " ");
+					userMap.put("T_LOC",movieMap.get( "T_LOC"));
+					userMap.put("T_NAME", movieMap.get("T_NAME"));
+					userMap.put("S_DATE", movieMap.get("S_DATE"));
 					userList.add(userMap);
 				}
 			}
@@ -394,33 +464,66 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	}
 	
 	//지점선택 -> 영화, 날짜 refresh
-	public List<Map<String, Object>> choiceTheater(TicketingVO tVO) {
+	public List<Map<String, Object>> choiceTheater(List<Map<String, Object>> bufList, TicketingVO tVO) {
 		List<Map<String, Object>> userList = new Vector<Map<String,Object>>();
-		Map<String, Object> movieMap = null;
 		Map<String, Object> userMap = null;
+		Map<String, Object> movieMap = null;
 		//72개의 상영시간표 중에서 
-		for (int i = 0; i < mmv.movieList.size(); i++) {
-			movieMap = mmv.movieList.get(i);
-			//지점이 선택됐을 때 영화랑 날짜가 선택되었니?
-			if(tVO.getMovie_name()!=null && tVO.getMovie_date()!=null) {
+		for (int i = 0; i < bufList.size(); i++) {
+			movieMap = bufList.get(i);
+			//지점이 선택됐을 때 영화와 날짜가 선택되었니?
+			if(tVO.getTheater()!=null && tVO.getMovie_date()!=null) {
 				//좌석정보까지 리프레쉬 
 				userList = choiceAll(tVO);
 			}
 			//지점이 선택됐을 때 영화가 선택되었니?
 			else if(tVO.getMovie_name()!=null) {
-				//
+				//@@
 				if(movieMap.get("T_NAME").equals(tVO.getTheater())
-				 &&movieMap.get("M_TITLE").equals(tVO.getMovie_name())) {
-							userMap = new HashMap<String, Object>();
-							userMap.put("영화", movieMap.get("M_TITLE"));
-							userMap.put("날짜", movieMap.get("S_DATE"));
-							userList.add(userMap);
-						}
+				 ||movieMap.get("M_TITLE").equals(tVO.getMovie_name())) {
+					
+					userMap = new HashMap<String, Object>();
+					userMap.put("M_TITLE",movieMap.get( "M_TITLE"));
+					userMap.put("M_CERTIF",movieMap.get( "M_CERTIF"));
+					userMap.put("T_LOC",movieMap.get( "T_LOC"));
+					userMap.put("T_NAME", movieMap.get("T_NAME"));
+					userMap.put("S_DATE", " ");
+					//or조건일 때는 날짜는 null;
+					if(movieMap.get("T_NAME").equals(tVO.getTheater())
+					 &&movieMap.get("M_TITLE").equals(tVO.getMovie_name())) {
+						userMap.put("S_DATE", movieMap.get("S_DATE"));
+					}
+					userList.add(userMap);
+				}
 			}
-			else {
+			//지점이 선택됐을 때 날짜가 선택되었니?
+			else if(tVO.getMovie_date()!=null) {
+				if(movieMap.get("T_NAME").equals(tVO.getTheater())
+						||movieMap.get("S_DATE").equals(tVO.getMovie_date())) {
+					userMap = new HashMap<String, Object>();
+					userMap.put("M_TITLE", " ");
+					userMap.put("M_CERTIF", " "); 
+					userMap.put("S_DATE", movieMap.get("S_DATE"));
+					userMap.put("T_LOC",movieMap.get( "T_LOC"));
+					userMap.put("T_NAME", movieMap.get("T_NAME"));
+					//or조건일 때는 날짜는 null;
+					if(movieMap.get("T_NAME").equals(tVO.getTheater())
+							&&movieMap.get("S_DATE").equals(tVO.getMovie_date())) {
+						userMap.put("M_TITLE",movieMap.get( "M_TITLE"));
+						userMap.put("M_CERTIF",movieMap.get( "M_CERTIF")); 
+					}
+					userList.add(userMap);
+				}
+			}
+			//지점이 선택됐을 때 선택된게 아무것도 없니?
+			else {//@@
 				if(movieMap.get("T_NAME").equals(tVO.getTheater())) {
-					userMap.put("영화", movieMap.get("M_TITLE"));
-					userMap.put("날짜", movieMap.get("S_DATE"));
+					userMap = new HashMap<String, Object>();
+					userMap.put("M_TITLE", movieMap.get( "M_TITLE"));
+					userMap.put("M_CERTIF", movieMap.get( "M_CERTIF"));
+					userMap.put("T_LOC",  " ");
+					userMap.put("T_NAME", " ");
+					userMap.put("S_DATE", movieMap.get("S_DATE"));
 					userList.add(userMap);
 				}
 			}
@@ -429,33 +532,67 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	}
 	
 	//날짜선택 -> 영화, 지점 refresh
-	public List<Map<String, Object>> choiceDate(TicketingVO tVO) {
+	public List<Map<String, Object>> choiceDate(List<Map<String, Object>> bufList, TicketingVO tVO) {
 		List<Map<String, Object>> userList = new Vector<Map<String,Object>>();
 		Map<String, Object> userMap = null;
 		Map<String, Object> movieMap = null;
 		//72개의 상영시간표 중에서 
-		for (int i = 0; i < mmv.movieList.size(); i++) {
-			movieMap = mmv.movieList.get(i);
-			//날짜가 선택됐을 때 지점과 영화가 선택되었니?
-			if(tVO.getTheater()!=null && tVO.getMovie_name()!=null) {
+		for (int i = 0; i < bufList.size(); i++) {
+			movieMap = bufList.get(i);
+			//날짜가 선택됐을 때 영화와 지점이 선택되었니?
+			if(tVO.getTheater()!=null && tVO.getMovie_date()!=null) {
 				//좌석정보까지 리프레쉬 
 				userList = choiceAll(tVO);
 			}
+			
+			//날짜가 선택됐을 때 영화가 선택되었니?
+			else if(tVO.getMovie_name()!=null) {
+				//@@
+				if(movieMap.get("S_DATE").equals(tVO.getMovie_date())
+				 ||movieMap.get("M_TITLE").equals(tVO.getMovie_name())) {
+					userMap = new HashMap<String, Object>();
+					userMap.put("M_TITLE",movieMap.get( "M_TITLE"));
+					userMap.put("M_CERTIF",movieMap.get( "M_CERTIF"));
+					userMap.put("T_LOC", " ");
+					userMap.put("T_NAME", " ");
+					userMap.put("S_DATE", movieMap.get( "S_DATE"));
+					//or조건일 때는 날짜는 null;
+					if(movieMap.get("S_DATE").equals(tVO.getMovie_date())
+					 &&movieMap.get("M_TITLE").equals(tVO.getMovie_name())) {
+						userMap.put("T_LOC",movieMap.get( "T_LOC"));
+						userMap.put("T_NAME", movieMap.get("T_NAME"));
+					}
+					userList.add(userMap);
+				}
+			}
 			//날짜가 선택됐을 때 지점이 선택되었니?
 			else if(tVO.getTheater()!=null) {
-				//
-				if(movieMap.get("T_NAME").equals(tVO.getTheater())
-				 &&movieMap.get("M_TITLE").equals(tVO.getMovie_name())) {
-							userMap = new HashMap<String, Object>();
-							userMap.put("영화", movieMap.get("M_TITLE"));
-							userMap.put("지점", movieMap.get("T_NAME"));
-							userList.add(userMap);
-						}
+				if(movieMap.get("S_DATE").equals(tVO.getMovie_date())
+						 ||movieMap.get("T_NAME").equals(tVO.getTheater())) {
+					userMap = new HashMap<String, Object>();
+					userMap.put("M_TITLE", " ");
+					userMap.put("M_CERTIF", " "); 
+					userMap.put("S_DATE", movieMap.get("S_DATE"));
+					userMap.put("T_LOC", movieMap.get( "T_LOC"));
+					userMap.put("T_NAME", movieMap.get("T_NAME"));
+					//or조건일 때는 날짜는 null;
+					if(movieMap.get("S_DATE").equals(tVO.getMovie_date())
+							&&movieMap.get("T_NAME").equals(tVO.getTheater())) {
+						userMap.put("M_TITLE",movieMap.get( "M_TITLE"));
+						userMap.put("M_CERTIF",movieMap.get( "M_CERTIF")); 
+					}
+					userList.add(userMap);
+				}
 			}
-			else {
-				if(movieMap.get("S_DATE").equals(tVO.getMovie_date())) {
-					userMap.put("영화", movieMap.get("M_TITLE"));
-					userMap.put("지점", movieMap.get("T_NAME"));
+			//날짜가 선택됐을 때 선택된게 아무것도 없니?
+			else {//@@
+				if(movieMap.get("T_NAME").equals(tVO.getTheater())) {
+					userMap = new HashMap<String, Object>();
+					userMap.put("M_TITLE", movieMap.get( "M_TITLE"));
+					userMap.put("M_CERTIF", movieMap.get( "M_CERTIF"));
+					userMap.put("T_LOC",  movieMap.get( "T_LOC"));
+					userMap.put("T_NAME", movieMap.get("T_NAME"));
+					userMap.put("S_DATE", " ");
 					userList.add(userMap);
 				}
 			}
@@ -956,6 +1093,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			}
 			String mypageView_msg = MovieProtocol.MY_MOVIE+"#"+mmv.mem_id;
 			this.send(mypageView_msg);
+			System.out.println("마이페이지뷰@@@@@@@@@@@@@@@@@@@@@@@@@@@@ "+mypageView_msg);
 		}
 		else if(obj==mmv.jbt_ticketing) {//예매를 하고 싶구나
 			tVO = null;
@@ -980,21 +1118,33 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			tVO.setMovie_time(mmv.jp_mrv.jl_south_time.getText());
 			tVO.setMovie_screen(mmv.jp_mrv.jl_south_screen.getText());
 			//
-			List<Map<String,Object>> list = mmv.movieList;
+			List<Map<String,Object>> list = new Vector<Map<String,Object>>();
+			Map<String, Object> map = null;
+			for(int i=0; i<mmv.movieList.size(); i++) {
+				map = new HashMap<String, Object>();
+				map.put("M_TITLE", mmv.movieList.get(i).get("M_TITLE"));
+				map.put("M_CERTIF", mmv.movieList.get(i).get("M_CERTIF"));
+				map.put("T_LOC", mmv.movieList.get(i).get("T_LOC"));
+				map.put("T_NAME", mmv.movieList.get(i).get("T_NAME"));
+				map.put("S_DATE", mmv.movieList.get(i).get("S_DATE"));
+				map.put("S_TIME", mmv.movieList.get(i).get("S_TIME"));
+				map.put("SC_NAME", mmv.movieList.get(i).get("SC_NAME"));
+				list.add(map);
+			}
 			for(int i=0; i<list.size(); i++) {
 				String time = list.get(i).get("S_TIME").toString();
-				int result = mmv.em.checkTime(time);
-				if(result==0) {//예약할 수 없는 시간이라면....
+				String date = list.get(i).get("S_DATE").toString();
+				int result = checkTime(date, time);
+				if(result==-1) {//예약할 수 없는 시간이라면....
 					list.remove(i);
 				}
 			}
-			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@시간을 고려한 리스트: "+list.size());
 			mmv.em.movieDtm(mmv.em.containMovieList(list));
-			//mmv.em.locDtm(mmv.em.containLocList(list));
+			mmv.em.locDtm(mmv.em.containLocList(list));
 			mmv.em.theaterDtm(mmv.em.containTheaterList(list), "서울");
 			mmv.em.containDateList(list);
 			mmv.em.dateDtm();
-			mmv.em.containScrNameList(list);
+			mmv.em.scrDtm(mmv.em.containScrNameList(list));
 		}
 
 		else if(obj==mmv.jp_mv.jbt_miv) {//마이페이지에서 회원정보조회버튼
@@ -1362,32 +1512,54 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	public void mousePressed(MouseEvent e) {}
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		Object obj = e.getSource();
 		/************************************************************************************************
 		 * 영화선택
 		 */
+		Object obj = e.getSource();
 		if(obj==mmv.jp_mrv.jp_mcv.jt_movie) {//영화선택
-			
+			System.out.println("영화 클릭=======================");
+			int selectRow = mmv.jp_mrv.jp_mcv.jt_movie.getSelectedRow();
+			if(selectRow >= 0) {
+				String movieChoice = mmv.jp_mrv.jp_mcv.dtm_movie.getValueAt(selectRow, 1).toString();
+				mmv.jp_mrv.jl_south_movie.setText(movieChoice);
+				List<Map<String,Object>> userList = null;
+				List<Map<String,Object>> bufList = timeCheck();
+				//라벨 값 바꿔주기 VO
+				tVO.setMovie_name(movieChoice);
+				//선택한 그 영화가 있는 userList
+				userList = choiceMovie(bufList, tVO);
+				//중복제거
+				//지점이나 날짜가 선택이 되었으면 영화도 중복제거를 해줘애한다.
+				if(tVO.getMovie_date()!=null || tVO.getTheater()!=null) {
+					//영화중복제거
+					List<String> containMovieList = containMovieList(userList);
+					movieDtm(containMovieList);
+				}
+				//지점 중복제거
+				List<String> containTheaterList = containTheaterList(userList);
+				System.out.println("tVO.getLoc() : "+tVO.getLoc());
+				if(tVO.getLoc()==null) {
+					theaterDtm(containTheaterList, "서울");
+				}
+				else {
+					theaterDtm(containTheaterList, tVO.getLoc());
+				}
+				//날짜 중복 제거
+				List<String> containDateList = containDateList(userList);
+				dateDtm2(containDateList);
+			}
 		}
+		
 		else if(obj==mmv.jp_mrv.jp_mcv.jt_local) {//지역선택
-			System.out.println("지역 클릭");
+			System.out.println("지역 클릭=======================");
 			//선택되면 색 바꾸는
-			//mmv.jp_mrv.jp_mcv.result = 2;
-			int localIndex = mmv.jp_mrv.jp_mcv.jt_local.getSelectedRow(); 
-			String localChoice =mmv.jp_mrv.jp_mcv.jt_local.getValueAt(localIndex, 0).toString();
-			System.out.println("지역: "+ localChoice);
 //			mmv.jp_mrv.jp_mcv.localChoiceName = localChoice;
 //			mmv.jp_mrv.jp_mcv.jt_local.setSelectionBackground(Color.white);
-			TableCellRenderer tcr = mmv.jp_mrv.jp_mcv.jt_local.getCellRenderer(localIndex, 0);
-//			Component cell = mmv.jp_mrv.jp_mcv.dtcr_local.getTableCellRendererComponent(mmv.jp_mrv.jp_mcv.jt_local, mmv.jp_mrv.jp_mcv.jt_local.getValueAt(localIndex, 0), true, true, localIndex, 0, 0);
-			//
-			 
-			
-			//Component cell = tcr.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+//			TableCellRenderer tcr = mmv.jp_mrv.jp_mcv.jt_local.getCellRenderer(localIndex, 0);
 			//시간 조건이 안맞는 값들 리스트에서 제거
-			System.out.println("기존 리스트 사이즈: "+mmv.movieList.size());
-			List<Map<String,Object>> list = new Vector<Map<String,Object>>();
+			List<Map<String,Object>> bufList = new Vector<Map<String,Object>>();
 			Map<String, Object> map = null;
+			//원본인 movieList를 나두고 buffer 역할
 			for(int i=0; i<mmv.movieList.size(); i++) {
 				map = new HashMap<String, Object>();
 				map.put("M_TITLE", mmv.movieList.get(i).get("M_TITLE"));
@@ -1397,65 +1569,103 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				map.put("S_DATE", mmv.movieList.get(i).get("S_DATE"));
 				map.put("S_TIME", mmv.movieList.get(i).get("S_TIME"));
 				map.put("SC_NAME", mmv.movieList.get(i).get("SC_NAME"));
-				list.add(map);
+				bufList.add(map);
 			}
-			for(int i=0; i<list.size(); i++) {
-				String time = list.get(i).get("S_TIME").toString();
-				int result = mmv.em.checkTime(time);
-				if(result==0) {//예약할 수 없는 시간이라면....
-					list.remove(i);
+			//시간체크 for
+			for(int i=0; i<bufList.size(); i++) {
+				String time = bufList.get(i).get("S_TIME").toString();
+				String date = bufList.get(i).get("S_DATE").toString();
+				int result = checkTime(date, time);
+				if(result==-1) {//예약할 수 없는 시간이라면....
+					bufList.remove(i);
 				}
 			}
-			System.out.println("시간 조건 안맞는 값 제거: "+list.size()); 
-//			//선택된 지역이 아닌 값들 리스트에서 제거
-//			int selectRow = mmv.jp_mrv.jp_mcv.jt_local.getSelectedRow();
-//			String sel_loc = mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString();
-//			for(int i=0; i<list.size(); i++) {
-//				String loc = list.get(i).get("T_LOC").toString();
-//				if(!loc.equals(sel_loc)) {
-//					list.remove(i);
-//				}
-//			}
-//			System.out.println("선택한 지역이 아닌 값 제거: "+list.size()); 
-//			//중복제거
-//			List<String> movielist = containMovieList(list);//"영화/연령"
-//			for(int j=0; j<movielist.size(); j++) {
-//				String check_movie = movielist.get(j);
-//				for(int i=0; i<mmv.jp_mrv.jp_mcv.dtm_movie.getRowCount(); i++) {
-//					String check_movie2 = mmv.jp_mrv.jp_mcv.dtm_movie.getValueAt(i, 1).toString();
-//					if(!check_movie2.equals(check_movie)) {
-//						//mmv.jp_mrv.jp_mcv.
-//					}
-//				}
-//			}
-			List<String> theaterlist = containTheaterList(list);//"지역/지점"
-			theaterDtm(theaterlist, localChoice);
-			List<String> datelist = containDateList(list);//날짜
-			List<String> timelist = containScrNameList(list);//"관/시간"
-			
-			
+			System.out.println("시간 조건 안맞는 값 제거: "+bufList.size()); 
 			/*
-			 * 	String m_title = mmv.movieList.get(i).get("M_TITLE").toString();
-			String m_age = mmv.movieList.get(i).get("M_CERTIF").toString();
-			String m_loc = mmv.movieList.get(i).get("T_LOC").toString();
-			String m_theater = mmv.movieList.get(i).get("T_NAME").toString();
-			String m_date = mmv.movieList.get(i).get("S_DATE").toString();
-			String m_time = mmv.movieList.get(i).get("S_TIME").toString();
-			String m_screen = mmv.movieList.get(i).get("SC_NAME").toString();
-			 */
-//			List<String> containList = mmv.em.containList(mmv.movieList);
-//			List<Map<String, Object>> th_list = theaterTrim(containList, mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString());
-//			System.out.println( "여기!!!!!! "+mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString());
-//			mmv.jp_mrv.jp_mcv.jt_local.setSelectionBackground(Color.white);
-//			String select = mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString();
-//			System.out.println("select : " +select);
-//			//thCountTrim(th_list, null);
+			//선택된 지역이 아닌 값들 리스트에서 제거
+			int selectRow = mmv.jp_mrv.jp_mcv.jt_local.getSelectedRow();
+			String locChoice = mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString();
+			System.out.println("클릭된  지역: "+ locChoice);
+			for(int i=0; i<bufList.size(); i++) {
+				String loc = bufList.get(i).get("T_LOC").toString();
+				if(!loc.equals(locChoice)) {
+					bufList.remove(i);
+				}
+			}
+			*/
+			int selectRow = mmv.jp_mrv.jp_mcv.jt_local.getSelectedRow();
+			String locChoice = mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString();
+			tVO.setLoc(locChoice);
+			//지점 리프레시
+			List<String> theaterlist = containTheaterList(bufList);//"지역/지점"
+			theaterDtm(theaterlist, locChoice);
 		}
+		
 		else if(obj==mmv.jp_mrv.jp_mcv.jt_theater) {//지점선택
-			
+			System.out.println("지점 클릭=======================");
+			int selectRow = mmv.jp_mrv.jp_mcv.jt_theater.getSelectedRow();
+			if(selectRow >= 0) {
+				String locChoice = tVO.getLoc();
+				String theaterChoice = mmv.jp_mrv.jp_mcv.dtm_theater.getValueAt(selectRow, 0).toString();
+				mmv.jp_mrv.jl_south_theater.setText(locChoice+"/"+theaterChoice);
+				List<Map<String,Object>> userList = null;
+				List<Map<String,Object>> bufList = timeCheck();
+				//라벨 값 바꿔주기 VO
+				tVO.setTheater(theaterChoice);
+				//선택한 그 영화가 있는 userList
+				userList = choiceTheater(bufList, tVO);
+				//중복제거
+				//영화나 날짜가 선택이 되었으면 지점도 중복제거를 해줘애한다.
+				if(tVO.getMovie_name()!=null || tVO.getMovie_date()!=null) {
+					List<String> containTheaterList = containTheaterList(userList);
+					//지점중복제거
+					if(tVO.getLoc()==null) {
+						theaterDtm(containTheaterList, "서울");
+					}
+					else {
+						theaterDtm(containTheaterList, tVO.getLoc());
+					}
+				}
+				//영화중복제거
+				List<String> containMovieList = containMovieList(userList);
+				movieDtm(containMovieList);
+				//날짜 중복 제거
+				List<String> containDateList = containDateList(userList);
+				dateDtm2(containDateList);
+			}
 		}
 		else if(obj==mmv.jp_mrv.jp_mcv.jt_date) {//날짜선택
-			
+			System.out.println("날짜 클릭=======================");
+			int selectRow = mmv.jp_mrv.jp_mcv.jt_date.getSelectedRow();
+			if(selectRow >= 0) {
+				String dateChoice = mmv.jp_mrv.jp_mcv.dtm_date.getValueAt(selectRow, 0).toString();
+				mmv.jp_mrv.jl_south_date.setText(dateChoice);
+				List<Map<String,Object>> userList = null;
+				List<Map<String,Object>> bufList = timeCheck();
+				//라벨 값 바꿔주기 VO
+				tVO.setMovie_date(dateChoice);
+				//선택한 그 영화가 있는 userList
+				userList = choiceDate(bufList, tVO);
+				//중복제거
+				//영화나 지점이 선택이 되었으면 날짜도 중복제거를 해줘야한다.
+				if(tVO.getMovie_name()!=null || tVO.getTheater()!=null) {
+					//날짜 중복 제거
+					List<String> containDateList = containDateList(userList);
+					dateDtm2(containDateList);
+				}
+				//지점중복제거
+				List<String> containTheaterList = containTheaterList(userList);
+				if(tVO.getLoc()==null) {
+					theaterDtm(containTheaterList, "서울");
+				}
+				else {
+					theaterDtm(containTheaterList, tVO.getLoc());
+				}
+				//영화중복제거
+				List<String> containMovieList = containMovieList(userList);
+				movieDtm(containMovieList);
+				
+			}	
 		}
 		else if(obj==mmv.jp_mrv.jp_mcv.jt_time) {//관-시간선택
 			
