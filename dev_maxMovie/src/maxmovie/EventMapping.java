@@ -735,6 +735,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 		}
 		else if(obj==mmv.jp_mv.jbt_miv) {//마이페이지에서 회원정보조회버튼
 			System.out.println("회원정보버튼 클릭");
+			mmv.jp_mv.jp_miv.jl_pageInfoLeft.setText(mmv.mem_nick);
 			mmv.jp_mv.jp_miv.jl_mem_id.setText(mmv.mem_id);
 			mmv.jp_lv.setVisible(false);
 			mmv.jp_mv.setVisible(true);//마이페이지-틀뷰
@@ -795,37 +796,65 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			}
 		}
 		/*************************************************************************************************
-		 * 좌석 선택이 끝나고 결제 버튼을 눌렀을때 
+		 * 좌석 선택 화면에서 좌석 선택이 끝나고 결제 버튼을 눌렀을때 
 		 */
 		else if(obj==mmv.jp_mrv.jbt_goPayChoice) {
 			System.out.println("결제버튼 클릭 : "+mmv.jp_mrv.jp_scv.seatChoiceList.size());
 			for(String seatCode : mmv.jp_mrv.jp_scv.seatChoiceList) {
-				String mem_id 		= mmv.mem_id;
-				String movieName 	= mmv.jp_mrv.jl_south_movie.getText();
-				String temptheater 		= mmv.jp_mrv.jl_south_theater.getText();
-				StringTokenizer st = new StringTokenizer(temptheater, "/");
-				st.nextToken();
-				String theater = st.nextToken();
-				String screen 		= mmv.jp_mrv.jl_south_screen.getText();
-				String seat 		= seatCode;
-				String tempdate 		= mmv.jp_mrv.jl_south_date.getText();
-				System.out.println("tempdate"+ tempdate);
-				//년월일 제외하여 20200408 형식 맞추기
-//			jl_south_date.setText("2020년 03월 28일") -> 20200328
-				String date = (tempdate.substring(0, 4)+tempdate.substring(6, 8)+tempdate.substring(10, 12));
-				//시간 형식 24:00 라면 그냥 집어넣어
-				String time 		= mmv.jp_mrv.jl_south_time.getText();
-				String pay_msg 	= MovieProtocol.PAY+"#"+mem_id+"#"+movieName+"#"+theater+"#"
-						+screen+"#"+seat+"#"+date+"#"+time;
-				this.send(pay_msg);
+//				String mem_id 		= mmv.mem_id;
+//				String movieName 	= mmv.jp_mrv.jl_south_movie.getText();
+//				String temptheater 		= mmv.jp_mrv.jl_south_theater.getText();
+//				StringTokenizer st = new StringTokenizer(temptheater, "/");
+//				st.nextToken();
+//				String theater = st.nextToken();
+//				String screen 		= mmv.jp_mrv.jl_south_screen.getText();
+//				String seat 		= seatCode;
+//				String tempdate 		= mmv.jp_mrv.jl_south_date.getText();
+//				System.out.println("tempdate"+ tempdate);
+//				//년월일 제외하여 20200408 형식 맞추기
+////			jl_south_date.setText("2020년 03월 28일") -> 20200328
+//				String date = (tempdate.substring(0, 4)+tempdate.substring(6, 8)+tempdate.substring(10, 12));
+//				//시간 형식 24:00 라면 그냥 집어넣어
+//				String time 		= mmv.jp_mrv.jl_south_time.getText();
+//				String pay_msg 	= MovieProtocol.PAY+"#"+mem_id+"#"+movieName+"#"+theater+"#"
+//						+screen+"#"+seat+"#"+date+"#"+time;
+//				this.send(pay_msg);
 				
 				//단위테스트용
-//				String seatstatus_msg = MovieProtocol.PAY+"#"+"cloudsky7"+"#"+"작은아씨들"+"#"+"해운대점"+"#"
-//						+"2관"+"#"+"A1"+"#"+"20200411"+"#"+"19:40";
-//				this.send(seatstatus_msg);
-				
+				String seatstatus_msg = MovieProtocol.PAY+"#"+"cloudsky7"+"#"+"작은아씨들"+"#"+"해운대점"+"#"
+						+"2관"+"#"+"A1"+"#"+"20200411"+"#"+"19:40";
+				this.send(seatstatus_msg);
 			}
+			
 		}//end of obj==mmv.jp_mrv.jbt_goPayChoice
+		
+		/* 좌석선택 화면에서 다시 영화선택화면으로 돌아갔을 때 */
+		else if(obj==mmv.jp_mrv.jbt_backMovieChoice) {
+			//좌석 뿌려진 패널 제거 
+			mmv.jp_mrv.jp_scv.remove(mmv.jp_mrv.jp_scv.jp_center);
+			mmv.jp_mrv.jl_south_ctf.setText("");
+			mmv.jp_mrv.jl_south_theater.setText("");
+			mmv.jp_mrv.jl_south_time.setText("");
+			mmv.jp_mrv.jl_south_seat.setBounds(900, 698, 150, 20);
+			mmv.jp_mrv.jl_south_pay.setBounds(1040, 698, 150, 20);	
+			mmv.jp_mrv.jta_south_Allseat.setText("");
+			mmv.jp_mrv.jl_south_totalPay.setText("");
+			mmv.jp_mrv.jbt_goPayChoice.setVisible(false);
+			mmv.jp_mrv.jbt_goSeatChoice.setVisible(true);
+			mmv.jp_mrv.jbt_backMovieChoice.setVisible(false);
+			
+			mmv.jp_lv.setVisible(false);//로그인
+			mmv.jp_mv.setVisible(false);//마이페이지-틀뷰
+			mmv.jp_mv.jp_miv.setVisible(false);//마이페이지-비밀번호입력뷰
+			mmv.jp_mv.jp_muv.setVisible(false);//마이페이지-회원정보수정뷰
+			mmv.jp_mv.jp_thv.setVisible(false);//마이페이지-영화내역뷰
+			mmv.jp_mrv.setVisible(true);//영화예매-틀뷰
+			mmv.jp_mrv.jp_mcv.setVisible(true);//영화예매-영화선택뷰
+			mmv.jp_mrv.jp_scv.setVisible(false);//영화예매-좌석선택뷰
+			mmv.jp_mrv.jp_pv.setVisible(false);//영화예매-결제뷰
+			mmv.jp_rv.setVisible(false);//결과화면
+			
+		}
 		
 		/* 좌석 선택화면에서 adult, teen 인원 선택 - 선택한 인원만큼 좌석 선택	 */
 		else {
