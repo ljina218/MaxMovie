@@ -64,14 +64,6 @@ public class MemUpdateView extends JPanel  {
 //		jl_mem_day.setText(em.mmv.mem_nick);	
 //		jl_mem_gender.setText(em.mmv.mem_nick);
 
-		jl_pageInfoLeft.setText("kong");
-		jl_mem_id.setText("cloudsky7");
-		jl_mem_name.setText("박미경");
-		jl_mem_year.setText("1992");
-		jl_mem_month.setText("10");
-		jl_mem_day.setText("31");
-		jl_mem_gender.setText("남자");
-		
 		jpf_pw.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
 		jtf_nick.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
 		jtf_email.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));

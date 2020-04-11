@@ -261,6 +261,7 @@ public class ClientThread extends Thread{
 						String pw = st.nextToken();
 						mmv.jp_mv.jp_muv.jl_mem_name.setText(st.nextToken());
 						String nickname = st.nextToken();
+						mmv.jp_mv.jp_muv.jl_pageInfoLeft.setText(mmv.mem_nick);
 						String tempDate = st.nextToken();
 						System.out.println("ClientThread tempDate: "+ tempDate);
 						mmv.jp_mv.jp_muv.jl_mem_year.setText(tempDate.substring(0, 4));
