@@ -24,6 +24,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import javafx.scene.shape.Line;
+
 
 
 	
@@ -32,7 +34,7 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	Vector<String> arealist = null;//지역정보 저장
 	Vector<String> loclist = null;//지점정보 저장
 
-	
+	int					result					= 0;
 	JLabel				jl_movie				= new JLabel("영화");
 	JLabel				jl_locThe				= new JLabel("극장");
 	JLabel				jl_date					= new JLabel("날짜");
@@ -88,8 +90,8 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	JTable 				jt_date 				= new JTable(dtm_date);
 	JScrollPane 		jsp_date 				= new JScrollPane(jt_date);
 	
-	String 				col_time[] 				= {"상영관", "시간"};
-	String 				data_time[][] 			= {{"1관", "09:00"}, {"","12:00"}, {"", "15:00"},{"", "18:00"}, {"", "21:00"}, {"2관", "09:00"}, {"","12:00"}, {"", "15:00"},{"", "18:00"}, {"", "21:00"}};
+	String 				col_time[] 				= {"상영관","시간"};
+	String 				data_time[][] 			= new String[0][2];
 	DefaultTableModel 	dtm_time  				= new DefaultTableModel(data_time, col_time);
 	JTable 				jt_time 				= new JTable(dtm_time);
 	JScrollPane 		jsp_time 				= new JScrollPane(jt_time);
@@ -106,8 +108,45 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	int timeIndex = 0;
 	String timeChoice = "";
 	
-	int result = 0;
 	boolean goOneRow = false;
+	DefaultTableCellRenderer dtcr_local = null;
+	
+//	DefaultTableCellRenderer dtcr_local = new DefaultTableCellRenderer() {
+//		@Override
+//		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+//			Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+//			if (!isSelected) {
+//				String localName = (String)value;
+//				System.out.println("value : " + value);
+//				System.out.println("localName : " + localName);
+//				StringTokenizer st = new StringTokenizer(localName, "(");
+//				localName = (String)st.nextToken();
+//				System.out.println(localName);
+//				if (column == 0) {
+//					cell.setBackground(Color.lightGray);
+//				if(result == 0) {
+//					if (localName.equals("서울")) {
+//						cell.setBackground(Color.white);
+//						result = 1;
+//					} 
+//				} else {
+//					if (localName.equals("서울")) {
+//						cell.setBackground(Color.lightGray);
+//					}
+//					if (localName.equals("강남")) {
+//						cell.setBackground(Color.lightGray);
+//					}
+//					if (localName.equals("부산")) {
+//						cell.setBackground(Color.lightGray);
+//					}
+//				}
+//			} else {
+//				cell.setBackground(Color.lightGray);
+//			}
+//			}
+//			return this;  
+//		}
+//	};
 	
 	public MovieChoiceView(EventMapping em) {
 		this.em = em;
@@ -129,7 +168,7 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		jsp_time.setBounds(1000, 60, 346, 600);
 		jl_timeLock.setBounds(1000, 60, 346, 600);
 	
-		jl_timeLock.setVisible(true);
+		jl_timeLock.setVisible(false);///////////////////////////////////////
 		
 		jsp_movie.getViewport().setBackground(Color.white);
 		jt_movie.setBackground(Color.white);
@@ -141,37 +180,48 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		jt_movie.setShowHorizontalLines(false);
 		jt_movie.getColumn("이용등급").setPreferredWidth(26);
 		jt_movie.getColumn("영화").setPreferredWidth(268);
-		jt_local.setBackground(Color.white);
-		DefaultTableCellRenderer dtcr_local = new DefaultTableCellRenderer() {
+		jt_local.setBackground(Color.lightGray);
+		dtcr_local = new DefaultTableCellRenderer() {
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 				Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				String localName = (String)value;
+				//System.out.println("value : " + value);
+				//System.out.println("localName : " + localName);
 				StringTokenizer st = new StringTokenizer(localName, "(");
 				localName = (String)st.nextToken();
-				((JComponent)cell).setBorder(new LineBorder(Color.black,0));
-				cell.setBackground(Color.lightGray);
-				if (!isSelected) {
-					System.out.println("row : " + row);
-					if(result==0) {
-						if (row==0) {
-							localChoice = localName;
-							((JComponent)cell).setBorder(new LineBorder(Color.black,3));
-							cell.setBackground(Color.white);
-							result = 1;
-						} else {
-							localChoice = localName;
-							((JComponent)cell).setBorder(new LineBorder(Color.black,0));
-							cell.setBackground(Color.lightGray);
-						}
-					}      	
-				} else {
-					((JComponent)cell).setBorder(new LineBorder(Color.black,3));
-					cell.setBackground(Color.white);
+				System.out.println(localName);
+				//
+				System.out.println("result1 : " + result);
+				if(column == 0) {
+					cell.setBackground(Color.lightGray);
+					((JComponent)cell).setBorder(new LineBorder(null,0));
+				}
+				//
+				if(result==0) {
+					if(localName.equals("서울")) {
+						((JComponent)cell).setBorder(new LineBorder(Color.black,3));
+						cell.setBackground(Color.white);
+						result = 2;
+					}
+				}else if(result==2) {
+					if (!isSelected) {
+						cell.setBackground(Color.lightGray);
+						((JComponent)cell).setBorder(new LineBorder(null,0));
+						System.out.println("result21 : " + result);
+					}
+					else {
+						((JComponent)cell).setBorder(new LineBorder(Color.black,3));
+						cell.setBackground(Color.white);
+						System.out.println("result22 : " + result);
+					}
 				}
 				return this;
 			}
 		};
+		
+		
+		//DefaultTableCellRenderer dtcr_local = new DefaultTableCellRenderer();
 		dtcr_local.setHorizontalAlignment(JLabel.CENTER);
 		jt_local.getColumn("지역").setCellRenderer(dtcr_local);
 		jt_local.setRowHeight(35);
@@ -215,12 +265,9 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		jl_locThe.setOpaque(true);
 		jl_date.setOpaque(true);
 		jl_time.setOpaque(true);
-		//jl_timeLock.setOpaque(true);
-		//jsp_time.setVisible(false);//
-		
-		//테스트용
-		jl_timeLock.setOpaque(false);
-		jsp_time.setVisible(true);//
+		jl_timeLock.setOpaque(true);
+
+		jsp_time.setVisible(true);////////////////////////////////////////
 		
 		jl_movie.setBackground(new Color(190, 190, 190));
 		jl_locThe.setBackground(new Color(190, 190, 190));
@@ -281,10 +328,10 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	 * jt_date.setSelectionForeground(Color.white); //데이터 가져오시는 걸로 바꾸어야됨 ↓
 	 * jsp_time.setVisible(true); jl_timeLock.setVisible(false);
 	 * 
-	 * } if(obj==jt_time) { timeIndex = jt_time.getSelectedRow(); timeChoice =
-	 * jt_time.getValueAt(timeIndex, 0).toString(); //데이터 가져오시는 걸로 바꾸어야됨 ↓
-	 * jt_time.setSelectionBackground(Color.gray);
-	 * jt_time.setSelectionForeground(Color.white);
+	 * } if(obj==jt_time) {
+	 * timeIndex = jt_time.getSelectedRow();
+	 * timeChoice = jt_time.getValueAt(timeIndex, 0).toString(); //데이터 가져오시는 걸로 바꾸어야됨 ↓
+	 * jt_time.setSelectionBackground(Color.white);
 	 * 
 
 	 * } }
@@ -317,6 +364,8 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 			int row, int column) {
 		// TODO Auto-generated method stub
+		
+		
 		return null;
 	}
 }

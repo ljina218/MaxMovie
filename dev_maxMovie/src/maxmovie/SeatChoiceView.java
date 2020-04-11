@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -55,12 +56,13 @@ public class SeatChoiceView extends JPanel{
 	}
 	
 	//0:빈자리  1:결제 진행중  2:결제완료
+
 	public void seatSetting(List<Map<String, Object>> seatList) {
 		this.seatList = seatList;
 		for(Map<String, Object> rmap: this.seatList) {
 			System.out.println("SeatChoiceView"+rmap.get("좌석").toString() +","+ rmap.get("현황").toString());
 		}
-		
+
 		//[80]석 셋팅 
 		if(seatList.size()==80) {
 			jbts_seat = new JButton[10][8];

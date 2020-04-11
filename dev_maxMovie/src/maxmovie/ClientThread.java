@@ -1,6 +1,7 @@
 package maxmovie;
 
 import java.util.ArrayList;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,10 @@ import java.util.Vector;
 
 
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+
+import com.sun.jndi.toolkit.dir.ContainmentFilter;
 
 
 public class ClientThread extends Thread{
@@ -41,34 +46,39 @@ public class ClientThread extends Thread{
 	}
 	
 	//영화 시간 조건 메소드
-	public int checkTime (String time) {//스케줄에 있는 영화 시간 받아서
+	public int checkTime (String date, String time) {//스케줄에 있는 영화 시간 받아서
 		int result = 0;
-		StringTokenizer token = new StringTokenizer(time, ":");//시와 분으로 쪼개기
-		char[] scheduledhour = token.nextToken().toCharArray();
-		char[] scheduledmin = token.nextToken().toCharArray();
-		String sethour = null;
-		String setmin = null;
-		if(scheduledhour[0]==0){//시 앞에 붙은 0 떼어내기
-			sethour = scheduledhour[1]+"";
-		}else {
-			sethour = scheduledhour[0]+""+scheduledhour[1]; 
-		}
+		StringTokenizer st = new StringTokenizer(time, ":");
+		String si = st.nextToken();
+		String bun = st.nextToken();
+		time = si+bun;
 		
-		if(scheduledmin[0]==0){//분 앞에 붙은 0 떼어내기
-			setmin = scheduledmin[1]+"";
-		}else {
-			setmin = scheduledmin[0]+""+scheduledmin[1]; 
+		String c_Date = setYMD(); //현재날짜
+		String c_Time = setHMS(); //현재시간
+		//선택한 날짜가 이미 지났니? 
+		if(Integer.parseInt(c_Date)
+				> Integer.parseInt(date)) {
+			//astVO.setMsg("이미 지난 날짜입니다.");
+			result = -1;
 		}
-		int hour = Integer.parseInt(sethour);//시와 분을 string에서 int 형으로 바꾸기
-		int min = Integer.parseInt(setmin);
-		Calendar now = Calendar.getInstance();//현재 시간에서 
-		now.add(Calendar.MINUTE, -30);//30분 빼기 => 30분 전까지만 예매가능
-		int nowhour = now.get(Calendar.HOUR_OF_DAY);
-		int nowmin = now.get(Calendar.MINUTE);
-		if(hour>=nowhour) {//시가 아직 안지났고
-			if(min>=nowmin) {//분이 아직 안지났다면,
-				result=1;
+		//선택한 날짜가 오늘 날짜야?
+		else if(c_Date.equals(date)){
+			//그러면 시간은 이미 지났니?
+			if(Integer.parseInt(c_Time)
+					> Integer.parseInt(time)) {
+				//astVO.setMsg("이미 지난 시간입니다.");
+				result = -1;
 			}
+			else { //시간 안지났으면
+				//날짜 저장 및 시간형식으로 저장
+				//astVO.setMsg("확인 완료");
+				result = 1;
+			}
+		}
+		//선택한 날짜가 현재날짜보다 미래라면 
+		else { 
+			//astVO.setMsg("확인 완료");
+			result = 1;
 		}
 		return result;
 	}
@@ -122,8 +132,40 @@ public class ClientThread extends Thread{
 						mmv.jbt_ticketing.setVisible(true);
 						System.out.println("ClientThread에서 받은 id, nick : "+mmv.mem_id+", "+mmv.mem_nick);
 						display(false, false, false, false, false, true, true, false,false,false);//moviechoiceView 화면전환메소드 호출
-						//dtm 설정 메소드 호출@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+						mmv.em.tVO = null;
+						mmv.em.tVO = new TicketingVO();
+						//
+						System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@사이즈: "+  mmv.movieList.size());
+						List<Map<String,Object>> list = new Vector<Map<String,Object>>();
+						Map<String, Object> map = null;
+						for(int i=0; i<mmv.movieList.size(); i++) {
+							map = new HashMap<String, Object>();
+							map.put("M_TITLE", mmv.movieList.get(i).get("M_TITLE"));
+							map.put("M_CERTIF", mmv.movieList.get(i).get("M_CERTIF"));
+							map.put("T_LOC", mmv.movieList.get(i).get("T_LOC"));
+							map.put("T_NAME", mmv.movieList.get(i).get("T_NAME"));
+							map.put("S_DATE", mmv.movieList.get(i).get("S_DATE"));
+							map.put("S_TIME", mmv.movieList.get(i).get("S_TIME"));
+							map.put("SC_NAME", mmv.movieList.get(i).get("SC_NAME"));
+							list.add(map);
+						}
+						for(int i=0; i<list.size(); i++) {
+							String time = list.get(i).get("S_TIME").toString();
+							String date = list.get(i).get("S_DATE").toString();
+							int result = checkTime(date, time);
+							if(result==-1) {//예약할 수 없는 시간이라면....
+								list.remove(i);
+							}
+						}
+						System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@시간을 고려한 리스트: "+list.size());
+						mmv.em.movieDtm(mmv.em.containMovieList(list));
+						mmv.em.locDtm(mmv.em.containLocList(list));
+						mmv.em.theaterDtm(mmv.em.containTheaterList(list), "서울");
+						mmv.em.containDateList(list);
+						mmv.em.dateDtm();
+						mmv.em.scrDtm(mmv.em.containScrNameList(list));
 					}
+					
 				}break;
 				//******************************************************************************
 				case MovieProtocol.LOGOUT:{//로그아웃
@@ -204,8 +246,6 @@ public class ClientThread extends Thread{
 						mmv.jp_mv.jp_thv.jl_curtain.setVisible(true);
 						display(false, true, false, false, true, false, false, false, false, false);
 					}
-						
-					
 				}break;
 				//******************************************************************************
 				case MovieProtocol.MY_INFO:{//회원 정보조회(PW)
@@ -265,8 +305,6 @@ public class ClientThread extends Thread{
 						String movielist_msg = MovieProtocol.SELECT+"#"+age+"#"+title+"#"+
 							loc+"#"+theater+"#"+date+"#"+time+"#"+screen;
 					 */
-					mmv.em.tVO = null;
-					mmv.em.tVO = new TicketingVO();
 					String age = st.nextToken();
 					String title = st.nextToken();
 					String loc = st.nextToken();
@@ -283,7 +321,7 @@ public class ClientThread extends Thread{
 					map.put("S_TIME", time);
 					map.put("SC_NAME", screen);
 					mmv.movieList.add(map);
-					System.out.println("무비리스트 사이즈"+mmv.movieList.size());
+					System.out.println("무비리스트 사이즈"+mmv.movieList.size()+", 연령: "+age);
 				}break;
 				//******************************************************************************
 //				case MovieProtocol.SELECT_MOVIE:{//영화선택
@@ -326,5 +364,28 @@ public class ClientThread extends Thread{
 			e.printStackTrace();
 		}
 	}
+	public String setYMD() {
+		Calendar cal = Calendar.getInstance();
+		int yyyy = cal.get(Calendar.YEAR);
+		int mm = cal.get(Calendar.MONTH)+1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		
+		return yyyy
+			+(mm < 10 ? "0"+mm:""+mm)
+			+(day < 10 ? "0"+day:""+day);
+	}//end of setTimer
+/********************************************************************
+ * 상영시간표를 추가하거나 삭제 할 때 현재 시간 정보를 받아온다.
+ * 사용자가 입력한 시간를 비교 할 때 사용한다.  
+ * @return
+ */
+	public String setHMS() {
+		Calendar cal = Calendar.getInstance();
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int min = cal.get(Calendar.MINUTE);
+		
+		return (hour < 10 ? "0"+hour:""+hour)
+			   +(min < 10 ? "0"+min:""+min);
+	}//end of setTimer
 	
 }

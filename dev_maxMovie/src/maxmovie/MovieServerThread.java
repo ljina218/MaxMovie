@@ -44,6 +44,7 @@ public class MovieServerThread extends Thread{
 		ms.globalist.add(this);
 		ms.jta_log.append(ms.globalist.size()+"\n");
 		ms.movieList = ctrl.dao.refreshMovieAll(ms.movieList);//서버에 3일치 영화정보 저장
+		System.out.println("사이즈"+ms.movieList.size());
 		try {
 			oos = new ObjectOutputStream(ms.socket.getOutputStream());
 			ois = new ObjectInputStream(ms.socket.getInputStream());
@@ -57,19 +58,13 @@ public class MovieServerThread extends Thread{
 			if(protocol==MovieProtocol.SELECT) {//화면을 켰으니 영화정보를 주세여!
 				synchronized (this) { //00시에 무비리스트가 초기화 되어 에러가 날까봐......
 					for(int i=0; i<ms.movieList.size(); i++) {
-						String time = ms.movieList.get(i).get("S_TIME").toString();
-						//상영 시간 30분 전까지만 예약이 가능하도록 하는 조건.....
-//						int result = checkTime(time);
-//						if(result==1) {
-							System.out.println("상영시간 멀었음, 예약 가능");
-							this.send(MovieProtocol.SELECT+"#"+ms.movieList.get(i).get("M_TITLE")
-									+"#"+ms.movieList.get(i).get("M_CERTIF")
-									+"#"+ms.movieList.get(i).get("T_LOC")
-									+"#"+ms.movieList.get(i).get("T_NAME")
-									+"#"+ms.movieList.get(i).get("S_DATE")
-									+"#"+ms.movieList.get(i).get("S_TIME")
-									+"#"+ms.movieList.get(i).get("SC_NAME"));							
-//						}
+						this.send(MovieProtocol.SELECT+"#"+ms.movieList.get(i).get("M_CERTIF")
+								+"#"+ms.movieList.get(i).get("M_TITLE")
+								+"#"+ms.movieList.get(i).get("T_LOC")
+								+"#"+ms.movieList.get(i).get("T_NAME")
+								+"#"+ms.movieList.get(i).get("S_DATE")
+								+"#"+ms.movieList.get(i).get("S_TIME")
+								+"#"+ms.movieList.get(i).get("SC_NAME"));							
 					}
 				}
 			}
@@ -88,35 +83,34 @@ public class MovieServerThread extends Thread{
 		}
 	}
 	
-	//영화 시간 조건 메소드
-	public int checkTime (String time) {//스케줄에 있는 영화 시간 받아서
-		int result = 0;
-		StringTokenizer token = new StringTokenizer(time, ":");//시와 분으로 쪼개기
-		char[] scheduledhour = token.nextToken().toCharArray();
-		char[] scheduledmin = token.nextToken().toCharArray();
-		String sethour = null;
-		String setmin = null;
-		if(scheduledhour[0]==0){//시 앞에 붙은 0 떼어내기
-			sethour = scheduledhour[1]+"";
-		}else {
-			sethour = scheduledhour[0]+""+scheduledhour[1]; 
+	public int checkTime (String date, String time) {//스케줄에 있는 영화 시간 받아서
+		Calendar cal = Calendar.getInstance();
+		String year = date.substring(0, 4);
+		String month = date.substring(4, 6);
+		String day = date.substring(6, 8);
+		if("0".equals(month.substring(0, 1))) {
+			month = month.substring(1, 2);
 		}
-		if(scheduledmin[0]==0){//분 앞에 붙은 0 떼어내기
-			setmin = scheduledmin[1]+"";
-		}else {
-			setmin = scheduledmin[0]+""+scheduledmin[1]; 
+		if("0".equals(day.substring(0, 1))) {
+			day = day.substring(1, 2);
 		}
-		int hour = Integer.parseInt(sethour);//시와 분을 string에서 int 형으로 바꾸기
-		int min = Integer.parseInt(setmin);
-		Calendar now = Calendar.getInstance();//현재 시간에서 
+		StringTokenizer st = new StringTokenizer(time, ":");
+		String hour = st.nextToken();
+		String min =st.nextToken();
+		if("0".equals(hour.substring(0, 1))) {
+			hour = hour.substring(1, 2);
+		}
+		if("0".equals(min.substring(0, 1))) {
+			min = min.substring(1, 2);
+		}
+		cal.set(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day), Integer.parseInt(hour),  Integer.parseInt(min));
+		//
+		Calendar now = Calendar.getInstance();//3월24일에서
+		now.set(2020, 3, 24);
 		now.add(Calendar.MINUTE, -30);//30분 빼기 => 30분 전까지만 예매가능
-		int nowhour = now.get(Calendar.HOUR_OF_DAY);
-		int nowmin = now.get(Calendar.MINUTE);
-		if(hour>=nowhour) {//시가 아직 안지났고
-			if(min>=nowmin) {//분이 아직 안지났다면,
-				result=1;
-			}
-		}
+		
+		int result = cal.compareTo(now);
+		//1,0=> 예약가능
 		return result;
 	}
 	
@@ -191,19 +185,21 @@ public class MovieServerThread extends Thread{
 					System.out.println(e.toString());
 					e.printStackTrace();
 				}
-				//[2]어제 영화정보 지우기
-				Calendar newDay = Calendar.getInstance();//새로운 오늘 날짜정보에서
-				newDay.add(Calendar.DAY_OF_MONTH, -1);//어제날짜 뽑기[형식:20200325]
-				String yesterday = ms.setTimer(newDay, "날짜");
-				for(int i=0; i<ms.movieList.size(); i++) {
-					if(yesterday.equals(ms.movieList.get(i).get("S_DATE"))) {//영화정보 리스트에서 제거
-						ms.movieList.remove(i);
-					}			
-				}
-				//[3]새로운 영화정보 추가하기
-				//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-				
-				num = 1;//리프레시 조건식을 false로 만들기 위해
+//				//[2]어제 영화정보 지우기
+//				Calendar newDay = Calendar.getInstance();//새로운 오늘 날짜정보에서
+//				newDay.add(Calendar.DAY_OF_MONTH, -1);//어제날짜 뽑기[형식:20200325]
+//				String yesterday = ms.setTimer(newDay, "날짜");
+//				for(int i=0; i<ms.movieList.size(); i++) {
+//					if(yesterday.equals(ms.movieList.get(i).get("S_DATE"))) {//영화정보 리스트에서 제거
+//						ms.movieList.remove(i);
+//					}			
+//				}
+//				//[3]새로운 영화정보 추가하기
+//				List<Map<String, Object>> newMovie = ms.md.refreshMovieAll(ms.movieList);
+//				for(int i=0; i<newMovie.size(); i++) {
+//					ms.movieList.add(newMovie.get(i));
+//				}
+//				num = 1;//리프레시 조건식을 false로 만들기 위해
 			}
 			if("00:00:01".equals(ms.setTimer(null,"시간"))&&num==1) {//1초가 되면 
 				num=0;//num을 0으로 다시 초기화 ==> while문을 안멈추면서 계속 "00:00:00" 조건을 검사할 수 있도록
@@ -367,13 +363,10 @@ public class MovieServerThread extends Thread{
 						String date = ms.movieList.get(i).get("S_DATE").toString();
 						String time = ms.movieList.get(i).get("S_TIME").toString();
 						String screen = ms.movieList.get(i).get("SC_NAME").toString();
-						int result = checkTime(time);//상영 시간 30분 전까지만 예약이 가능하도록 하는 조건.....
-						if(result==1) {
-							System.out.println("상영시간 멀었음, 예약 가능");
-							String movielist_msg = MovieProtocol.SELECT+"#"+age+"#"+title+"#"+
-									loc+"#"+theater+"#"+date+"#"+time+"#"+screen;
-							this.send(movielist_msg);	
-						}
+						System.out.println("상영시간 멀었음, 예약 가능");
+						String movielist_msg = MovieProtocol.SELECT+"#"+age+"#"+title+"#"+
+								loc+"#"+theater+"#"+date+"#"+time+"#"+screen;
+						this.send(movielist_msg);	
 					}
 				}break;
 				//******************************************************************************

@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -22,6 +23,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.border.LineBorder;
@@ -44,6 +46,10 @@ public class MaxMovieView extends JFrame{
 	ObjectOutputStream oos = null;
 	ObjectInputStream ois = null;
 
+	
+	
+	
+	
 	//**메인프레임의 틀 메인프레임의 고정된 북쪽패널과 남쪽패널
 	JLabel						jl_logo_small		= new JLabel() {
 		public void paint(Graphics g) {
@@ -56,6 +62,8 @@ public class MaxMovieView extends JFrame{
 			}
 		}
 	};
+	
+	
 	String						mem_id				= "";
 	String						mem_nick			= "";
 
@@ -213,12 +221,20 @@ public class MaxMovieView extends JFrame{
 	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
 		try {
 			movieList = new Vector<Map<String,Object>>();//클라이언트에 저장할 영화정보 리스트 생성
-			socket = new Socket("192.168.0.37",5000);
+			socket = new Socket("192.168.0.237",5500);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
 			oos.writeObject(MovieProtocol.SELECT+"#");//영화정보 주세여
 			ClientThread ct = new ClientThread(this);
 			ct.start();
+		}  catch (ConnectException ce) {
+			//서버가 켜져있지 않으면 자동으로 꺼진다.
+			JOptionPane.showMessageDialog(this
+					, "서버와의 연결이 끊어졌습니다."
+					, "에러"
+					, JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+			ce.printStackTrace();
 		} catch (UnknownHostException e) {
 			System.out.println(e.toString());
 			e.printStackTrace();
