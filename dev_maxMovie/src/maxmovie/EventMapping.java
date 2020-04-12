@@ -31,7 +31,7 @@ import javax.swing.table.TableCellRenderer;
 
 
 
-public class EventMapping implements ActionListener, ItemListener, KeyListener, MouseListener {
+public class EventMapping implements ActionListener, ItemListener, KeyListener{
 
 	
 	/* 뷰 패널들의 변수이름
@@ -1398,115 +1398,115 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	/**************************************************************************************************
 	 * MouseListener(영화선택)
 	 */
-	@Override
-	public void mouseClicked(MouseEvent e) {}
-	@Override
-	public void mouseEntered(MouseEvent e) {}
-	@Override
-	public void mouseExited(MouseEvent e) {}
-	@Override
-	public void mousePressed(MouseEvent e) {}
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		Object obj = e.getSource();
-		/************************************************************************************************
-		 * 영화선택
-		 */
-		if(obj==mmv.jp_mrv.jp_mcv.jt_movie) {//영화선택
-			
-		}
-		else if(obj==mmv.jp_mrv.jp_mcv.jt_local) {//지역선택
-			System.out.println("지역 클릭");
-			//선택되면 색 바꾸는
-			//mmv.jp_mrv.jp_mcv.result = 2;
-			int localIndex = mmv.jp_mrv.jp_mcv.jt_local.getSelectedRow(); 
-			String localChoice =mmv.jp_mrv.jp_mcv.jt_local.getValueAt(localIndex, 0).toString();
-			System.out.println("지역: "+ localChoice);
-//			mmv.jp_mrv.jp_mcv.localChoiceName = localChoice;
-//			mmv.jp_mrv.jp_mcv.jt_local.setSelectionBackground(Color.white);
-			TableCellRenderer tcr = mmv.jp_mrv.jp_mcv.jt_local.getCellRenderer(localIndex, 0);
-//			Component cell = mmv.jp_mrv.jp_mcv.dtcr_local.getTableCellRendererComponent(mmv.jp_mrv.jp_mcv.jt_local, mmv.jp_mrv.jp_mcv.jt_local.getValueAt(localIndex, 0), true, true, localIndex, 0, 0);
-			//
-			 
-			
-			//Component cell = tcr.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			//시간 조건이 안맞는 값들 리스트에서 제거
-			System.out.println("기존 리스트 사이즈: "+mmv.movieList.size());
-			List<Map<String,Object>> list = new Vector<Map<String,Object>>();
-			Map<String, Object> map = null;
-			for(int i=0; i<mmv.movieList.size(); i++) {
-				map = new HashMap<String, Object>();
-				map.put("M_TITLE", mmv.movieList.get(i).get("M_TITLE"));
-				map.put("M_CERTIF", mmv.movieList.get(i).get("M_CERTIF"));
-				map.put("T_LOC", mmv.movieList.get(i).get("T_LOC"));
-				map.put("T_NAME", mmv.movieList.get(i).get("T_NAME"));
-				map.put("S_DATE", mmv.movieList.get(i).get("S_DATE"));
-				map.put("S_TIME", mmv.movieList.get(i).get("S_TIME"));
-				map.put("SC_NAME", mmv.movieList.get(i).get("SC_NAME"));
-				list.add(map);
-			}
-			for(int i=0; i<list.size(); i++) {
-				String time = list.get(i).get("S_TIME").toString();
-				int result = mmv.em.checkTime(time);
-				if(result==0) {//예약할 수 없는 시간이라면....
-					list.remove(i);
-				}
-			}
-			System.out.println("시간 조건 안맞는 값 제거: "+list.size()); 
-//			//선택된 지역이 아닌 값들 리스트에서 제거
-//			int selectRow = mmv.jp_mrv.jp_mcv.jt_local.getSelectedRow();
-//			String sel_loc = mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString();
+//	@Override
+//	public void mouseClicked(MouseEvent e) {}
+//	@Override
+//	public void mouseEntered(MouseEvent e) {}
+//	@Override
+//	public void mouseExited(MouseEvent e) {}
+//	@Override
+//	public void mousePressed(MouseEvent e) {}
+//	@Override
+//	public void mouseReleased(MouseEvent e) {
+//		Object obj = e.getSource();
+//		/************************************************************************************************
+//		 * 영화선택
+//		 */
+//		if(obj==mmv.jp_mrv.jp_mcv.jt_movie) {//영화선택
+//			
+//		}
+//		else if(obj==mmv.jp_mrv.jp_mcv.jt_local) {//지역선택
+//			System.out.println("지역 클릭");
+//			//선택되면 색 바꾸는
+//			//mmv.jp_mrv.jp_mcv.result = 2;
+//			int localIndex = mmv.jp_mrv.jp_mcv.jt_local.getSelectedRow(); 
+//			String localChoice =mmv.jp_mrv.jp_mcv.jt_local.getValueAt(localIndex, 0).toString();
+//			System.out.println("지역: "+ localChoice);
+////			mmv.jp_mrv.jp_mcv.localChoiceName = localChoice;
+////			mmv.jp_mrv.jp_mcv.jt_local.setSelectionBackground(Color.white);
+//			TableCellRenderer tcr = mmv.jp_mrv.jp_mcv.jt_local.getCellRenderer(localIndex, 0);
+////			Component cell = mmv.jp_mrv.jp_mcv.dtcr_local.getTableCellRendererComponent(mmv.jp_mrv.jp_mcv.jt_local, mmv.jp_mrv.jp_mcv.jt_local.getValueAt(localIndex, 0), true, true, localIndex, 0, 0);
+//			//
+//			 
+//			
+//			//Component cell = tcr.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+//			//시간 조건이 안맞는 값들 리스트에서 제거
+//			System.out.println("기존 리스트 사이즈: "+mmv.movieList.size());
+//			List<Map<String,Object>> list = new Vector<Map<String,Object>>();
+//			Map<String, Object> map = null;
+//			for(int i=0; i<mmv.movieList.size(); i++) {
+//				map = new HashMap<String, Object>();
+//				map.put("M_TITLE", mmv.movieList.get(i).get("M_TITLE"));
+//				map.put("M_CERTIF", mmv.movieList.get(i).get("M_CERTIF"));
+//				map.put("T_LOC", mmv.movieList.get(i).get("T_LOC"));
+//				map.put("T_NAME", mmv.movieList.get(i).get("T_NAME"));
+//				map.put("S_DATE", mmv.movieList.get(i).get("S_DATE"));
+//				map.put("S_TIME", mmv.movieList.get(i).get("S_TIME"));
+//				map.put("SC_NAME", mmv.movieList.get(i).get("SC_NAME"));
+//				list.add(map);
+//			}
 //			for(int i=0; i<list.size(); i++) {
-//				String loc = list.get(i).get("T_LOC").toString();
-//				if(!loc.equals(sel_loc)) {
+//				String time = list.get(i).get("S_TIME").toString();
+//				int result = mmv.em.checkTime(time);
+//				if(result==0) {//예약할 수 없는 시간이라면....
 //					list.remove(i);
 //				}
 //			}
-//			System.out.println("선택한 지역이 아닌 값 제거: "+list.size()); 
-//			//중복제거
-//			List<String> movielist = containMovieList(list);//"영화/연령"
-//			for(int j=0; j<movielist.size(); j++) {
-//				String check_movie = movielist.get(j);
-//				for(int i=0; i<mmv.jp_mrv.jp_mcv.dtm_movie.getRowCount(); i++) {
-//					String check_movie2 = mmv.jp_mrv.jp_mcv.dtm_movie.getValueAt(i, 1).toString();
-//					if(!check_movie2.equals(check_movie)) {
-//						//mmv.jp_mrv.jp_mcv.
-//					}
-//				}
-//			}
-			List<String> theaterlist = containTheaterList(list);//"지역/지점"
-			theaterDtm(theaterlist, localChoice);
-			List<String> datelist = containDateList(list);//날짜
-			List<String> timelist = containScrNameList(list);//"관/시간"
-			
-			
-			/*
-			 * 	String m_title = mmv.movieList.get(i).get("M_TITLE").toString();
-			String m_age = mmv.movieList.get(i).get("M_CERTIF").toString();
-			String m_loc = mmv.movieList.get(i).get("T_LOC").toString();
-			String m_theater = mmv.movieList.get(i).get("T_NAME").toString();
-			String m_date = mmv.movieList.get(i).get("S_DATE").toString();
-			String m_time = mmv.movieList.get(i).get("S_TIME").toString();
-			String m_screen = mmv.movieList.get(i).get("SC_NAME").toString();
-			 */
-//			List<String> containList = mmv.em.containList(mmv.movieList);
-//			List<Map<String, Object>> th_list = theaterTrim(containList, mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString());
-//			System.out.println( "여기!!!!!! "+mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString());
-//			mmv.jp_mrv.jp_mcv.jt_local.setSelectionBackground(Color.white);
-//			String select = mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString();
-//			System.out.println("select : " +select);
-//			//thCountTrim(th_list, null);
-		}
-		else if(obj==mmv.jp_mrv.jp_mcv.jt_theater) {//지점선택
-			
-		}
-		else if(obj==mmv.jp_mrv.jp_mcv.jt_date) {//날짜선택
-			
-		}
-		else if(obj==mmv.jp_mrv.jp_mcv.jt_time) {//관-시간선택
-			
-		}
-	}
+//			System.out.println("시간 조건 안맞는 값 제거: "+list.size()); 
+////			//선택된 지역이 아닌 값들 리스트에서 제거
+////			int selectRow = mmv.jp_mrv.jp_mcv.jt_local.getSelectedRow();
+////			String sel_loc = mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString();
+////			for(int i=0; i<list.size(); i++) {
+////				String loc = list.get(i).get("T_LOC").toString();
+////				if(!loc.equals(sel_loc)) {
+////					list.remove(i);
+////				}
+////			}
+////			System.out.println("선택한 지역이 아닌 값 제거: "+list.size()); 
+////			//중복제거
+////			List<String> movielist = containMovieList(list);//"영화/연령"
+////			for(int j=0; j<movielist.size(); j++) {
+////				String check_movie = movielist.get(j);
+////				for(int i=0; i<mmv.jp_mrv.jp_mcv.dtm_movie.getRowCount(); i++) {
+////					String check_movie2 = mmv.jp_mrv.jp_mcv.dtm_movie.getValueAt(i, 1).toString();
+////					if(!check_movie2.equals(check_movie)) {
+////						//mmv.jp_mrv.jp_mcv.
+////					}
+////				}
+////			}
+//			List<String> theaterlist = containTheaterList(list);//"지역/지점"
+//			theaterDtm(theaterlist, localChoice);
+//			List<String> datelist = containDateList(list);//날짜
+//			List<String> timelist = containScrNameList(list);//"관/시간"
+//			
+//			
+//			/*
+//			 * 	String m_title = mmv.movieList.get(i).get("M_TITLE").toString();
+//			String m_age = mmv.movieList.get(i).get("M_CERTIF").toString();
+//			String m_loc = mmv.movieList.get(i).get("T_LOC").toString();
+//			String m_theater = mmv.movieList.get(i).get("T_NAME").toString();
+//			String m_date = mmv.movieList.get(i).get("S_DATE").toString();
+//			String m_time = mmv.movieList.get(i).get("S_TIME").toString();
+//			String m_screen = mmv.movieList.get(i).get("SC_NAME").toString();
+//			 */
+////			List<String> containList = mmv.em.containList(mmv.movieList);
+////			List<Map<String, Object>> th_list = theaterTrim(containList, mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString());
+////			System.out.println( "여기!!!!!! "+mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString());
+////			mmv.jp_mrv.jp_mcv.jt_local.setSelectionBackground(Color.white);
+////			String select = mmv.jp_mrv.jp_mcv.dtm_local.getValueAt(selectRow, 0).toString();
+////			System.out.println("select : " +select);
+////			//thCountTrim(th_list, null);
+//		}
+//		else if(obj==mmv.jp_mrv.jp_mcv.jt_theater) {//지점선택
+//			
+//		}
+//		else if(obj==mmv.jp_mrv.jp_mcv.jt_date) {//날짜선택
+//			
+//		}
+//		else if(obj==mmv.jp_mrv.jp_mcv.jt_time) {//관-시간선택
+//			
+//		}
+//	}
 	
 	
 	/**************************************************************************************************
