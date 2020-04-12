@@ -3,10 +3,7 @@ package maxmovie;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -60,12 +57,12 @@ public class SeatChoiceView extends JPanel{
 	//0:빈자리  1:결제 진행중  2:결제완료
 
 	public void seatSetting(List<Map<String, Object>> seatList) {
+		
 		this.seatList = seatList;
 		for(Map<String, Object> rmap: this.seatList) {
 			System.out.println("SeatChoiceView"+rmap.get("좌석").toString() +","+ rmap.get("현황").toString());
 		}
-		
-		//80석
+		//[80]석 셋팅 
 		if(seatList.size()==80) {
 			jbts_seat = new JButton[10][8];
 			int k=0;
@@ -119,7 +116,8 @@ public class SeatChoiceView extends JPanel{
 				}
 			}
 		}
-	}
+		this.add(jp_center);
+	}//end of seatSetting method
 		//[120]석 셋팅 
 //		if(seatList.size()==120) {
 //			jbts_seat = new JButton[10][12];
@@ -449,7 +447,7 @@ public class SeatChoiceView extends JPanel{
 		this.add(jl_info2_1);
 		this.add(jl_info3_1);
 		this.add(jl_screen);
-		this.add(jp_center);
+//		this.add(jp_center);
 	}
 
 	

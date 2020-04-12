@@ -5,7 +5,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import java.util.Vector;
@@ -19,11 +22,9 @@ import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
-import javafx.scene.control.TableColumn;
-
-
-public class MovieChoiceView extends JPanel{
+public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	Vector<String> arealist = null;//지역정보 저장
 	Vector<String> loclist = null;//지점정보 저장
 
@@ -74,7 +75,6 @@ public class MovieChoiceView extends JPanel{
 //	String 				data_theater[][] 		= new String[0][1];
 
 	DefaultTableModel 	dtm_theater  			= new DefaultTableModel(data_theater, col_theater);
-
 	JTable 				jt_theater 				= new JTable(dtm_theater);
 	JScrollPane 		jsp_theater 			= new JScrollPane(jt_theater);
 	
@@ -157,11 +157,6 @@ public class MovieChoiceView extends JPanel{
 		        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		        ((JComponent)c).setBorder(new LineBorder(Color.black,0));
                 c.setBackground(Color.lightGray);
-                /******************************
-                 * 지우지마시오
-                 * table.isRowSelected(row)
-                 * isSelected
-                 ******************************/
 		        if (!isSelected) {
 		        	if(locResult==0) {
 		        		//맨처음 맨위에 선택
@@ -178,63 +173,64 @@ public class MovieChoiceView extends JPanel{
 		        	}
 		        } else {
 		        	if(locResult==2) {
-			        		((JComponent)c).setBorder(new LineBorder(Color.black,3));
-			        		c.setBackground(Color.white);
-			                localChoice = (String)value;
-			        		System.out.println("선택한 row : " + row);
-			                System.out.println("선택한 (String)value : " + (String)value);
-			                System.out.println("선택한 column : " + column);
-			                if(localChoice == "부산") {
-			                	  for(int i=0; i<dtm_theater.getRowCount(); i++) {
-					                	dtm_theater.removeRow(0);
-					                }
-			                	/*************************************
-			                	 * 1.localChoice의 정보(아마도 ticketingVo.setLocal?한정보를 get?)와
-			                	 * 현재 선택되어진 정보들 (movieChoice, movieLocal, movieTheater, movieDate, movieTime)을 가지고
-			                	 * ""&null인지 체크하고 !=null 이면 그정보를 가져와서 DB에 들려 새로운 목록들을 List 또는 vector로 뽑는다.(뭘로 뽑는지 몰름)
-			                	 * 2.리스트형이면 벡터형으로 바꿔넣는다. OR 벡터형이라면 다이렉트로 로우를 박는다.
-			                	 * //로우로 박는놈들이 있고, 로우로 안박고 순서만 다시 정렬하여 색상으로 분류만 해놓는 두가지경우 모두 사용해야한다.
-			                	 * 영화 : 색상분류, 지역 : 색상분류(선택하였을때만), 지점 : 색상  
-			                	 * 3.박은뒤 로우색 변경한다.
-			                	 *밑은 리스트형인경우 뽑아서 넣기
-			                	 ****************************************/
-			                	List<String> movieList = new ArrayList<>(); 
-			                	List<String> localList = new ArrayList<>(); 
-			                	List<String> teatherList = new ArrayList<>(); 
-			                	List<String> dateList = new ArrayList<>(); 
-			                	List<String> timeList = new ArrayList<>();
-			                	
-			                	//리스트형태로 올것이다 1번
-			                	
-			                	
-			                	teatherList.add("해운대");
-			                	teatherList.add("부산");
-			                	teatherList.add("서면");
+		        				        		
+		        		((JComponent)c).setBorder(new LineBorder(Color.black,3));
+		        		c.setBackground(Color.white);
+		                localChoice = (String)value;
+		        		System.out.println("선택한 row : " + row);
+		                System.out.println("선택한 (String)value : " + (String)value);
+		                System.out.println("선택한 column : " + column);
+		                if(localChoice == "부산") {
+		                	  for(int i=0; i<dtm_theater.getRowCount(); i++) {
+				                	dtm_theater.removeRow(0);
+				                }
+		                	/*************************************
+		                	 * 1.localChoice의 정보(아마도 ticketingVo.setLocal?한정보를 get?)와
+		                	 * 현재 선택되어진 정보들 (movieChoice, movieLocal, movieTheater, movieDate, movieTime)을 가지고
+		                	 * ""&null인지 체크하고 !=null 이면 그정보를 가져와서 DB에 들려 새로운 목록들을 List 또는 vector로 뽑는다.(뭘로 뽑는지 몰름)
+		                	 * 2.리스트형이면 벡터형으로 바꿔넣는다. OR 벡터형이라면 다이렉트로 로우를 박는다.
+		                	 * //로우로 박는놈들이 있고, 로우로 안박고 순서만 다시 정렬하여 색상으로 분류만 해놓는 두가지경우 모두 사용해야한다.
+		                	 * 영화 : 색상분류, 지역 : 색상분류(선택하였을때만), 지점 : 색상  
+		                	 * 3.박은뒤 로우색 변경한다.
+		                	 *밑은 리스트형인경우 뽑아서 넣기
+		                	 ****************************************/
+		                	List<String> movieList = new ArrayList<>(); 
+		                	List<String> localList = new ArrayList<>(); 
+		                	List<String> teatherList = new ArrayList<>(); 
+		                	List<String> dateList = new ArrayList<>(); 
+		                	List<String> timeList = new ArrayList<>();
+		                	
+		                	//리스트형태로 올것이다 1번
+		                	
+		                	
+		                	teatherList.add("해운대");
+		                	teatherList.add("부산");
+		                	teatherList.add("서면");
 //			                	for(int i=0; i<list.size();i++) {
 //			                		Vector<String> v = new Vector<>();
 //					                v.add(list.get(i));
 //					                dtm_theater.addRow(v);	
 //			                	}
-			                	
-			                	//벡터로 바로받을것이다 2번
-			                	//샘플 시작
-		                		Vector<String> v = new Vector<>();
-		                		
-		                		//샘플 끝
+		                	
+		                	//벡터로 바로받을것이다 2번
+		                	//샘플 시작
+	                		Vector<String> v = new Vector<>();
+	                		
+	                		//샘플 끝
 //			                	for(int i=0; i<list.size();i++) {
 //			                	}
-			                	
-			                	
-			                }
-			                
-			                
-			                
-			                
-			                
-			                
-			                
-			                
-			                
+		                	
+		                	
+		                }
+		                
+		                
+		                
+		                
+		                
+		                
+		                
+		                
+		                
 			                
 			                
 			                
@@ -251,6 +247,7 @@ public class MovieChoiceView extends JPanel{
 		        return c;
 		    }
 		};
+		
 		dtcr_local.setHorizontalAlignment(JLabel.CENTER);
 		jt_local.getColumn("지역").setCellRenderer(dtcr_local);
 		jt_local.setRowHeight(35);
@@ -377,8 +374,7 @@ public class MovieChoiceView extends JPanel{
 //		jt_local.addMouseListener(this);
 //		jt_theater.addMouseListener(em);
 //		jt_date.addMouseListener(em);
-//		jt_time.addMouseListener(em);		
-		
+//		jt_time.addMouseListener(em);	
 	}
 
 	public static void main(String[] args) {
@@ -401,5 +397,11 @@ public class MovieChoiceView extends JPanel{
 		mmv.jbt_myPage.setVisible(true);
 		mmv.jbt_ticketing.setVisible(true);
 		
+	}
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+			int row, int column) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
