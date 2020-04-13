@@ -171,8 +171,12 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		jsp_time.setBounds(1000, 60, 346, 600);
 		jl_timeLock.setBounds(1000, 60, 346, 600);
 	
-		jl_timeLock.setVisible(false);///////////////////////////////////////
+		jl_timeLock.setVisible(true);///////////////////////////////////////
 		
+		_19.setDescription("19");
+		_15.setDescription("15");
+		_12.setDescription("12");
+		_0.setDescription("0");
 		jsp_movie.getViewport().setBackground(Color.white);
 		jt_movie.setBackground(Color.white);
 		DefaultTableCellRenderer dtcr_movie = new DefaultTableCellRenderer();
@@ -283,6 +287,7 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		jl_time.setHorizontalAlignment(JLabel.CENTER);
 		jl_timeLock.setHorizontalAlignment(JLabel.CENTER);
 		
+		this.add(jl_timeLock);
 		this.add(jl_movie);
 		this.add(jl_locThe);
 		this.add(jl_date);
@@ -292,7 +297,6 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		this.add(jsp_theater);
 		this.add(jsp_date);
 		this.add(jsp_time);
-		this.add(jl_timeLock);
 	}
 	
 

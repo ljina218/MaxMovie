@@ -72,16 +72,16 @@ public class MovieReserationView extends JPanel{
 		jbt_goMovieChoice.setBackground(new Color(52, 152, 219));
 		jbt_goMovieChoice.setForeground(Color.white);		
 		jbt_goMovieChoice.setVisible(false);
-		//jbt_goSeatChoice.setBackground(new Color(230, 230, 230));
-		//jbt_goSeatChoice.setForeground(Color.gray);
-		//jbt_goSeatChoice.setEnabled(false);
+		jbt_goSeatChoice.setBackground(new Color(230, 230, 230));
+		jbt_goSeatChoice.setForeground(Color.gray);
+		jbt_goSeatChoice.setEnabled(false);
 		jbt_goPayChoice.setBackground(new Color(230, 230, 230));
 		jbt_goPayChoice.setForeground(Color.gray);
 		jbt_goPayChoice.setEnabled(false);
 		
-		jbt_goSeatChoice.setForeground(Color.white);
-		jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
-		jbt_goSeatChoice.setEnabled(true);
+//		jbt_goSeatChoice.setForeground(Color.white);
+//		jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
+//		jbt_goSeatChoice.setEnabled(true);
 		//
 		
 		//

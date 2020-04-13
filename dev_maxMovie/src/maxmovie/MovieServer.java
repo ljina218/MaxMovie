@@ -68,7 +68,7 @@ public class MovieServer extends JFrame implements Runnable{
 	public void run() {
 		globalist = new Vector<MovieServerThread>();
 		try {
-			server = new ServerSocket(5500);
+			server = new ServerSocket(5400);
 		} catch (Exception e) {
 			System.out.println(e.toString());
 			e.printStackTrace();
