@@ -35,8 +35,6 @@ public class MemInfoView extends JPanel {
 //		현접속유저아이디
 		//jl_pageInfoLeft.setText(em.mmv.mem_nick);
 		//jl_mem_id.setText(em.mmv.mem_id);
-		jl_pageInfoLeft.setText("닉네임");
-		jl_mem_id.setText("아이디");
 		
 		/*************************************************
 		 * 아이디랑 비번 불일치시

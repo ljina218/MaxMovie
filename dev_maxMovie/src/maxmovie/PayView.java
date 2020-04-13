@@ -19,7 +19,7 @@ public class PayView extends JPanel{
 	JLabel						jl_mid_header			= new JLabel("     결제수단");
 
 	JRadioButton 				radio[] 				= new JRadioButton[2];
-	String 						radio_name[]			= {"계좌이체", "카카오페이"};
+	String 						radio_name[]			= {"카드결제", "계좌이체"};
 	ButtonGroup					group					= new ButtonGroup();
 
 	JPanel						jp_mid_body				= new JPanel();
@@ -35,11 +35,9 @@ public class PayView extends JPanel{
 		initDisplay();
 	}
 	//0빈자리  1결제 진행중  2결제완료
-
 	public void initDisplay() {
 		this.setLayout(null);
 		this.setBackground(Color.white);
-		
 		
 		 for(int i=0; i<radio.length; i++){
 	            radio[i] = new JRadioButton(radio_name[i]);
@@ -108,7 +106,37 @@ public class PayView extends JPanel{
 		mmv.jbt_logout.setVisible(true);
 		mmv.jbt_myPage.setVisible(true);
 		mmv.jbt_ticketing.setVisible(true);
-	
-	}
+		
+		//라디오버튼 클릭 안되어있다면
+		mmv.jp_mrv.jbt_backSeatChoice.setBackground(new Color(52, 152, 219));
+		mmv.jp_mrv.jbt_backSeatChoice.setForeground(Color.white);	
+		mmv.jp_mrv.jbt_backSeatChoice.setEnabled(true);
+		mmv.jp_mrv.jbt_backSeatChoice.setVisible(true);
 
+		mmv.jp_mrv.jbt_goPayInfo.setBackground(new Color(230, 230, 230));
+		mmv.jp_mrv.jbt_goPayInfo.setForeground(Color.gray);
+		mmv.jp_mrv.jbt_goPayInfo.setVisible(true);
+		mmv.jp_mrv.jbt_goPayInfo.setEnabled(false);
+
+		mmv.jp_mrv.jbt_goSeatChoice.setVisible(false);
+		/******************************************************************
+		 * 얘네 되어있어야함
+		 * mmv.jp_mrv.jbt_backMovieChoice.setVisible(true);
+		 * mmv.jp_mrv.jbt_backSeatChoice.setVisible(false);
+		 * mmv.jp_mrv.jbt_goSeatChoice.setVisible(false);
+		 * mmv.jp_mrv.jbt_goPayChoice.setVisible(true);
+		 * mmv.jp_mrv.jbt_goPayInfo.setVisible(false);	
+		******************************************************************/
+
+		//라디오버튼 하나라도 클릭한다면
+//		mmv.jp_mrv.jbt_backSeatChoice.setBackground(new Color(52, 152, 219));
+//		mmv.jp_mrv.jbt_backSeatChoice.setForeground(Color.white);
+//		mmv.jp_mrv.jbt_backSeatChoice.setEnabled(true);
+//		mmv.jp_mrv.jbt_backSeatChoice.setVisible(true);
+//
+//		mmv.jp_mrv.jbt_goPayInfo.setBackground(new Color(52, 152, 219));
+//		mmv.jp_mrv.jbt_goPayInfo.setForeground(Color.white);
+//		mmv.jp_mrv.jbt_goPayInfo.setVisible(true);
+//		mmv.jp_mrv.jbt_goPayInfo.setEnabled(true);
+	}
 }

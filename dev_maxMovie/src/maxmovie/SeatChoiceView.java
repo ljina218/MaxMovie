@@ -3,10 +3,7 @@ package maxmovie;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -48,6 +45,7 @@ public class SeatChoiceView extends JPanel{
 	
 	List<String> 				seatChoiceList			= new ArrayList<>();				
 	
+	
 	public SeatChoiceView(EventMapping em) {
 		//리스트 받는곳(매개변수추가?) public SeatChoiceView(EventMapping em, ArrayList<Map<String, Object>> seatList)
 		//this.seatList = seatList;
@@ -59,80 +57,12 @@ public class SeatChoiceView extends JPanel{
 	//0:빈자리  1:결제 진행중  2:결제완료
 
 	public void seatSetting(List<Map<String, Object>> seatList) {
+		
 		this.seatList = seatList;
 		for(Map<String, Object> rmap: this.seatList) {
 			System.out.println("SeatChoiceView"+rmap.get("좌석").toString() +","+ rmap.get("현황").toString());
 		}
-
-		//만약 다른곳에서 온다면 이런형태로 올것이다. 임시모델↓↓↓
-		//A1~J18 셋팅 좌석 (80석)
-
-//		for(char i=65; i<75; i++) {
-//			Map<String, Object> map = null;
-//			for(int j=1; j<9; j++) {
-//				map = new HashMap<>();
-//				map.put("좌석", (char)i+Integer.toString(j));
-//				map.put("현황", 0);
-//				System.out.println(map.get("좌석") + ", " + map.get("현황"));
-//				seatList.add(map);
-//			}
-//		}
-
-		for(char i=65; i<75; i++) {
-			Map<String, Object> map = null;
-			for(int j=1; j<9; j++) {
-				map = new HashMap<>();
-				map.put("좌석", (char)i+Integer.toString(j));
-				map.put("현황", 0);
-				System.out.println(map.get("좌석") + ", " + map.get("현황"));
-				seatList.add(map);
-			}
-		}
-		
-
-		//A1~J12 셋팅 좌석 (120석)
-//		for(char i=65; i<75; i++) {
-//			Map<String, Object> map = null;
-//			for(int j=1; j<13; j++) {
-//				map = new HashMap<>();
-//				map.put("좌석", (char)i+Integer.toString(j));
-//				map.put("현황", 0);
-//				System.out.println(map.get("좌석") + ", " + map.get("현황"));
-//				seatList.add(map);
-//			}
-//		}
-//		//A1~J14 셋팅 좌석 (140석)
-//		for(char i=65; i<75; i++) {
-//			Map<String, Object> map = null;  
-//			for(int j=1; j<15; j++) {
-//			map = new HashMap<>();
-//				map.put("좌석", (char)i+Integer.toString(j));
-//				map.put("현황", 0);
-//				System.out.println(map.get("좌석") + ", " + map.get("현황"));
-//				seatList.add(map);
-//			}
-//		}
-		
-		//A1~J16 셋팅 좌석 (160석)
-//		for(int i=65; i<75; i++) {
-//			Map<String, Object> map = null;  
-//			for(int j=1; j<17; j++) {
-//				map = new HashMap<>();
-//				map.put("좌석", (char)i+Integer.toString(j));
-//				if(j<8) {
-//					map.put("현황", 0);	
-//				} else {
-//					map.put("현황", 1);
-//				}
-//				System.out.println(map.get("좌석") + ", " + map.get("현황"));
-//				seatList.add(map);
-//			}
-//		}
-		
-		//이런형태로 올것이다↑↑↑
-		
-		
-		//[120]석 셋팅 
+		//[80]석 셋팅 
 		if(seatList.size()==80) {
 			jbts_seat = new JButton[10][8];
 			int k=0;
@@ -186,7 +116,8 @@ public class SeatChoiceView extends JPanel{
 				}
 			}
 		}
-	}
+		this.add(jp_center);
+	}//end of seatSetting method
 		//[120]석 셋팅 
 //		if(seatList.size()==120) {
 //			jbts_seat = new JButton[10][12];
@@ -297,6 +228,8 @@ public class SeatChoiceView extends JPanel{
 //			}
 //		}
 //	}
+	
+	
 		//[160]석 셋팅 
 //		if(seatList.size()==160) {
 //			jbts_seat = new JButton[10][16];
@@ -514,8 +447,11 @@ public class SeatChoiceView extends JPanel{
 		this.add(jl_info2_1);
 		this.add(jl_info3_1);
 		this.add(jl_screen);
-		this.add(jp_center);
+//		this.add(jp_center);
 	}
+
+	
+	
 	
 	public static void main(String[] args) {
 		MaxMovieView mmv = new MaxMovieView();
@@ -529,13 +465,14 @@ public class SeatChoiceView extends JPanel{
 		mmv.jp_mv.jp_miv.setVisible(false);
 		mmv.jp_mv.jp_muv.setVisible(false);
 		mmv.jp_rv.setVisible(false);
-
 		mmv.jl_logo_small.setVisible(true);
 		mmv.jl_nickInfo.setVisible(true);
 		mmv.jl_nickInfoEnd.setVisible(true);
 		mmv.jbt_logout.setVisible(true);
 		mmv.jbt_myPage.setVisible(true);
 		mmv.jbt_ticketing.setVisible(true);
-	
+		mmv.jp_mrv.jbt_backMovieChoice.setVisible(true);
+		mmv.jp_mrv.jbt_goSeatChoice.setVisible(false);
+		mmv.jp_mrv.jbt_goPayChoice.setVisible(true);
 	}
 }

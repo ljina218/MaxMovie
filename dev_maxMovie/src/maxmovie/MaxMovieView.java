@@ -218,6 +218,7 @@ public class MaxMovieView extends JFrame{
 	}
 	public static void main(String[] args) {
 		new MaxMovieView();
+		
 	}
 	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
 		try {
