@@ -45,10 +45,6 @@ public class MaxMovieView extends JFrame{
 	Socket socket = null;
 	ObjectOutputStream oos = null;
 	ObjectInputStream ois = null;
-
-	
-	
-	
 	
 	//**메인프레임의 틀 메인프레임의 고정된 북쪽패널과 남쪽패널
 	JLabel						jl_logo_small		= new JLabel() {
@@ -81,13 +77,17 @@ public class MaxMovieView extends JFrame{
 	JPanel 						jp_east 			= new JPanel();
 	JTextPane 					jtp_south_south		= new JTextPane();	
 	//로그인뷰
+	
+	
+	
+	
 	LoginView 					jp_lv 				= new LoginView(em);
 	//마이페이지뷰
 	MyPageView 					jp_mv 				= new MyPageView(em);
 	//무비리저레이션뷰
 	MovieReserationView 		jp_mrv 				= new MovieReserationView(em);
 	//리절트뷰
-	ResultView 					jp_rv 				= new ResultView(em);
+	ResultView 					jp_rv 				= new ResultView();
 	
 	public MaxMovieView() {
 		initDisplay();
@@ -183,14 +183,15 @@ public class MaxMovieView extends JFrame{
 		jp_mv.setBounds(0, 0, 1535, 770);
 		jp_mrv.setBounds(0, 0, 1535, 770);
 		jp_rv.setBounds(0, 0, 1535, 770);
+
 		jp_center.add(jp_lv);
 		jp_center.add(jp_mv);
 		jp_center.add(jp_mrv);
 		jp_center.add(jp_rv);
-		 
+
 		jp_mv.setVisible(false);
 		jp_mrv.setVisible(false);
-		jp_rv.setVisible(false);
+		jp_lv.setVisible(false);
 		jp_lv.setVisible(true);
 		
 		this.add(jl_nickInfo);
@@ -216,13 +217,17 @@ public class MaxMovieView extends JFrame{
 
 	}
 	public static void main(String[] args) {
+		MovieServer ms = new MovieServer();
+		ms.display();
+		Thread th = new Thread(ms);
+		th.start();
 		new MaxMovieView();
 		
 	}
 	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
 		try {
 			movieList = new Vector<Map<String,Object>>();//클라이언트에 저장할 영화정보 리스트 생성
-			socket = new Socket("192.168.0.237",5500);
+			socket = new Socket("192.168.0.17",6000);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
 			oos.writeObject(MovieProtocol.SELECT+"#");//영화정보 주세여

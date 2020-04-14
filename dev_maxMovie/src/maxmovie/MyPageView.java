@@ -97,9 +97,5 @@ public class MyPageView extends JPanel{
 		mmv.jp_mv.jp_thv.setVisible(true);
 		mmv.jp_mv.jp_miv.setVisible(false);
 		mmv.jp_mv.jp_muv.setVisible(false);
-		mmv.jp_rv.setVisible(false);
-
-
-	
 	}
 }

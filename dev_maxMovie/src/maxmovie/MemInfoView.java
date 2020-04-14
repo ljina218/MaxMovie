@@ -89,6 +89,10 @@ public class MemInfoView extends JPanel {
 
 
 	public static void main(String[] args) {
+		MovieServer ms = new MovieServer();
+		ms.display();
+		Thread th = new Thread(ms);
+		th.start();
 		MaxMovieView mmv = new MaxMovieView();
 		mmv.jp_lv.setVisible(false);
 		mmv.jp_mrv.setVisible(false);
@@ -99,7 +103,6 @@ public class MemInfoView extends JPanel {
 		mmv.jp_mv.jp_thv.setVisible(false);
 		mmv.jp_mv.jp_miv.setVisible(true);
 		mmv.jp_mv.jp_muv.setVisible(false);
-		mmv.jp_rv.setVisible(false);
 		
 		
 		mmv.jl_logo_small.setVisible(true);

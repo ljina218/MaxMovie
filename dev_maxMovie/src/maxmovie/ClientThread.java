@@ -1,7 +1,6 @@
 package maxmovie;
 
-import java.util.ArrayList;
-
+import java.awt.Color;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -9,12 +8,10 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.border.LineBorder;
 
-import com.sun.jndi.toolkit.dir.ContainmentFilter;
 
 
 public class ClientThread extends Thread{
@@ -147,6 +144,14 @@ public class ClientThread extends Thread{
 							map.put("S_DATE", mmv.movieList.get(i).get("S_DATE"));
 							map.put("S_TIME", mmv.movieList.get(i).get("S_TIME"));
 							map.put("SC_NAME", mmv.movieList.get(i).get("SC_NAME"));
+							
+							System.out.println("뿌리는거 : " + map.get("M_TITLE"));
+							System.out.println("뿌리는거 : " + map.get("T_LOC"));
+							System.out.println("뿌리는거 : " + map.get("M_CERTIF"));
+							System.out.println("뿌리는거 : " + map.get("T_NAME"));
+							System.out.println("뿌리는거 : " + map.get("S_DATE"));
+							System.out.println("뿌리는거 : " + map.get("S_TIME"));
+							System.out.println("뿌리는거 : " + map.get("SC_NAME"));
 							list.add(map);
 						}
 						for(int i=0; i<list.size(); i++) {
@@ -164,6 +169,8 @@ public class ClientThread extends Thread{
 						mmv.em.containDateList(list);
 						mmv.em.dateDtm();
 						mmv.em.scrDtm(mmv.em.containScrNameList(list));
+						
+						
 					}
 					
 				}break;

@@ -254,6 +254,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 		}
 	}
 	
+
 	//지역-지점
 	public List<String> containTheaterList(List<Map<String, Object>> userList) {
 		List<String> containList = new Vector<String>();
@@ -1395,10 +1396,12 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener{
 				mmv.jp_mrv.jbt_goPayChoice.setBackground(new Color(52, 152, 219));
 				mmv.jp_mrv.jbt_goPayChoice.setForeground(Color.white);
 				mmv.jp_mrv.jbt_goPayChoice.setEnabled(true);
+				System.out.println("여기냐");
 			} else {
 				mmv.jp_mrv.jbt_goPayChoice.setBackground(new Color(230, 230, 230));
 				mmv.jp_mrv.jbt_goPayChoice.setForeground(Color.gray);
 				mmv.jp_mrv.jbt_goPayChoice.setEnabled(false);
+				System.out.println("여기냐2");
 			}
 		}
 		

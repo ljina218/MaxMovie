@@ -160,6 +160,10 @@ public class PayInfoView extends JDialog{
 	}
 	
 	public static void main(String[] args) {
+		MovieServer ms = new MovieServer();
+		ms.display();
+		Thread th = new Thread(ms);
+		th.start();
 		MaxMovieView mmv = new MaxMovieView();
 		mmv.jp_lv.setVisible(false);
 		mmv.jp_mrv.setVisible(true);

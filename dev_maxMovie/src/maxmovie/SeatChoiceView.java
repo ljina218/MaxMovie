@@ -62,6 +62,9 @@ public class SeatChoiceView extends JPanel{
 		for(Map<String, Object> rmap: this.seatList) {
 			System.out.println("SeatChoiceView"+rmap.get("좌석").toString() +","+ rmap.get("현황").toString());
 		}
+		
+		
+		
 		//[80]석 셋팅 
 		if(seatList.size()==80) {
 			jbts_seat = new JButton[10][8];
@@ -116,6 +119,7 @@ public class SeatChoiceView extends JPanel{
 				}
 			}
 		}
+
 		this.add(jp_center);
 	}//end of seatSetting method
 		//[120]석 셋팅 
@@ -454,6 +458,10 @@ public class SeatChoiceView extends JPanel{
 	
 	
 	public static void main(String[] args) {
+		MovieServer ms = new MovieServer();
+		ms.display();
+		Thread th = new Thread(ms);
+		th.start();
 		MaxMovieView mmv = new MaxMovieView();
 		mmv.jp_lv.setVisible(false);
 		mmv.jp_mrv.setVisible(true);

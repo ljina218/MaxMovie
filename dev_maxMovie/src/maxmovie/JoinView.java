@@ -117,16 +117,16 @@ public class JoinView extends JDialog {
 		this.setLayout(null);
 		this.getContentPane().setBackground(Color.white);
 
-		jtf_id.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-		jpf_pw.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-		jtf_name.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-		jtf_nick.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-		jcb_year.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-		jcb_month.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-		jcb_day.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-		jcb_gender.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-		jtf_email.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-		jtf_email_r.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
+		jtf_id.setBorder(new LineBorder(new Color(0,80,255),3));
+		jpf_pw.setBorder(new LineBorder(new Color(0,80,255),3));
+		jtf_name.setBorder(new LineBorder(new Color(0,80,255),3));
+		jtf_nick.setBorder(new LineBorder(new Color(0,80,255),3));
+		jcb_year.setBorder(new LineBorder(new Color(0,80,255),3));
+		jcb_month.setBorder(new LineBorder(new Color(0,80,255),3));
+		jcb_day.setBorder(new LineBorder(new Color(0,80,255),3));
+		jcb_gender.setBorder(new LineBorder(new Color(0,80,255),3));
+		jtf_email.setBorder(new LineBorder(new Color(0,80,255),3));
+		jtf_email_r.setBorder(new LineBorder(new Color(0,80,255),3));
 		
 
 		jl_id.setHorizontalAlignment(JLabel.RIGHT);

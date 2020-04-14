@@ -3,6 +3,7 @@ package maxmovie;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,6 +14,7 @@ import java.util.StringTokenizer;
 
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -20,29 +22,31 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+
+import javafx.scene.layout.Border;
 
 public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	Vector<String> arealist = null;//지역정보 저장
 	Vector<String> loclist = null;//지점정보 저장
 
-	JLabel				jl_movie				= new JLabel("영화");
-	JLabel				jl_locThe				= new JLabel("극장");
-	JLabel				jl_date					= new JLabel("날짜");
-	JLabel				jl_time					= new JLabel("시간");
-	JLabel				jl_timeLock				= new JLabel("영화 극장 날짜를 선택해 주세요.");
+	JLabel					jl_movie				= new JLabel("영화");
+	JLabel					jl_locThe				= new JLabel("극장");
+	JLabel					jl_date					= new JLabel("날짜");
+	JLabel					jl_time					= new JLabel("시간");
+	JLabel					jl_timeLock				= new JLabel("영화 극장 날짜를 선택해 주세요.");
 
-	ImageIcon			_19					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade19.png");
-	ImageIcon			_15					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade15.png");
-	ImageIcon			_12					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade12.png");
-	ImageIcon			_0					= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade0.png");
-
+	ImageIcon				_19						= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade19.png");
+	ImageIcon				_15						= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade15.png");
+	ImageIcon				_12						= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade12.png");
+	ImageIcon				_0						= new ImageIcon("C:\\git_MaxMovie\\dev_maxMovie\\src\\maxmovie\\grade0.png");
 	
-	String 				col_movie[] 			= {"이용등급", "영화"};
-	Object 				data_movie[][] 			= new String[0][2];
-	DefaultTableModel 	dtm_movie  				= new DefaultTableModel(data_movie, col_movie) {
+	String 					col_movie[] 			= {"이용등급", "영화"};
+	Object 					data_movie[][] 			= new String[0][2];
+	DefaultTableModel 		dtm_movie  				= new DefaultTableModel(data_movie, col_movie) {
         @Override
         public Class<?> getColumnClass(int column) {
             switch (column) {
@@ -58,65 +62,75 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 			return false;
 		}
     };
-	JTable 				jt_movie 				= new JTable(dtm_movie);
-	JScrollPane 		jsp_movie 				= new JScrollPane(jt_movie);
+	JTable 					jt_movie 				= new JTable(dtm_movie);
+	JScrollPane 			jsp_movie 				= new JScrollPane(jt_movie);
 	
-	String 				col_local[] 			= {"지역"};
-	String 				data_local[][] 			= {{"서울"}, {"전주"}, {"부산"}};
-//	String 				data_local[][] 			= new String[0][1];
+	String 					col_local[] 			= {"지역"};
+	String 					data_local[][] 			= new String[0][1];
 
-	DefaultTableModel 	dtm_local  				= new DefaultTableModel(data_local, col_local);
+	DefaultTableModel 		dtm_local  				= new DefaultTableModel(data_local, col_local);
 
-	JTable 				jt_local				= new JTable(dtm_local);
-	JScrollPane 		jsp_local				= new JScrollPane(jt_local);
+	JTable 					jt_local				= new JTable(dtm_local);
+	JScrollPane 			jsp_local				= new JScrollPane(jt_local);
 	
-	String 				col_theater[] 			= {"지점"};
-	String 				data_theater[][] 		= {{"강남"}, {"건대"}, {"영등포"}};
-//	String 				data_theater[][] 		= new String[0][1];
+	String 					col_theater[] 			= {"지점"};
+	String 					data_theater[][] 		= new String[0][1];
 
-	DefaultTableModel 	dtm_theater  			= new DefaultTableModel(data_theater, col_theater);
-	JTable 				jt_theater 				= new JTable(dtm_theater);
-	JScrollPane 		jsp_theater 			= new JScrollPane(jt_theater);
+	DefaultTableModel 		dtm_theater  			= new DefaultTableModel(data_theater, col_theater);
+	JTable 					jt_theater 				= new JTable(dtm_theater);
+	JScrollPane 			jsp_theater 			= new JScrollPane(jt_theater);
 	
-	String 				col_date[] 				= {"날짜"};
-	String 				data_date[][] 			= new String[0][1];
+	String 					col_date[] 				= {"날짜"};
+	String 					data_date[][] 			= new String[0][1];
 
-	DefaultTableModel 	dtm_date 				= new DefaultTableModel(data_date, col_date);
-	JTable 				jt_date 				= new JTable(dtm_date);
-	JScrollPane 		jsp_date 				= new JScrollPane(jt_date);
+	DefaultTableModel 		dtm_date 				= new DefaultTableModel(data_date, col_date);
+	JTable 					jt_date 				= new JTable(dtm_date);
+	JScrollPane 			jsp_date 				= new JScrollPane(jt_date);
 	
-	String 				col_time[] 				= {"상영관","시간"};
-	String 				data_time[][] 			= new String[0][2];
-	DefaultTableModel 	dtm_time  				= new DefaultTableModel(data_time, col_time);
-	JTable 				jt_time 				= new JTable(dtm_time);
-	JScrollPane 		jsp_time 				= new JScrollPane(jt_time);
+	String 					col_time[] 				= {"상영관","시간"};
+	String 					data_time[][] 			= new String[0][2];
+	DefaultTableModel 		dtm_time  				= new DefaultTableModel(data_time, col_time);
+	JTable 					jt_time 				= new JTable(dtm_time);
+	JScrollPane 			jsp_time 				= new JScrollPane(jt_time);
 	
-	EventMapping 		em 						= null;
+	EventMapping 			em 						= null;
+	
+	DefaultTableCellRenderer 	dtcr_movie 			= null;
+	DefaultTableCellRenderer 	dtcr_local 			= null;
+	DefaultTableCellRenderer 	dtcr_theater 		= null;
+	DefaultTableCellRenderer 	dtcr_date 			= null;
+	DefaultTableCellRenderer 	dtcr_time 			= null;
 
 
-	int					movieResult				= 0;
-	int					locResult				= 0;
-	int					theaterResult			= 0;
-	int					dateResult				= 0;
-	int					timeResult				= 0;
+	int							crfResult			= 0;
+	int							movieResult			= 0;
+	int							locResult			= 0;
+	int							theaterResult		= 0;
+	int							dateResult			= 0;
+	int							screenResult		= 0;
+	int							timeResult			= 0;
 	
 	
-	int movieIndex = 0;
-	String movieChoice = "";
-	int localIndex = 0;
-	String localChoice = "";
-	int theaterIndex = 0;
-	String theaterChoice = "";
-	int dateIndex = 0;
-	String dateChoice = "";
-	int timeIndex = 0;
-	String timeChoice = "";
-	
-	List<String> movieList = new ArrayList<>(); 
-	List<String> localList = new ArrayList<>(); 
-	List<String> teatherList = new ArrayList<>(); 
-	List<String> dateList = new ArrayList<>(); 
-	List<String> timeList = new ArrayList<>();
+	int 						crfIndex 			= 0;
+	String 						crfChoice 			= "";
+	int 						movieIndex 			= 0;
+	String 						movieChoice 		= "";
+	int 						localIndex 			= 0;
+	String 						localChoice 		= "";
+	int 						theaterIndex 		= 0;
+	String 						theaterChoice 		= "";
+	int 						dateIndex 			= 0;
+	String 						dateChoice 			= "";
+	int 						screenIndex 			= 0;
+	String 						screenChoice 			= "";
+	int 						timeIndex 			= 0;
+	String 						timeChoice 			= "";
+//	
+//	List<String>				movieList 			= new ArrayList<>(); 
+//	List<String> 				localList 			= new ArrayList<>(); 
+//	List<String> 				teatherList 		= new ArrayList<>(); 
+//	List<String> 				dateList 			= new ArrayList<>(); 
+//	List<String> 				timeList 			= new ArrayList<>();
 	
 	public MovieChoiceView(EventMapping em) {
 		this.em = em;
@@ -140,9 +154,84 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	
 		jl_timeLock.setVisible(false);///////////////////////////////////////
 		
+		/*************************************
+    	 * 1.localChoice의 정보(아마도 ticketingVo.setLocal?한정보를 get?)와
+    	 * 현재 선택되어진 정보들 (movieChoice, movieLocal, movieTheater, movieDate, movieTime)을 가지고
+    	 * ""&null인지 체크하고 !=null 이면 그정보를 가져와서 DB에 들려 새로운 목록들을 List 또는 vector로 뽑는다.(뭘로 뽑는지 몰름)
+    	 * 2.리스트형이면 벡터형으로 바꿔넣는다. OR 벡터형이라면 다이렉트로 로우를 박는다.
+    	 * //로우로 박는놈들이 있고, 로우로 안박고 순서만 다시 정렬하여 색상으로 분류만 해놓는 두가지경우 모두 사용해야한다.
+    	 * 영화 : 색상분류, 지역 : 색상분류(선택하였을때만), 지점 : 색상  
+    	 * 3.박은뒤 로우색 변경한다.
+    	 *밑은 리스트형인경우 뽑아서 넣기
+    	 ****************************************/
+
 		jsp_movie.getViewport().setBackground(Color.white);
 		jt_movie.setBackground(Color.white);
-		DefaultTableCellRenderer dtcr_movie = new DefaultTableCellRenderer();
+		dtcr_movie = new DefaultTableCellRenderer() {
+			@Override
+		    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+		        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		        ((JComponent)c).setBorder(new LineBorder(Color.black,0));
+                c.setBackground(Color.white);
+		        if (!isSelected) {
+		        	if(movieResult==0) {
+		        		//맨처음 맨위에 선택
+		                c.setBackground(Color.white);
+		                
+		                System.out.println("선택한 (String)value : " + (String)value);
+			            //마지막커서면 result = 1로 변경
+			            if(dtm_movie.getRowCount() == (row+1)) {
+			            	movieResult=1;
+			            }
+		        	}
+		        } else {
+		        	 if(movieResult==2) {
+		        		if(column==0) {
+		        			//이거 이미지라 안먹음
+		        			 ((JComponent)c).setBorder(BorderFactory.createMatteBorder(3, 3, 3, 0, Color.BLACK));
+		        			 System.out.println((ImageIcon)value);
+		        			 System.out.println(value);
+	        				if(_19==(ImageIcon)value) {
+		                		crfChoice = "19세이용가";
+		                	} else if(_15==(ImageIcon)value) {
+		                		crfChoice = "15세이용가";
+		                	} else if(_12==(ImageIcon)value) {
+		                		crfChoice = "12세이용가";
+		                	} else if(_0==(ImageIcon)value) {
+		                		crfChoice = "전체세이용가";
+		                	}
+		        		} else {		        			 
+		        			((JComponent)c).setBorder(BorderFactory.createMatteBorder(3, 0, 3, 3, Color.BLACK));
+		                	movieChoice = (String)value;
+		                }
+		        		c.setBackground(Color.white);
+		                em.mmv.jp_mrv.jl_south_movie.setBounds(340, 690, 150, 20);              
+		                em.mmv.jp_mrv.jl_south_movie.setText(movieChoice);                 
+		                em.mmv.jp_mrv.jl_south_ctf.setVisible(true);
+		                System.out.println("crfChoice : " + crfChoice);
+		                em.mmv.jp_mrv.jl_south_ctf.setText(crfChoice);
+
+//		                dtcr_local.getTableCellRendererComponent(jt_local, value, isSelected, hasFocus, row, column);
+//		                dtcr_theater.getTableCellRendererComponent(jt_theater, value, isSelected, hasFocus, row, column);
+//		                dtcr_date.getTableCellRendererComponent(jt_date, value, isSelected, hasFocus, row, column);
+//		                dtcr_time.getTableCellRendererComponent(jt_time, value, isSelected, hasFocus, row, column);
+		                
+//		                jt_theater.setRowSelectionInterval(0, dtm_theater.getRowCount()-1);
+//		                jt_theater.setRowSelectionInterval(row, row);
+//	        		 	((JComponent)c).setBorder(new LineBorder(Color.black,0));
+//		                c.setBackground(Color.white);
+		        	 } else if(movieResult==1) {
+		        		//모든로우의 색상을 초기화한다.
+	        		 	jt_movie.setRowSelectionInterval(0,dtm_movie.getRowCount()-1);
+	        		 	jt_movie.setRowSelectionInterval(row, row);
+		        		((JComponent)c).setBorder(new LineBorder(Color.black,0));
+		                c.setBackground(Color.white);
+		                movieResult=2;
+		        	}
+		        }
+		        return c;
+		    }
+		};
 		jt_movie.getColumn("영화").setCellRenderer(dtcr_movie);
 		jt_movie.setRowHeight(28);
 		jt_movie.setTableHeader(null);
@@ -151,94 +240,39 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		jt_movie.getColumn("이용등급").setPreferredWidth(26);
 		jt_movie.getColumn("영화").setPreferredWidth(268);
 		jt_local.setBackground(Color.lightGray);
-		DefaultTableCellRenderer dtcr_local = new DefaultTableCellRenderer() {
-		    @Override
-		    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
-		        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		        ((JComponent)c).setBorder(new LineBorder(Color.black,0));
-                c.setBackground(Color.lightGray);
-		        if (!isSelected) {
-		        	if(locResult==0) {
-		        		//맨처음 맨위에 선택
-			            if(row==0) {
+		dtcr_local = new DefaultTableCellRenderer()	{
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				((JComponent)c).setBorder(new LineBorder(Color.black,0));
+				c.setBackground(Color.lightGray);
+				if (!isSelected) {
+					if(locResult==0) {
+						//맨처음 맨위에 선택
+						if(row==0) {
 			            	((JComponent)c).setBorder(new LineBorder(Color.black,3));
 			                c.setBackground(Color.white);
 			                localChoice = (String)value;
-			                System.out.println("선택한 (String)value : " + (String)value);
 			            }
 			            //마지막커서면 result = 1로 변경
-			            if(dtm_local.getRowCount() == (row+1)) {
+						if(dtm_local.getRowCount() == (row+1)) {
 			            	locResult=1;
 			            }
-		        	}
-		        } else {
+					}
+				} else {
 		        	if(locResult==2) {
-		        				        		
 		        		((JComponent)c).setBorder(new LineBorder(Color.black,3));
 		        		c.setBackground(Color.white);
-		                localChoice = (String)value;
-		        		System.out.println("선택한 row : " + row);
-		                System.out.println("선택한 (String)value : " + (String)value);
-		                System.out.println("선택한 column : " + column);
-		                if(localChoice == "부산") {
-		                	  for(int i=0; i<dtm_theater.getRowCount(); i++) {
-				                	dtm_theater.removeRow(0);
-				                }
-		                	/*************************************
-		                	 * 1.localChoice의 정보(아마도 ticketingVo.setLocal?한정보를 get?)와
-		                	 * 현재 선택되어진 정보들 (movieChoice, movieLocal, movieTheater, movieDate, movieTime)을 가지고
-		                	 * ""&null인지 체크하고 !=null 이면 그정보를 가져와서 DB에 들려 새로운 목록들을 List 또는 vector로 뽑는다.(뭘로 뽑는지 몰름)
-		                	 * 2.리스트형이면 벡터형으로 바꿔넣는다. OR 벡터형이라면 다이렉트로 로우를 박는다.
-		                	 * //로우로 박는놈들이 있고, 로우로 안박고 순서만 다시 정렬하여 색상으로 분류만 해놓는 두가지경우 모두 사용해야한다.
-		                	 * 영화 : 색상분류, 지역 : 색상분류(선택하였을때만), 지점 : 색상  
-		                	 * 3.박은뒤 로우색 변경한다.
-		                	 *밑은 리스트형인경우 뽑아서 넣기
-		                	 ****************************************/
-		                	List<String> movieList = new ArrayList<>(); 
-		                	List<String> localList = new ArrayList<>(); 
-		                	List<String> teatherList = new ArrayList<>(); 
-		                	List<String> dateList = new ArrayList<>(); 
-		                	List<String> timeList = new ArrayList<>();
-		                	
-		                	//리스트형태로 올것이다 1번
-		                	
-		                	
-		                	teatherList.add("해운대");
-		                	teatherList.add("부산");
-		                	teatherList.add("서면");
-//			                	for(int i=0; i<list.size();i++) {
-//			                		Vector<String> v = new Vector<>();
-//					                v.add(list.get(i));
-//					                dtm_theater.addRow(v);	
-//			                	}
-		                	
-		                	//벡터로 바로받을것이다 2번
-		                	//샘플 시작
-	                		Vector<String> v = new Vector<>();
-	                		
-	                		//샘플 끝
-//			                	for(int i=0; i<list.size();i++) {
-//			                	}
-		                	
-		                	
-		                }
-		                
-		                
-		                
-		                
-		                
-		                
-		                
-		                
-		                
-			                
-			                
-			                
-		        	}
-		        	else if(locResult==1) {
+		        		localChoice = (String)value;
+		                em.mmv.jp_mrv. jl_south_loc.setBounds(480, 698, 150, 20);                
+		                em.mmv.jp_mrv.jl_south_loc.setText("극장선택");                            
+		                em.mmv.jp_mrv.jl_south_theater.setVisible(false);                        
+		                em.mmv.jp_mrv.jl_south_theater.setText("");
+		        	} else if(locResult==1) {
 		        		//모든로우의 색상을 초기화한다.
 		        		jt_local.setRowSelectionInterval(0,dtm_local.getRowCount()-1);
 		        		jt_local.setRowSelectionInterval(row,row);
+		        		localIndex = row;
 		        		((JComponent)c).setBorder(new LineBorder(Color.black,0));
 		                c.setBackground(Color.lightGray);
 		                locResult=2;
@@ -256,48 +290,44 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		jt_local.setShowHorizontalLines(false);
 		
 		jt_theater.setBackground(Color.white);
-		DefaultTableCellRenderer dtcr_theater = new DefaultTableCellRenderer(){
-			   @Override
-			    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
-			        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			        ((JComponent)c).setBorder(new LineBorder(Color.black,0));
-	                c.setBackground(Color.lightGray);
-	                /******************************
-	                 * 지우지마시오
-	                 * table.isRowSelected(row)
-	                 * isSelected
-	                 ******************************/
-			        if (!isSelected) {
-			        	if(theaterResult==0) {
-			        		//맨처음 맨위에 선택
-			                c.setBackground(Color.white);
-			                theaterChoice = (String)value;
-			                System.out.println("선택한 (String)value : " + (String)value);
-				            //마지막커서면 result = 1로 변경
-				            if(dtm_theater.getRowCount() == (row+1)) {
-				            	theaterResult=1;
-				            }
-			        	}
-			        } else {
-			        	 if(theaterResult==2) {
-				        		((JComponent)c).setBorder(new LineBorder(Color.black,3));
-				        		c.setBackground(Color.white);
-				                theaterChoice = (String)value;
-				        		System.out.println("선택한 theater row : " + row);
-				                System.out.println("선택한 theater (String)value : " + (String)value);
-				                System.out.println("선택한 theater column : " + column);
-			        	 } else if(theaterResult==1) {
-				        		//모든로우의 색상을 초기화한다.
-			        		 	jt_theater.setRowSelectionInterval(0,dtm_theater.getRowCount()-1);
-			        		 	jt_theater.setRowSelectionInterval(row, row);
-				        		((JComponent)c).setBorder(new LineBorder(Color.black,0));
-				                c.setBackground(Color.lightGray);
-				                theaterResult=2;
-			        	}
-			        }
-			        return c;
-			    }
+		dtcr_theater = new DefaultTableCellRenderer(){
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				((JComponent)c).setBorder(new LineBorder(Color.black,0));
+				c.setBackground(Color.white);
+				if (!isSelected) {
+		        	if(theaterResult==0) {
+		        		//맨처음 맨위에 선택
+		                c.setBackground(Color.white);
+		                theaterChoice = (String)value;
+			            //마지막커서면 result = 1로 변경
+			            if(dtm_theater.getRowCount() == (row+1)) {
+			            	theaterResult=1;
+			            }
+		        	}
+		        } else {
+		        	if(theaterResult==2) {
+		        		((JComponent)c).setBorder(new LineBorder(Color.black,3));
+		        		c.setBackground(Color.white);
+		                theaterChoice = (String)value;
+		                em.mmv.jp_mrv. jl_south_loc.setBounds(480, 690, 150, 20);                
+		                em.mmv.jp_mrv.jl_south_loc.setText(localChoice);                            
+		                em.mmv.jp_mrv.jl_south_theater.setVisible(true);                        
+		                em.mmv.jp_mrv.jl_south_theater.setText(theaterChoice);
+		        	} else if(theaterResult==1) {
+		        		//모든로우의 색상을 초기화한다.
+	        		 	jt_theater.setRowSelectionInterval(0,dtm_theater.getRowCount()-1);
+	        		 	jt_theater.setRowSelectionInterval(row, row);
+		        		((JComponent)c).setBorder(new LineBorder(Color.black,0));
+		                c.setBackground(Color.white);
+		                theaterResult=2;
+		        	}
+		        }
+		        return c;
+		    }
 		};
+
 		dtcr_theater.setHorizontalAlignment(JLabel.CENTER);
 		jt_theater.getColumn("지점").setCellRenderer(dtcr_theater);
 		jt_theater.setRowHeight(35);
@@ -307,7 +337,41 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		
 		jsp_date.getViewport().setBackground(Color.white);
 		jt_date.setBackground(Color.white);
-		DefaultTableCellRenderer dtcr_date = new DefaultTableCellRenderer();
+		dtcr_date = new DefaultTableCellRenderer() {
+			@Override
+		    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+		        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		        ((JComponent)c).setBorder(new LineBorder(Color.black,0));
+                c.setBackground(Color.white);
+		        if (!isSelected) {
+		        	if(dateResult==0) {
+		        		//맨처음 맨위에 선택
+		                c.setBackground(Color.white);
+		                dateChoice = (String)value;
+		                System.out.println("선택한 (String)value : " + (String)value);
+			            //마지막커서면 result = 1로 변경
+			            if(dtm_date.getRowCount() == (row+1)) {
+			            	dateResult=1;
+			            }
+		        	}
+		        } else {
+		        	 if(dateResult==2) {
+		        		((JComponent)c).setBorder(new LineBorder(Color.black,3));
+		        		c.setBackground(Color.white);
+		                dateChoice = (String)value;
+		                em.mmv.jp_mrv.jl_south_date.setText(dateChoice);
+		        	 } else if(dateResult==1) {
+		        		//모든로우의 색상을 초기화한다.
+	        		 	jt_date.setRowSelectionInterval(0,dtm_date.getRowCount()-1);
+	        		 	jt_date.setRowSelectionInterval(row, row);
+		        		((JComponent)c).setBorder(new LineBorder(Color.black,0));
+		                c.setBackground(Color.white);
+		                dateResult=2;
+		        	}
+		        }
+		        return c;
+		    }
+		};
 		dtcr_date.setHorizontalAlignment(JLabel.CENTER);
 		jt_date.getColumn("날짜").setCellRenderer(dtcr_date);
 		jt_date.setRowHeight(35);
@@ -317,7 +381,49 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 		
 		jsp_time.getViewport().setBackground(Color.white);
 		jt_time.setBackground(Color.white);
-		DefaultTableCellRenderer dtcr_time = new DefaultTableCellRenderer();
+		dtcr_time = new DefaultTableCellRenderer() {
+			@Override
+		    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+		        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		        ((JComponent)c).setBorder(new LineBorder(Color.black,0));
+                c.setBackground(Color.white);
+		        if (!isSelected) {
+		        	if(timeResult==0) {
+		        		//맨처음 맨위에 선택
+		                c.setBackground(Color.white);
+		                timeChoice = (String)value;
+		                System.out.println("선택한 (String)value : " + (String)value);
+			            //마지막커서면 result = 1로 변경
+			            if(dtm_time.getRowCount() == (row+1)) {
+			            	timeResult=1;
+			            }
+		        	}
+		        } else {
+		        	 if(timeResult==2) {
+		        		 if(column==0) {
+		        			 ((JComponent)c).setBorder(BorderFactory.createMatteBorder(3, 3, 3, 0, Color.BLACK));
+		        			 screenChoice = (String)value;
+		        		 } else {		        			 
+		        			 ((JComponent)c).setBorder(BorderFactory.createMatteBorder(3, 0, 3, 3, Color.BLACK));
+		        			 timeChoice = (String)value;
+		        		 }
+		        		c.setBackground(Color.white);
+	        			 em.mmv.jp_mrv.jl_south_screen.setBounds(760, 690, 150, 20); 
+	        			 em.mmv.jp_mrv.jl_south_screen.setText(screenChoice);
+	        			 em.mmv.jp_mrv.jl_south_time.setVisible(true);                           
+		        		 em.mmv.jp_mrv.jl_south_time.setText(timeChoice);
+		        	 } else if(timeResult==1) {
+		        		//모든로우의 색상을 초기화한다.
+	        		 	jt_time.setRowSelectionInterval(0,dtm_time.getRowCount()-1);
+	        		 	jt_time.setRowSelectionInterval(row, row);
+		        		((JComponent)c).setBorder(new LineBorder(Color.black,0));
+		                c.setBackground(Color.white);
+		                timeResult=2;
+		        	}
+		        }
+		        return c;
+		    }
+		};
 	
 		dtcr_time.setHorizontalAlignment(JLabel.CENTER);
 		jt_time.getColumn("상영관").setCellRenderer(dtcr_time);
@@ -401,7 +507,6 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 			int row, int column) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

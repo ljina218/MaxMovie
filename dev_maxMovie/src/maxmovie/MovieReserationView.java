@@ -52,6 +52,7 @@ public class MovieReserationView extends JPanel{
 		jp_mcv.setBounds(0, 0, 1360, 660);
 		jp_scv.setBounds(0, 0, 1360, 660);
 		jp_pv.setBounds(0, 0, 1360, 660);
+
 		
 		jl_south.setBounds(200, 664, 1144, 90);		
 		jl_south_movie.setBounds(340, 698, 150, 20);		
@@ -105,9 +106,6 @@ public class MovieReserationView extends JPanel{
 		jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
 		jbt_goSeatChoice.setEnabled(true);
 		//
-		
-		//
-		
 		jl_south_movie.setHorizontalAlignment(JLabel.CENTER);
 		jl_south_ctf.setHorizontalAlignment(JLabel.CENTER);
 		jl_south_loc.setHorizontalAlignment(JLabel.CENTER);
@@ -122,23 +120,23 @@ public class MovieReserationView extends JPanel{
 		/**********************************************************************************
 		 * MOVIE CHOICE VIEW 에서 일어나는 일들
 		 * //영화 선택시
-		 * jl_south_movie.setBounds(350, 690, 150, 20);
+		 * jl_south_movie.setBounds(340, 690, 150, 20);
 		 * jl_south_movie.setText("이보다 더 좋을 순 없다.");
 		 * jl_south_ctf.setVisible(true);
 		 * jl_south_ctf.setText("전체이용가");
 		 * //영화 미선택시
-		 * jl_south_movie.setBounds(350, 698, 150, 20);
+		 * jl_south_movie.setBounds(340, 698, 150, 20);
 		 * jl_south_movie.setText("영화선택");
 		 * jl_south_ctf.setVisible(false);
 		 * jl_south_ctf.setText("");
 		 * 
 		 * //지역&&지점 선택시
-		 * jl_south_loc.setBounds(580, 690, 150, 20);
+		 * jl_south_loc.setBounds(480, 690, 150, 20);
 		 * jl_south_loc.setText("전북/전주");
 		 * jl_south_theater.setVisible(true);
 		 * jl_south_theater.setText("건대입구");
 		 * //지역&&지점 미선택시
-		 * jl_south_loc.setBounds(580, 698, 150, 20);
+		 * jl_south_loc.setBounds(480, 698, 150, 20);
 		 * jl_south_loc.setText("극장선택");
 		 * jl_south_theater.setVisible(false);
 		 * jl_south_theater.setText("");
@@ -149,12 +147,12 @@ public class MovieReserationView extends JPanel{
 		 * jl_south_date.setText("날짜선택");
 		 * 
 		 * //시간 선택시
-		 * jl_south_screen.setBounds(1040, 690, 150, 20);
+		 * jl_south_screen.setBounds(760, 690, 150, 20);
 		 * jl_south_screen.setText("1관");
 		 * jl_south_time.setVisible(true);
 		 * jl_south_time.setText("오전 09:00:00");
 		 * //시간 미선택시
-		 * jl_south_screen.setBounds(1040, 698, 150, 20);
+		 * jl_south_screen.setBounds(760, 698, 150, 20);
 		 * jl_south_screen.setText("시간선택");
 		 * jl_south_time.setVisible(false);
 		 * jl_south_time.setText("");
@@ -308,14 +306,13 @@ public class MovieReserationView extends JPanel{
 		MaxMovieView mmv = new MaxMovieView();
 		mmv.jp_lv.setVisible(false);
 		mmv.jp_mrv.setVisible(true);
-		mmv.jp_mrv.jp_mcv.setVisible(true);
+		mmv.jp_mrv.jp_mcv.setVisible(false);
 		mmv.jp_mrv.jp_scv.setVisible(false);
 		mmv.jp_mrv.jp_pv.setVisible(false);
 		mmv.jp_mv.setVisible(false);
 		mmv.jp_mv.jp_thv.setVisible(false);
 		mmv.jp_mv.jp_miv.setVisible(false);
 		mmv.jp_mv.jp_muv.setVisible(false);
-		mmv.jp_rv.setVisible(false);
 		
 
 		mmv.jl_logo_small.setVisible(true);

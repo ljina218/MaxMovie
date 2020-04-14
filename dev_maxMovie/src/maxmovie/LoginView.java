@@ -49,8 +49,8 @@ public class LoginView extends JPanel{
 	private void initDisplay() {
 		this.setLayout(null);
 		this.setBackground(Color.white);
-		jtf_id.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
-		jpf_pw.setBorder(new TitledBorder(new LineBorder(new Color(0,80,255),3)));
+		jtf_id.setBorder(new LineBorder(new Color(0,80,255),3));
+		jpf_pw.setBorder(new LineBorder(new Color(0,80,255),3));
 		jl_id_warning.setText("아이디가 존재하지 않습니다.");
 		jl_pw_warning.setText("비밀번호가 일치하지 않습니다.");
 		jl_id.setHorizontalAlignment(JLabel.RIGHT);
@@ -92,12 +92,6 @@ public class LoginView extends JPanel{
 		this.add(jl_pw_warning);
 		this.add(jbt_join);
 		this.add(jbt_login);
-/*******************************************************
- * 		●#login 13	jl_id_warning.setVisible(false);
- * 		●#login 14	jl_id_warning.setVisible(true);
- * 		○#login 17	jl_pw_warning.setVisible(false);
- * 		○#login 18	jl_pw_warning.setVisible(true);
- *******************************************************/
 		
 	}
 	

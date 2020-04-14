@@ -64,9 +64,13 @@ public class TicketHistoryView extends JPanel  {
 		this.add(jl_pageInfoRight);
 		this.add(jsp_history);
 	}
-
+	
 	
 	public static void main(String[] args) {
+		MovieServer ms = new MovieServer();
+		ms.display();
+		Thread th = new Thread(ms);
+		th.start();
 		MaxMovieView mmv = new MaxMovieView();
 		mmv.jp_lv.setVisible(false);
 		mmv.jp_mrv.setVisible(false);
@@ -77,7 +81,6 @@ public class TicketHistoryView extends JPanel  {
 		mmv.jp_mv.jp_thv.setVisible(true);
 		mmv.jp_mv.jp_miv.setVisible(false);
 		mmv.jp_mv.jp_muv.setVisible(false);
-		mmv.jp_rv.setVisible(false);
 		
 		mmv.jl_logo_small.setVisible(true);
 		mmv.jl_nickInfo.setVisible(true);
