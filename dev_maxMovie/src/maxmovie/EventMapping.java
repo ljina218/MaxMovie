@@ -23,6 +23,7 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
@@ -1340,6 +1341,9 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			mmv.jp_mrv.jp_pv.setVisible(false);
 			mmv.jp_mrv.jp_scv.setVisible(false);
 		}
+		else if(obj==mmv.jp_mrv.jbt_backMovieChoice) {
+			//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		}
 		/*************************************************************************************************
 		 * 좌석 선택이 끝나고 결제 버튼을 눌렀을때 */
 
@@ -1699,7 +1703,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 		}
 	}
 	/**************************************************************************************************
-	 * KeyListener(회원가입-이름, 회원가입-pw, 회원가입-닉네임)
+	 * KeyListener(회원가입-이름, 회원가입-pw, 회원가입-닉네임, 마이페이지-pw, 마이페이지-닉네임)
 	 */
 	@Override
 	public void keyReleased(KeyEvent e)   {
@@ -1793,11 +1797,9 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 	public void mousePressed(MouseEvent e) {}
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		/************************************************************************************************
-		 * 영화선택
-		 */
+		//영화예매 화면 ----------------------------------------------------------------------------------
 		Object obj = e.getSource();
-		if(obj==mmv.jp_mrv.jp_mcv.jt_movie) {//영화선택
+		if(obj==mmv.jp_mrv.jp_mcv.jt_movie) {//------------------------------------------------ 영화선택
 			System.out.println("영화 클릭=======================");
 			int selectRow = mmv.jp_mrv.jp_mcv.jt_movie.getSelectedRow();
 			if(selectRow >= 0) {
@@ -1848,8 +1850,11 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			}
 		}
 		
-		else if(obj==mmv.jp_mrv.jp_mcv.jt_local) {//지역선택
+		else if(obj==mmv.jp_mrv.jp_mcv.jt_local) {//------------------------------------------------ 지역선택
 			System.out.println("지역 클릭=======================");
+			mmv.jp_mrv.jl_south_loc.setText("극장선택");
+			mmv.jp_mrv.jl_south_loc.setBounds(480, 698, 150, 20);	
+			mmv.jp_mrv.jl_south_theater.setText("");
 			//선택되면 색 바꾸는
 //			mmv.jp_mrv.jp_mcv.localChoiceName = localChoice;
 //			mmv.jp_mrv.jp_mcv.jt_local.setSelectionBackground(Color.white);
@@ -1858,6 +1863,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			List<Map<String,Object>> bufList = new Vector<Map<String,Object>>();
 			Map<String, Object> map = null;
 			//원본인 movieList를 나두고 buffer 역할
+			
 			for(int i=0; i<mmv.movieList.size(); i++) {
 				map = new HashMap<String, Object>();
 				map.put("M_TITLE", mmv.movieList.get(i).get("M_TITLE"));
@@ -1899,7 +1905,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			theaterDtm(theaterlist, locChoice);
 		}
 		
-		else if(obj==mmv.jp_mrv.jp_mcv.jt_theater) {//지점선택
+		else if(obj==mmv.jp_mrv.jp_mcv.jt_theater) {//------------------------------------------------ 지점선택
 			System.out.println("지점 클릭=======================");
 			int selectRow = mmv.jp_mrv.jp_mcv.jt_theater.getSelectedRow();
 			if(selectRow >= 0) {
@@ -1943,7 +1949,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				//dateDtm2(containDateList);
 			}
 		}
-		else if(obj==mmv.jp_mrv.jp_mcv.jt_date) {//날짜선택
+		else if(obj==mmv.jp_mrv.jp_mcv.jt_date) {//------------------------------------------------ 날짜선택
 			System.out.println("날짜 클릭=======================");
 			int selectRow = mmv.jp_mrv.jp_mcv.jt_date.getSelectedRow();
 			if(selectRow<=1) {
@@ -2017,7 +2023,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				movieDtm(containMovieList);
 			}	
 		}
-		else if(obj==mmv.jp_mrv.jp_mcv.jt_time) {//관-시간선택
+		else if(obj==mmv.jp_mrv.jp_mcv.jt_time) {//------------------------------------------------ 관-시간선택
 			mmv.jp_mrv.jbt_goSeatChoice.setForeground(Color.white);
 			mmv.jp_mrv.jbt_goSeatChoice.setBackground(new Color(52, 152, 219));
 			mmv.jp_mrv.jbt_goSeatChoice.setEnabled(true);
@@ -2036,10 +2042,5 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			
 		}
 	}
-	
-	
-	/**************************************************************************************************
-	 */
-
 	
 }

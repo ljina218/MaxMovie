@@ -374,11 +374,11 @@ public class MovieChoiceView extends JPanel implements TableCellRenderer{
 	}
 
 	public void eventMapping() {
-//		jt_movie.addMouseListener(em);
-//		jt_local.addMouseListener(this);
-//		jt_theater.addMouseListener(em);
-//		jt_date.addMouseListener(em);
-//		jt_time.addMouseListener(em);	
+		jt_movie.addMouseListener(em);
+		jt_local.addMouseListener(em);
+		jt_theater.addMouseListener(em);
+		jt_date.addMouseListener(em);
+		jt_time.addMouseListener(em);	
 	}
 
 	public static void main(String[] args) {

@@ -132,7 +132,6 @@ public class ClientThread extends Thread{
 						mmv.jbt_ticketing.setVisible(true);
 						System.out.println("ClientThread에서 받은 id, nick : "+mmv.mem_id+", "+mmv.mem_nick);
 						display(false, false, false, false, false, true, true, false,false,false);//moviechoiceView 화면전환메소드 호출
-						mmv.em.tVO = null;
 						mmv.em.tVO = new TicketingVO();
 						//
 						System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@사이즈: "+  mmv.movieList.size());
