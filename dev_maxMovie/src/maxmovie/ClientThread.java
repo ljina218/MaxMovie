@@ -118,7 +118,7 @@ public class ClientThread extends Thread{
 						mmv.mem_id = login_result;
 						mmv.mem_nick = st.nextToken();
 						System.out.println("닉넴 아이디" + mmv.mem_id + mmv.mem_nick);
-						
+						//
 						mmv.jp_lv.jl_id_warning.setVisible(false);
 						mmv.jp_lv.jl_pw_warning.setVisible(false);
 						mmv.jl_nickInfo.setText(mmv.mem_nick);
@@ -132,7 +132,6 @@ public class ClientThread extends Thread{
 						mmv.jbt_ticketing.setVisible(true);
 						System.out.println("ClientThread에서 받은 id, nick : "+mmv.mem_id+", "+mmv.mem_nick);
 						display(false, false, false, false, false, true, true, false,false,false);//moviechoiceView 화면전환메소드 호출
-						mmv.em.tVO = null;
 						mmv.em.tVO = new TicketingVO();
 						//
 						System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@사이즈: "+  mmv.movieList.size());
@@ -158,12 +157,14 @@ public class ClientThread extends Thread{
 							}
 						}
 						System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@시간을 고려한 리스트: "+list.size());
+						mmv.em.tVO = new TicketingVO();
 						mmv.em.movieDtm(mmv.em.containMovieList(list));
 						mmv.em.locDtm(mmv.em.containLocList(list));
 						mmv.em.theaterDtm(mmv.em.containTheaterList(list), "서울");
-						mmv.em.containDateList(list);
+//						mmv.em.containDateList(list);
 						mmv.em.dateDtm();
-						mmv.em.scrDtm(mmv.em.containScrNameList(list));
+//						mmv.em.dateDtm2(mmv.em.containDateList(list));
+						//mmv.em.scrDtm(mmv.em.containScrNameList(list));
 					}
 					
 				}break;

@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -111,6 +112,7 @@ public class AdminClient extends JFrame implements ActionListener{
 		DefaultTableCellRenderer dtcr_movie = new DefaultTableCellRenderer();
 		dtcr_movie.setHorizontalAlignment(SwingConstants.CENTER); // dtcr_movie의 정렬을 가운데 정렬로 지정
 		TableColumnModel tcm_movie = jtb_movie.getColumnModel(); //정렬할 테이블의 ColumnModel을 가져옴
+		
 		//테이블 너비 및 가운데 정렬
 		int tbWidth[] = {100, 300, 120, 80};  //테이블너비 = {0컬럼, 1컬럼, 2컬럼, 3컬럼 } 
 		jtb_movie.setRowHeight(25);			  //테이블 높이 지정

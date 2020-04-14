@@ -90,6 +90,7 @@ public class MaxMovieView extends JFrame{
 	ResultView 					jp_rv 				= new ResultView(em);
 	
 	public MaxMovieView() {
+		System.out.println("**************************"+jp_mrv.jp_mcv.jl_timeLock.isVisible());
 		initDisplay();
 		eventMapping();//이벤트 맵핑 메소드
 		connect();//클라이언트 스레드를 생성하기 위한 메소드
@@ -217,11 +218,12 @@ public class MaxMovieView extends JFrame{
 	}
 	public static void main(String[] args) {
 		new MaxMovieView();
+		
 	}
 	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
 		try {
 			movieList = new Vector<Map<String,Object>>();//클라이언트에 저장할 영화정보 리스트 생성
-			socket = new Socket("192.168.0.237",5500);
+			socket = new Socket("192.168.0.237",5400);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
 			oos.writeObject(MovieProtocol.SELECT+"#");//영화정보 주세여
