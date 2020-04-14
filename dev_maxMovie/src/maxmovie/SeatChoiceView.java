@@ -58,7 +58,14 @@ public class SeatChoiceView extends JPanel{
 	//0:빈자리  1:결제 진행중  2:결제완료
 
 	public void seatSetting(List<Map<String, Object>> seatList) {
-		
+		if(jbts_seat!=null){
+			for(int i=0; i<jbts_seat.length;i++){
+					for(int j=0; j<jbts_seat[i].length;j++) {
+						this.remove(jbts_seat[i][j]);
+					}
+			}
+			jbts_seat=null;
+		}
 		this.seatList = seatList;
 		for(Map<String, Object> rmap: this.seatList) {
 			System.out.println("SeatChoiceView"+rmap.get("좌석").toString() +","+ rmap.get("현황").toString());
@@ -109,6 +116,7 @@ public class SeatChoiceView extends JPanel{
 						this.add(jbts_seat[i][j]);
 						
 					} else if(check==2) {
+						jbts_seat[i][j].setEnabled(false);
 						jbts_seat[i][j].setBackground(Color.white);
 						jbts_seat[i][j].setText("X");
 						jbts_seat[i][j].setForeground(Color.black);

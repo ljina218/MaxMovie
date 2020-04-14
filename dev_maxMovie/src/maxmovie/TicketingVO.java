@@ -17,8 +17,8 @@ public class TicketingVO {
 	private String screen_seat		= null;//좌석
 	private String pay_status    	= null;//결제 상태 
 	private String result 		 	= null;
-	private String ticketing_code = null; //예매코드
-	private String seat_tablename = null; 
+	private String ticketing_code 	= null; //예매코드
+	private String seat_tablename 	= null; 
 	public String getCommand() {
 		return command;
 	}

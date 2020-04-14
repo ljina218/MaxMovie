@@ -31,6 +31,8 @@ import javax.swing.border.TitledBorder;
 
 public class MaxMovieView extends JFrame{
 	
+	//결제하는 동안 사용할 리스트
+	List<TicketingVO> tList = new Vector<TicketingVO>();
 	List<Map<String, Object>> movieList = null;
 	
 	//로고들에 사용한 폰트    : Futura XBlk BT
@@ -221,7 +223,7 @@ public class MaxMovieView extends JFrame{
 	public void connect() {//클라이언트 스레드를 생성하기 위한 메소드
 		try {
 			movieList = new Vector<Map<String,Object>>();//클라이언트에 저장할 영화정보 리스트 생성
-			socket = new Socket("192.168.0.237",5500);
+			socket = new Socket("192.168.0.37",5500);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
 			oos.writeObject(MovieProtocol.SELECT+"#");//영화정보 주세여

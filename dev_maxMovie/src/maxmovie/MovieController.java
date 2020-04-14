@@ -16,7 +16,8 @@ public class MovieController {
 	final String SELECT_SCR 	= "극장선택";
 	final String SELECT_DATE 	= "날짜선택";
 	final String GET_SEATSTATUS = "좌석현황";
-	final String PAY 			= "결제";
+	final String PAY 			= "결제중";
+	final String PAY_COMPLETE 	= "결제완료";
 	//상영시간표 새로고침
 	final String MOVIE_REFRESH = "새로고침";
 	
@@ -91,16 +92,22 @@ public class MovieController {
 		}
 		return ticket_list;
 	}
-
 	/***********************************************************************
 	 * 예매완료 정보 DB저장 및 seat테이블의 pay_status UPDATE 처리하는 메소드
 	 * @param List<TicketingVO> =>한사람의 여러 좌석 예매정보를 저장한 List
 	 * @return 
 	 ***********************************************************************/
-	public List<TicketingVO> control(List<TicketingVO> tVOList) {
-		System.out.println("control(List<TicketingVO>) - command : " + tVOList.get(0).getCommand());
-		dao.proc_payTicket(tVOList);
-		return tVOList;
+	public TicketingVO controlpay(TicketingVO ptVO) {
+		TicketingVO tvo = new TicketingVO();
+		String command = ptVO.getCommand();
+		System.out.println("control(TicketingVO) - command : " + command);
+		if(PAY.equals(command)) {
+			tvo = dao.proc_payTicket(ptVO);
+		}
+		else if(PAY_COMPLETE.equals(command)) {
+			tvo = dao.proc_payTicket2(ptVO);
+		}
+		return tvo;
 	}
 	
 	public List<Map<String, Object>> sendAll(String date) {//서버 켰을 때

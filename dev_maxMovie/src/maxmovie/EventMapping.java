@@ -1161,9 +1161,27 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			mmv.jp_mrv.jp_pv.setVisible(false);
 			mmv.jp_mrv.jp_scv.setVisible(false);
 		}
+		/**************************************************************************************************
+		 * 좌석선택 버튼 클릭했을때 	 */
+		else if(obj==mmv.jp_mrv.jbt_goSeatChoice) {
+			/*********단위테스트하기위해 잠시 주석처리*************/
+//			String temptheater 		= mmv.jp_mrv.jl_south_theater.getText();
+//			StringTokenizer st = new StringTokenizer(temptheater, "/");
+//			st.nextToken();
+//			String theater = st.nextToken();
+//			String screen 		= mmv.jp_mrv.jl_south_screen.getText();
+//			String tempdate 		= mmv.jp_mrv.jl_south_date.getText();
+//			System.out.println("tempdate"+ tempdate);
+//			String date = (tempdate.substring(0, 4)+tempdate.substring(6, 8)+tempdate.substring(10, 12));
+//			String time = mmv.jp_mrv.jl_south_time.getText();
+//			String seatstatus_msg 	= MovieProtocol.GET_SEATSTATUS+"#"+theater+"#"+screen+"#"+date+"#"+time;
+			
+			//단위테스트용
+			String seatstatus_msg = MovieProtocol.GET_SEATSTATUS+"#"+"해운대점"+"#"+"2관"+"#"+"20200411"+"#"+"19:40";
+			this.send(seatstatus_msg);
+		}
 		/*************************************************************************************************
 		 * 좌석 선택이 끝나고 결제 버튼을 눌렀을때 */
-
 		else if(obj==mmv.jp_mrv.jbt_goPayChoice) {
 			System.out.println(mmv.jp_mrv.jp_scv.seatChoiceList.size());
 			for(String seatCode : mmv.jp_mrv.jp_scv.seatChoiceList) {
@@ -1188,26 +1206,6 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			}
 
 		} 
-		
-		/**************************************************************************************************
-		 * 좌석선택 버튼 클릭했을때 	 */
-		else if(obj==mmv.jp_mrv.jbt_goSeatChoice) {
-			/*********단위테스트하기위해 잠시 주석처리*************/
-//			String temptheater 		= mmv.jp_mrv.jl_south_theater.getText();
-//			StringTokenizer st = new StringTokenizer(temptheater, "/");
-//			st.nextToken();
-//			String theater = st.nextToken();
-//			String screen 		= mmv.jp_mrv.jl_south_screen.getText();
-//			String tempdate 		= mmv.jp_mrv.jl_south_date.getText();
-//			System.out.println("tempdate"+ tempdate);
-//			String date = (tempdate.substring(0, 4)+tempdate.substring(6, 8)+tempdate.substring(10, 12));
-//			String time = mmv.jp_mrv.jl_south_time.getText();
-//			String seatstatus_msg 	= MovieProtocol.GET_SEATSTATUS+"#"+theater+"#"+screen+"#"+date+"#"+time;
-			
-			//단위테스트용
-			String seatstatus_msg = MovieProtocol.GET_SEATSTATUS+"#"+"해운대점"+"#"+"2관"+"#"+"20200411"+"#"+"19:40";
-			this.send(seatstatus_msg);
-		}
 		else if(jv!=null&&obj==jv.jbt_email_r) {//인증번호 버튼을 눌렀니?
 			
 			end_millisecond = System.currentTimeMillis();//인증번호 입력시간 저장
@@ -1262,7 +1260,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				
 				//단위테스트용
 				String seatstatus_msg = MovieProtocol.PAY+"#"+"cloudsky7"+"#"+"작은아씨들"+"#"+"해운대점"+"#"
-						+"2관"+"#"+"A1"+"#"+"20200411"+"#"+"19:40";
+						+"1관"+"#"+"A1"+"#"+"20200409"+"#"+"23:10";
 				this.send(seatstatus_msg);
 			}
 			

@@ -26,8 +26,11 @@ public class MovieProtocol {
 	public final static int SELECT_DATE = 440;
 	//좌석 선택 버튼 - 좌석 현황 조회
 	public final static int GET_SEATSTATUS = 450;
-	//결제하기 버튼
+	//결제하기-pay_status 1 버튼
 	public final static int PAY = 500;
+	//결제하기-pay_status 2 버튼
+	public final static int PAY_COMPLETE = 510;
+	
 	
 	//관리자 로그인
 	public final static int ADMIN_LOGIN = 900; 

@@ -337,7 +337,7 @@ public class ClientThread extends Thread{
 //				case MovieProtocol.SELECT_DATE:{//시간선택
 //					
 //				}break;
-				case MovieProtocol.GET_SEATSTATUS:{//좌석선택
+				case MovieProtocol.GET_SEATSTATUS:{//좌석현황 조회(좌석선택화면)
 					int seatlistSize = Integer.parseInt(st.nextToken());
 					String seatcode = st.nextToken();
 					String status = st.nextToken();
@@ -354,8 +354,26 @@ public class ClientThread extends Thread{
 						display(false, false, false, false, false, true, false, false, true, false);
 					}
 				}break;
-				case MovieProtocol.PAY:{//결제하기
-					System.out.println("이제 결제가 진행되어야해 ~~~~~~~~~~~~~~~~~~");
+				case MovieProtocol.PAY:{//결제 중 ! pay_status 1 !)
+//					String pay_msg 		= MovieProtocol.PAY+"#"+mem_id+"#"+movieName+"#"+theater+"#"
+//							+screen+"#"+seat+"#"+date+"#"+time+"#"+seatTablename+"#"+ticketingcode;
+					TicketingVO tvo = new TicketingVO();
+					tvo.setMem_id(st.nextToken());
+					tvo.setMovie_name(st.nextToken());
+					tvo.setTheater(st.nextToken());
+					tvo.setMovie_screen(st.nextToken());
+					tvo.setScreen_seat(st.nextToken());
+					tvo.setMovie_date(st.nextToken());
+					tvo.setMovie_time(st.nextToken());
+					tvo.setSeat_tablename(st.nextToken());
+					tvo.setTicketing_code(st.nextToken());
+					mmv.tList.add(tvo);
+				}break;
+				case MovieProtocol.PAY_COMPLETE:{//결제 완료 ! pay_status 2 !
+					
+					
+					
+					
 				}break;
 				}//end of switch
 			}//end of while

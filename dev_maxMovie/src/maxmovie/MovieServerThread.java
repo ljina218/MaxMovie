@@ -420,9 +420,8 @@ public class MovieServerThread extends Thread{
 					}
 				}break;
 				//******************************************************************************
-				case MovieProtocol.PAY:{//결제하기
+				case MovieProtocol.PAY:{//결제 중 ! pay_status 1 !
 					//아이디, 영화이름, 지역, 지점, 상영관, 날짜 , 시간, 좌석
-					pList = new Vector<TicketingVO>();
 					TicketingVO pVO = new TicketingVO();
 					pVO.setMem_id(st.nextToken());
 					pVO.setMovie_name(st.nextToken());
@@ -432,25 +431,31 @@ public class MovieServerThread extends Thread{
 					pVO.setMovie_date(st.nextToken());
 					pVO.setMovie_time(st.nextToken());
 					pVO.setCommand(ctrl.PAY);
-					pList.add(pVO);
-					//보냈던 리스트 그대로 반환 result값 따로 없음
-					List<TicketingVO> rList = ctrl.control(pList);
-					for(TicketingVO tvo : rList) {
-						String mem_id 		= tvo.getMem_id();
-						String movieName 	= tvo.getMovie_name();
-						String theater 		= tvo.getTheater();
-						String screen 		= tvo.getMovie_screen();
-						String seat 		= tvo.getScreen_seat();
-						String date 		= tvo.getMovie_date();
-						String time 		= tvo.getMovie_time();
+					
+					TicketingVO rVO = ctrl.controlpay(pVO);
+						String mem_id 		= rVO.getMem_id();
+						String movieName 	= rVO.getMovie_name();
+						String theater 		= rVO.getTheater();
+						String screen 		= rVO.getMovie_screen();
+						String seat 		= rVO.getScreen_seat();
+						String date 		= rVO.getMovie_date();
+						String time 		= rVO.getMovie_time();
+						String seatTablename = rVO.getSeat_tablename();
+						String ticketingcode = rVO.getTicketing_code();
 						String pay_msg 		= MovieProtocol.PAY+"#"+mem_id+"#"+movieName+"#"+theater+"#"
-											+screen+"#"+seat+"#"+date+"#"+time;
+											+screen+"#"+seat+"#"+date+"#"+time+"#"+seatTablename+"#"+ticketingcode;
 						System.out.println("ServerThread pay_msg : "+pay_msg);
 						this.send(pay_msg);
-					}
+				}break;
+				case MovieProtocol.PAY_COMPLETE:{//결제 완료 ! pay_status 2 !
+					TicketingVO pVO = new TicketingVO();
+					pVO.setCommand(ctrl.PAY_COMPLETE);
+					TicketingVO rVO = ctrl.controlpay(pVO);
+					String pay_complete_msg = MovieProtocol.PAY_COMPLETE+"";
+					
+					
 				}break;
 				}//end of switch
-			
 			} catch (ClassNotFoundException ce) {
 				System.out.println(ce.toString());
 				//e.printStackTrace();
