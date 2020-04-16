@@ -486,6 +486,34 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 //		return noList;
 //	}
 	
+	//nolist
+	public List<String> dateNoList(List<String> containList) {
+		//사용자가 선택하지 않은 리스트 뽑기
+		List<String> noList = new Vector<String>();
+		if(mmv.jp_mrv.jp_mcv.dtm_date.getRowCount()>0) {
+			for(int i=0; i<mmv.jp_mrv.jp_mcv.dtm_date.getRowCount(); i++) {
+				String imsi = mmv.jp_mrv.jp_mcv.dtm_date.getValueAt(i, 0).toString();
+				if(!containList.contains(imsi)) {
+					int result =0;
+					String imsis[] = imsi.split("");
+					for(int j=0; j<imsis.length; j++) {
+						if("년".equals(imsis[j])||"월".equals(imsis[j])) {
+							result =1;
+						}
+					}
+					if(result==0) {
+						noList.add(imsi);						
+					}
+				}
+			}
+		}
+		System.out.println("================================nolist사이즈: "+noList.size());
+		for(String k: noList){
+			System.out.println("nolist: "+k);
+		}
+		return noList;
+	}
+	
 	//날짜 dtm 셋팅
 	public void dateDtm () {
 		mmv.jp_mrv.jp_mcv.dtm_date.setRowCount(0);
@@ -1289,13 +1317,13 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 			mmv.jp_mrv.jp_pv.setVisible(false);//영화예매-결제뷰
 			mmv.jp_rv.setVisible(false);//결과화면
 			//
-			tVO.setMovie_name(mmv.jp_mrv.jl_south_movie.getText());
-			tVO.setMovie_age(mmv.jp_mrv.jl_south_ctf.getText());
-			tVO.setLoc(mmv.jp_mrv.jl_south_loc.getText());
-			tVO.setTheater(mmv.jp_mrv.jl_south_theater.getText());
-			tVO.setMovie_date(mmv.jp_mrv.jl_south_date.getText());
-			tVO.setMovie_time(mmv.jp_mrv.jl_south_time.getText());
-			tVO.setMovie_screen(mmv.jp_mrv.jl_south_screen.getText());
+//			tVO.setMovie_name(mmv.jp_mrv.jl_south_movie.getText());
+//			tVO.setMovie_age(mmv.jp_mrv.jl_south_ctf.getText());
+//			tVO.setLoc(mmv.jp_mrv.jl_south_loc.getText());
+//			tVO.setTheater(mmv.jp_mrv.jl_south_theater.getText());
+//			tVO.setMovie_date(mmv.jp_mrv.jl_south_date.getText());
+//			tVO.setMovie_time(mmv.jp_mrv.jl_south_time.getText());
+//			tVO.setMovie_screen(mmv.jp_mrv.jl_south_screen.getText());
 			//
 			List<Map<String,Object>> list = new Vector<Map<String,Object>>();
 			Map<String, Object> map = null;
@@ -1846,7 +1874,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				}
 				//날짜 중복 제거
 				List<String> containDateList = containDateList(userList);
-				//dateDtm2(containDateList);
+				dateNoList(containDateList);
 			}
 		}
 		
@@ -1946,7 +1974,7 @@ public class EventMapping implements ActionListener, ItemListener, KeyListener, 
 				movieDtm(containMovieList);
 				//날짜 중복 제거
 				List<String> containDateList = containDateList(userList);
-				//dateDtm2(containDateList);
+				dateNoList(containDateList);
 			}
 		}
 		else if(obj==mmv.jp_mrv.jp_mcv.jt_date) {//------------------------------------------------ 날짜선택
